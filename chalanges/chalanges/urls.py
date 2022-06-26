@@ -17,14 +17,18 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 
+import json
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 import psycopg2 as pg
 from . __init__ import cur
 
+@ensure_csrf_cookie
 def Chalange(request, id):
     cur.execute('select * from chalanges where id='+str(id)+';')
     inData = cur.fetchone()
     outData = {'id': inData[0], 'question': inData[1], 'answer': inData[2]}
-    return render(request, 'chalange.html', context={'value': outData })
+    return render(request, 'chalange.html', context={'value': outData})
 
 def New(request):
     return render(request, 'new.html')
@@ -34,11 +38,19 @@ def Browse(request):
 
 def Home(request):
     return render(request, 'home.html')
-        
+
+def Endpoint(request):
+    if request.method == "POST":
+        print(request.POST)
+        return render(request, 'home.html')
+    else:
+        return render(request, 'home.html')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home),
     path('new/', New),
     path('browse/', Browse),
     path('<int:id>/', Chalange),
+    path('endpoint/', Endpoint),
 ]

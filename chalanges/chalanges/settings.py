@@ -60,6 +60,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'pages', 'new'),
             os.path.join(BASE_DIR, 'pages', 'browse'),
             os.path.join(BASE_DIR, 'pages', 'home'),
+            #os.path.join(BASE_DIR, 'pages', 'exercise'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -134,4 +135,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pages', 'chalange', 'static'),
     os.path.join(BASE_DIR, 'pages', 'new', 'static'),
     os.path.join(BASE_DIR, 'pages', 'browse', 'static'),
+    #os.path.join(BASE_DIR, 'pages', 'exercise', 'static'),
 ]
