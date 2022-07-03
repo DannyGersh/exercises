@@ -8,7 +8,7 @@ function Chalange(props){
   
   //window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
   let author = window.jsonData['author'];
-  let uid = 'd'
+  let uid = 'a'
   console.log('poooooop', window.jsonData);
   
   let tags = Array(10).fill(0).map((e, i) => 'tag'+String(i));

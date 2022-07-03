@@ -1,0 +1,5 @@
+venv/**
+dev/chalange/node_modules/**
+dev/chalange/build/**
+dev/chalange/.eslintcache
+chalanges/pages/**
