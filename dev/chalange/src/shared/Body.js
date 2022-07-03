@@ -3,6 +3,7 @@ import Nav from './Nav'
 
 function Body(props){
 
+  /*
   let WidthHeightRatio = 1.1;
   const [narrowWindow, setNarrowWindow] = useState(
       (window.innerWidth / window.innerHeight < WidthHeightRatio)
@@ -21,10 +22,11 @@ function Body(props){
   }
 
   window.addEventListener('resize', windowResizeHandler);
-  
+  */
+
   return(
     <div>
-        <Nav narrowWindow={narrowWindow}/>
+        <Nav narrowWindow={props.narrowWindow}/>
         {props.children}
     </div>
   )
