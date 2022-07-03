@@ -1,6 +1,5 @@
 import "./styles.css";
 import CSRFToken from "./csrftoken";
-import DropDownNav from "./DropDownNav";
 import { useState } from "react";
 
 function Nav(props) {
@@ -18,10 +17,10 @@ function Nav(props) {
           <button className='btn'>Browse</button>
 
           <div className='searchContainer'>
-            <form action="/endpoint/" method="post">
+            <form className='nav1' action="/endpoint/" method="post">
               <CSRFToken />
               <button className='searchBtn' type="submit"></button>
-			  <input className='searchText' type="text" name="browse" />
+			        <input className='searchText1' type="text" name="browse" />
             </form>
           </div>
         </div>
@@ -31,14 +30,14 @@ function Nav(props) {
   } else {
     return (
       <div>
-        <div className="nav">
-          <button>Home</button>
-          <button>New</button>
-          <button>Browse</button>
+        <div className="nav1">
+          <button className='btn'>Home</button>
+          <button className='btn'>New</button>
+          <button className='btn'>Browse</button>
 
-          <div>
-            <button onClick={dropDownHandler}>
-              poop
+          <div className='searchContainer'>
+            <button className='btn' onClick={dropDownHandler}>
+              Search
             </button>
 
           </div>
@@ -46,10 +45,10 @@ function Nav(props) {
 
 		{dropDownActive && (
           <div>
-            <form action="/endpoint/" method="post">
+            <form className='nav1'  action="/endpoint/" method="post">
               <CSRFToken />
               <button className='searchBtn' type="submit"></button>
-			  <input className='searchText' type="text" name="browse" />
+			        <input className='searchText1' type="text" name="browse" />
             </form>
           </div>
         )}

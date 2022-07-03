@@ -19,15 +19,23 @@ from django.shortcuts import render
 
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import HttpResponse
 
 import psycopg2 as pg
-from . __init__ import cur
+from . __init__ import cur, conn
+
+SQLDataKeys = ['id', 'question', 'answer', 'hints', 'tags', 'rating', 'author', 'creationdate']
 
 @ensure_csrf_cookie
 def Chalange(request, id):
-    cur.execute('select * from chalanges where id='+str(id)+';')
+    cur.execute('''
+    select 
+        id, question, answer, hints, tags, rating, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI')
+        from chalanges where id=''' + str(id)
+    )
     inData = cur.fetchone()
-    outData = {'id': inData[0], 'question': inData[1], 'answer': inData[2]}
+    outData = { k:v for (k,v) in zip(SQLDataKeys, inData)}
+    print('poop', inData)
     return render(request, 'chalange.html', context={'value': outData})
 
 def New(request):
@@ -46,6 +54,29 @@ def Endpoint(request):
     else:
         return render(request, 'home.html')
 
+def poop(request):
+    if request.method == "POST":
+        id = request.POST['chalangeId']
+        cur.execute('select rating from chalanges where id='+str(id)+';')
+        inData = set(cur.fetchone()[0].split(','))
+        inData.remove('')
+
+        if request.POST['like'] in ('true', True, 1):
+            if request.POST['user'] not in inData:
+                inData.add(request.POST['user'])
+        else:
+            if request.POST['user'] in inData:
+                inData.remove(request.POST['user'])
+
+        inDataStr = ''.join(str+',' for str in inData)
+
+        cur.execute('update chalanges set rating=\''+inDataStr+'\' where id='+str(id)+';')
+        conn.commit()
+        
+        return(HttpResponse('all good'))
+    else:
+        return(HttpResponse('this should never happen'))
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home),
@@ -53,4 +84,5 @@ urlpatterns = [
     path('browse/', Browse),
     path('<int:id>/', Chalange),
     path('endpoint/', Endpoint),
+    path('poop/', poop),
 ]

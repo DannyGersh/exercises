@@ -1,0 +1,102 @@
+.bottomRight{
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	white-space: nowrap;
+}
+.btn2{
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	background-color: #5f9ea0;
+	color: white;
+	border: none;
+	height: 3rem;
+	width: 3rem;
+	border-radius: 50%;
+}
+.btn2:hover{
+	background-color: #6faeb0;
+}
+.btn2:active{
+	background-color: #5f9ea0;
+}
+.btn2on{
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	background-color: #8fbc8f;
+	color: white;
+	border: none;
+	height: 3rem;
+	width: 3rem;
+	border-radius: 50%;
+}
+.btn2on:hover{
+	background-color: #9fcc9f;
+}
+.btn2on:active{
+	background-color: #8fbc8f;
+}
+
+
+
+
+
+
+.bottomLeft{
+    display: flex;
+    align-items: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+    margin: 0.3rem;
+}
+.vscroll {
+    width: calc(100vw - 15rem);
+	overflow: auto;
+	white-space: nowrap;
+}
+.vscroll a:hover {
+	background-color: #777;
+}
+
+.additional{
+	vertical-align: middle;
+	background-color: #5f9ea0;
+	border-radius: 100px;
+	border-color: #e7feff;
+	border-width: 0.1rem;
+	border-style: solid;
+	width: 2rem;
+	height: 1.8rem;
+    margin: 0rem 0.3rem 0rem 0rem;
+}
+.additional:hover{
+	background-color: #6faeb0;
+}
+.additional:active{
+	background-color: #5f9ea0;
+}
+
+.additionalMenue{
+    position: fixed;
+    left: 0.3rem;
+    bottom: 4rem;
+    background-color: #5f9ea0;
+    padding: 0.3rem;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    border-radius: 0.3rem;
+}
+.additionalArrow{
+    position: fixed;
+    left: 0.9rem;
+    bottom: 3.5rem;
+    background-color: #5f9ea0;
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(45deg);
+}
+
+
+
+
