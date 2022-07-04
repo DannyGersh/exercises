@@ -6,7 +6,7 @@ import Tag from './shared/tag.js'
 
 function Chalange(props){
   
-  //window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
+  window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
   let author = window.jsonData['author'];
   let uid = 'a'
   console.log('poooooop', window.jsonData);
@@ -37,6 +37,11 @@ function Chalange(props){
   function dspHintsHandle() { 
     setDspHints(!dspHints);
     setDspAnswer(false);
+  }
+  
+  let [dspReport, setDspReport] = useState(false);
+  function reportHandle(){
+	setDspReport(!dspReport)
   }
 
   return (
@@ -87,7 +92,8 @@ function Chalange(props){
                 tags.map(i => <Tag key={i}>{i}</Tag>)
               }
               <hr/>
-              <p style={{fontSize: '0.7rem'}}>report</p>
+              <p onClick={reportHandle} className='report'>report</p>
+			  { dspReport && <p style={{fontSize: '0.7rem'}}>Send an email to testEmail@gmail.com with a link to this page and the reason you whant to report this page.</p>}
             </div>
             </>
             }
