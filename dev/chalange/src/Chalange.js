@@ -2,11 +2,13 @@ import './shared/styles.css'
 import './App.css'
 import CSRFToken from "./shared/csrftoken";
 import {useState} from 'react'
-import Tag from './shared/tag.js'
+import Tag from './shared/tag'
 
 function Chalange(props){
   
-  //window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
+  //npm install --save-dev @babel/preset-react
+  
+  window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
   let author = window.jsonData['author'];
   let uid = 'a'
   //console.log('poooooop', window.jsonData);

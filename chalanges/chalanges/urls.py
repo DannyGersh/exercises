@@ -42,17 +42,21 @@ def New(request):
     return render(request, 'new.html')
     
 def Browse(request):
-    return render(request, 'browse.html')
+    if request.method == "POST":
+        
+        cur.execute(
+            'select * from chalanges where tags like \'%'+request.POST['browse']+'%\';'
+        )
+        inData = cur.fetchall()
+        
+        outData = { k:v for (k,v) in zip(range(len(inData)), inData)}
+                
+        return render(request, 'browse.html', context={'value': outData})
+    else:
+        return render(request, 'browse.html')
 
 def Home(request):
     return render(request, 'home.html')
-
-def Endpoint(request):
-    if request.method == "POST":
-        print(request.POST)
-        return render(request, 'home.html')
-    else:
-        return render(request, 'home.html')
 
 def poop(request):
     if request.method == "POST":
@@ -83,6 +87,5 @@ urlpatterns = [
     path('new/', New),
     path('browse/', Browse),
     path('<int:id>/', Chalange),
-    path('endpoint/', Endpoint),
-    path('poop/', poop),
+    path('poop/', Browse),
 ]

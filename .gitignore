@@ -1,5 +1,12 @@
+chalanges/pages/**
+
 venv/**
 dev/chalange/node_modules/**
 dev/chalange/build/**
+dev/chalange/src/shared/**
 dev/chalange/.eslintcache
-chalanges/pages/**
+
+dev/browse/node_modules/**
+dev/browse/build/**
+dev/browse/src/shared/**
+dev/browse/.eslintcache
