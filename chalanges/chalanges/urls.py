@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -24,13 +24,14 @@ from django.http import HttpResponse
 import psycopg2 as pg
 from . __init__ import cur, conn
 
-SQLDataKeys = ['id', 'question', 'answer', 'hints', 'tags', 'rating', 'author', 'creationdate']
+#SQLDataKeys = ['id', 'question', 'answer', 'hints', 'tags', 'rating', 'author', 'creationdate']
+SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
 
 @ensure_csrf_cookie
 def Chalange(request, id):
     cur.execute('''
     select 
-        id, question, answer, hints, tags, rating, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI')
+        id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
         from chalanges where id=''' + str(id)
     )
     inData = cur.fetchone()
@@ -40,20 +41,24 @@ def Chalange(request, id):
 
 def New(request):
     return render(request, 'new.html')
-    
-def Browse(request):
+
+@ensure_csrf_cookie    
+def Browse(request, sterm=''):
     if request.method == "POST":
-        
+    
+        return redirect('/browse/'+request.POST['browse']+'/')
+    
+    else:
         cur.execute(
-            'select * from chalanges where tags like \'%'+request.POST['browse']+'%\';'
+            'select * from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
         )
-        inData = cur.fetchall()
+        inData = cur.fetchall() 
         
         outData = { k:v for (k,v) in zip(range(len(inData)), inData)}
-                
+        outData.update({"search term": sterm})        
+        
         return render(request, 'browse.html', context={'value': outData})
-    else:
-        return render(request, 'browse.html')
+    
 
 def Home(request):
     return render(request, 'home.html')
@@ -62,18 +67,16 @@ def poop(request):
     if request.method == "POST":
         id = request.POST['chalangeId']
         cur.execute('select rating from chalanges where id='+str(id)+';')
-        inData = set(cur.fetchone()[0].split(','))
-        inData.remove('')
-
+        inData = set(cur.fetchone()[0])
+        
         if request.POST['like'] in ('true', True, 1):
             if request.POST['user'] not in inData:
                 inData.add(request.POST['user'])
         else:
             if request.POST['user'] in inData:
                 inData.remove(request.POST['user'])
-
-        inDataStr = ''.join(str+',' for str in inData)
-
+        
+        inDataStr = '{' + ''.join(str+',' for str in inData)[0:-1] + '}'
         cur.execute('update chalanges set rating=\''+inDataStr+'\' where id='+str(id)+';')
         conn.commit()
         
@@ -86,6 +89,7 @@ urlpatterns = [
     path('', Home),
     path('new/', New),
     path('browse/', Browse),
+    path('browse/<str:sterm>/', Browse),
     path('<int:id>/', Chalange),
-    path('poop/', Browse),
+    path('poop/', poop),
 ]

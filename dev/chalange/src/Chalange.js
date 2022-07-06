@@ -8,12 +8,14 @@ function Chalange(props){
   
   //npm install --save-dev @babel/preset-react
   
-  window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
+  //window.jsonData = {'id': 2, 'author': 'danny','question': 'wazzza?', 'answer': 'all good bro', 'hints': 'hint', 'tags': 'tag1,tag2,tag3', 'rating': 'a,b,c,d,', 'creationdate': '2022-06-30T19:08:42.793'}
+  //window.jsonData = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['a','b','c'], 'tags': ['math', 'science']};
+
   let author = window.jsonData['author'];
   let uid = 'a'
   //console.log('poooooop', window.jsonData);
   
-  let tags = Array(10).fill(0).map((e, i) => 'tag'+String(i));
+  //let tags = Array(10).fill(0).map((e, i) => 'tag'+String(i));
 
   //let tags = window.jsonData['tags'].split(',');
 
@@ -22,7 +24,7 @@ function Chalange(props){
     setAdditionalMenue(!dspAdditionalMenue);
   }
 
-  let isLike = window.jsonData['rating'].search(RegExp(',?'+uid+',')) !== -1;
+  let isLike = window.jsonData['rating'].includes(uid);
   let [dspLike, setDspLike] = useState(isLike);
   function dspLikeHandle() { 
     setDspLike(!dspLike);
@@ -92,7 +94,7 @@ function Chalange(props){
             <div className='additionalMenue'>
               Created by <a href=''>{window.jsonData['author']}</a> <br/> {window.jsonData['creationdate']}  <br/>
               { props.narrowWindow &&
-                tags.map(i => <Tag key={i}>{i}</Tag>)
+                window.jsonData['tags'].map(i => <Tag key={i}>{i}</Tag>)
               }
               <hr/>
               <p onClick={reportHandle} className='report'>report</p>
@@ -103,7 +105,7 @@ function Chalange(props){
 
           <div className='vscroll'>
           { !props.narrowWindow && 
-            tags.map(i => <Tag key={i*2}>{i}</Tag>)
+            window.jsonData['tags'].map(i => <Tag key={i*2}>{i}</Tag>)
           }
           </div>          
 

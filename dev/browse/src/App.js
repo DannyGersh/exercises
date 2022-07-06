@@ -1,17 +1,17 @@
 import useWindowResize from './shared/functions'
 import Nav from "./shared/Nav"
-//import Browse from './Browse'
+import Browse from './Browse/Browse'
 
 function App() {
   
-  console.log('poop', window.jsonData)
+  //console.log('poop', window.jsonData)
   
   let narrowWindow = useWindowResize();
   
   return (
   <>
 	<Nav narrowWindow={narrowWindow}/>
-    <h1>poop</h1>
+    <Browse/>
 	</>
   );
 }

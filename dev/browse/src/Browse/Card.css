@@ -1,0 +1,17 @@
+.card{
+	position: relative;
+	border-radius: 0.5rem;
+	background-color: #fbceb1;
+	margin: 1rem;
+	padding: 1rem;
+	width: calc(100% - 2rem);
+	border: none;
+	text-align: left;
+}
+.card:hover{
+	/*background-color: #ffd5b8;*/
+	cursor: pointer;
+}
+.card:active{
+	background-color: #fbceb1;
+}
