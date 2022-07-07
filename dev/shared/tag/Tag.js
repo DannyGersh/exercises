@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./Tag.css";
 
 /* 	
 	define props.url to be a url for redirection.

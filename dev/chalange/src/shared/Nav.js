@@ -1,7 +1,7 @@
 import "./styles.css";
 import CSRFToken from "./csrftoken";
 import { useState } from "react";
-import createElement from './createElement'
+import BtnMenue from './buttons/BtnMenue'
 
 function Nav(props) {
   let [dropDownActive, setDropDownActive] = useState(false);
@@ -13,9 +13,9 @@ function Nav(props) {
     return (
       <div>
         <div className="nav1">
-          <button className='btn'>Home</button>
-          <button className='btn'>New</button>
-          <button className='btn'>Browse</button>
+          <BtnMenue>Home</BtnMenue>
+          <BtnMenue>New</BtnMenue>
+          <BtnMenue>Browse</BtnMenue>
 
           <div className='searchContainer'>
             <form className='nav1' action="/browse/" method="post">

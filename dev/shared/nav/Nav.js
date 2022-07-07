@@ -1,7 +1,7 @@
-import "./styles.css";
-import CSRFToken from "./csrftoken";
+import "./Nav.css";
+import CSRFToken from "../csrftoken";
 import { useState } from "react";
-import createElement from './createElement'
+import BtnMenue from '../buttons/BtnMenue'
 
 function Nav(props) {
   let [dropDownActive, setDropDownActive] = useState(false);
@@ -12,16 +12,16 @@ function Nav(props) {
   if (!props.narrowWindow) {
     return (
       <div>
-        <div className="nav1">
-          <button className='btn'>Home</button>
-          <button className='btn'>New</button>
-          <button className='btn'>Browse</button>
+        <div className="nav">
+          <BtnMenue>Home</BtnMenue>
+          <BtnMenue>New</BtnMenue>
+          <BtnMenue>Browse</BtnMenue>
 
           <div className='searchContainer'>
-            <form className='nav1' action="/browse/" method="post">
+            <form className='nav' action="/browse/" method="post">
               <CSRFToken />
               <button className='searchBtn' type="submit"></button>
-			        <input className='searchText1' type="text" name="browse" />
+			        <input className='searchText' type="text" name="browse" />
             </form>
           </div>
         </div>
@@ -31,25 +31,25 @@ function Nav(props) {
   } else {
     return (
       <div>
-        <div className="nav1">
-          <button className='btn'>Home</button>
-          <button className='btn'>New</button>
-          <button className='btn'>Browse</button>
+        <div className="nav">
+          <BtnMenue>Home</BtnMenue>
+          <BtnMenue>New</BtnMenue>
+          <BtnMenue>Browse</BtnMenue>
 
           <div className='searchContainer'>
-            <button className='btn' onClick={dropDownHandler}>
+            <BtnMenue onClick={dropDownHandler}>
               Search
-            </button>
+            </BtnMenue>
 
           </div>
         </div>
 
 		{dropDownActive && (
           <div>
-            <form className='nav1' action="/browse/" method="post">
+            <form className='nav' action="/browse/" method="post">
               <CSRFToken />
               <button className='searchBtn' type="submit"></button>
-			        <input className='searchText1' type="text" name="browse" />
+			        <input className='searchText' type="text" name="browse" />
             </form>
           </div>
         )}

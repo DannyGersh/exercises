@@ -5,9 +5,11 @@
 	white-space: nowrap;
 }
 .btn2{
+	vertical-align: middle;
 	margin: 0.3rem;
 	font-size: 0.7rem;
-	background-color: #5f9ea0;
+	/*background-color: #5f9de2;*/
+	background-color: #5b92e5;
 	color: white;
 	border: none;
 	height: 3rem;
@@ -15,12 +17,13 @@
 	border-radius: 50%;
 }
 .btn2:hover{
-	background-color: #6faeb0;
+	background-color: #6ba2f5;
 }
 .btn2:active{
-	background-color: #5f9ea0;
+	background-color: #5b92e5;
 }
 .btn2on{
+	vertical-align: middle;
 	margin: 0.3rem;
 	font-size: 0.7rem;
 	background-color: #8fbc8f;
@@ -61,7 +64,7 @@
 
 .additional{
 	vertical-align: middle;
-	background-color: #5f9ea0;
+	background-color: #5b92e5;
 	border-radius: 100px;
 	border-color: #e7feff;
 	border-width: 0.1rem;
@@ -71,26 +74,27 @@
     margin: 0rem 0.3rem 0rem 0rem;
 }
 .additional:hover{
-	background-color: #6faeb0;
+	background-color: #6ba2f5;
 }
 .additional:active{
-	background-color: #5f9ea0;
+	background-color: #5b92e5;
 }
 
 .additionalMenue{
     position: fixed;
     left: 0.3rem;
     bottom: 4rem;
-    background-color: #5f9ea0;
+    background-color: #5b92e5;
     padding: 0.3rem;
     overflow-wrap: break-word;
     border-radius: 0.3rem;
+	color: white;
 }
 .additionalArrow{
     position: fixed;
     left: 0.9rem;
     bottom: 3.5rem;
-    background-color: #5f9ea0;
+    background-color: #5b92e5;
     width: 1rem;
     height: 1rem;
     transform: rotate(45deg);

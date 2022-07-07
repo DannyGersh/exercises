@@ -1,5 +1,5 @@
 import useWindowResize from './shared/functions'
-import Nav from "./shared/Nav"
+import Nav from "./shared/nav/Nav"
 import Browse from './Browse/Browse'
 
 function App() {

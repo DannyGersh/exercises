@@ -1,5 +1,5 @@
-import Chalange from './Chalange'
-import Nav from './shared/Nav'
+import Chalange from './chalange/Chalange'
+import Nav from './shared/nav/Nav'
 import useWindowResize from './shared/functions'
 
 function App() {

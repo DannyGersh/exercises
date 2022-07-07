@@ -1,23 +1,16 @@
-import './shared/styles.css'
-import './App.css'
-import CSRFToken from "./shared/csrftoken";
+import '../shared/Global.css'
+import './Chalange.css'
+import CSRFToken from "../shared/csrftoken";
 import {useState} from 'react'
-import Tag from './shared/tag'
+import Tag from '../shared/tag/Tag'
 
 function Chalange(props){
-  
-  //npm install --save-dev @babel/preset-react
-  
-  window.jsonData = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['a','b','c'], 'tags': ['math', 'science']};
+    
+  //window.jsonData = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['a','b','c'], 'tags': ['math', 'science']};
 
-  let author = window.jsonData['author'];
   let uid = 'a'
   //console.log('poooooop', window.jsonData);
   
-  //let tags = Array(10).fill(0).map((e, i) => 'tag'+String(i));
-
-  //let tags = window.jsonData['tags'].split(',');
-
   let [dspAdditionalMenue, setAdditionalMenue] = useState(false);
   function additionalMenueHandler(){
     setAdditionalMenue(!dspAdditionalMenue);
@@ -29,7 +22,7 @@ function Chalange(props){
     setDspLike(!dspLike);
   }
 
-  let [isHints, setIsHints] = useState(window.jsonData['hints'] !== "");
+  let isHints = (window.jsonData['hints'] !== "");
   let [dspHints, setDspHints] = useState(false);
   let [dspAnswer, setDspAnswer] = useState(false);
 
@@ -91,7 +84,7 @@ function Chalange(props){
           { dspAdditionalMenue && <>
             <div className='additionalArrow'></div>
             <div className='additionalMenue'>
-              Created by <a href=''>{window.jsonData['author']}</a> <br/> {window.jsonData['creationdate']}  <br/>
+              Created by <a href='/test/'>{window.jsonData['author']}</a> <br/> {window.jsonData['creationdate']}  <br/>
               { props.narrowWindow &&
                 window.jsonData['tags'].map(i => <Tag url={'../browse/'+i} key={i}>{i}</Tag>)
               }
