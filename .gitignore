@@ -10,3 +10,8 @@ dev/browse/node_modules/**
 dev/browse/build/**
 dev/browse/src/shared/**
 dev/browse/.eslintcache
+
+dev/user/node_modules/**
+dev/user/build/**
+dev/user/src/shared/**
+dev/user/.eslintcache
