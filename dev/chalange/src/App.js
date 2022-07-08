@@ -1,6 +1,7 @@
 import Chalange from './chalange/Chalange'
 import Nav from './shared/nav/Nav'
 import useWindowResize from './shared/functions'
+import './shared/Global.css'
 
 function App() {
 

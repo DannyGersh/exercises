@@ -1,0 +1,5 @@
+IMPORTENT !
+when creating new react project
+set the following in .jshintre file - "eqeqeq": false,
+
+the 

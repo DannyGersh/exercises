@@ -1,4 +1,3 @@
-import '../shared/Global.css'
 import './Chalange.css'
 import CSRFToken from "../shared/csrftoken";
 import {useState} from 'react'
@@ -6,20 +5,24 @@ import Tag from '../shared/tag/Tag'
 
 function Chalange(props){
     
-  //window.jsonData = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['a','b','c'], 'tags': ['math', 'science']};
+  //window.jsonData = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['b','c'], 'tags': ['math', 'science']};
 
   let uid = 'a'
   //console.log('poooooop', window.jsonData);
   
+  // dsp = display
   let [dspAdditionalMenue, setAdditionalMenue] = useState(false);
   function additionalMenueHandler(){
     setAdditionalMenue(!dspAdditionalMenue);
   }
 
-  let isLike = window.jsonData['rating'].includes(uid);
+  let isLike = window.jsonData['rating'].includes(uid); // initial like state
   let [dspLike, setDspLike] = useState(isLike);
+  let [addToLikes, setAddToLikes] = useState(0); // add 1 likes (without database intervension)
   function dspLikeHandle() { 
     setDspLike(!dspLike);
+	if(isLike) { !dspLike ? setAddToLikes(0): setAddToLikes(-1) }
+	else { !dspLike ? setAddToLikes(1): setAddToLikes(0) };
   }
 
   let isHints = (window.jsonData['hints'] !== "");
@@ -60,8 +63,8 @@ function Chalange(props){
           <input type="hidden" name="user" value={uid}/>
 
           { dspLike ? 
-            <><button type="submit" onClick={dspLikeHandle} className='btn2on'>{window.jsonData['rating'].length}<br/>Like</button></>:
-            <><button type="submit" onClick={dspLikeHandle} className='btn2'>{window.jsonData['rating'].length}<br/>Like</button></>
+            <><button type="submit" onClick={dspLikeHandle} className='btn2on'>{window.jsonData['rating'].length+addToLikes}<br/>Like</button></>:
+            <><button type="submit" onClick={dspLikeHandle} className='btn2'>{window.jsonData['rating'].length+addToLikes}<br/>Like</button></>
           }
           { isHints && (dspHints ? 
             <><button onClick={dspHintsHandle} className='btn2on'>Hints</button></>:

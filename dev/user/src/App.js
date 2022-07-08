@@ -1,7 +1,7 @@
-import useWindowResize from './shared/functions'
+import useWindowResize from './shared/Functions'
 import Nav from "./shared/nav/Nav"
-import Browse from './Browse/Browse'
 import './shared/Global.css'
+import User from './user/User'
 
 function App() {
   
@@ -12,8 +12,8 @@ function App() {
   return (
   <>
 	<Nav narrowWindow={narrowWindow}/>
-    <Browse/>
-	</>
+	<User/>
+  </>
   );
 }
 
