@@ -1,14 +1,24 @@
 import "./Nav.css";
 import CSRFToken from "../csrftoken";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import BtnMenue from '../buttons/BtnMenue'
 
 function Nav(props) {
+  
+  let myevent = new Event('myevent', {
+    bubbles: true,
+    cancelable: true,
+    composed: false
+  })
+  
   let [dropDownActive, setDropDownActive] = useState(false);
   function dropDownHandler() {
     setDropDownActive(!dropDownActive);
+	window.dispatchEvent(myevent);
   }
 
+  //window.addEventListener("myevent", ()=>{console.log("NAAAV")})
+  
   if (!props.narrowWindow) {
     return (
       <div>
