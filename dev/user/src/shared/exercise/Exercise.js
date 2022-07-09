@@ -18,7 +18,11 @@ function Exercise(props){
       <h4>{props.title}</h4>
 	    {props.paragraph} <br/><br/><br/>
       <div style={{'width': 'calc(100% - 3.3rem)'}} className="vscrol">
-        { props.tags.map(ii => <Tag url={'../'+ii}>{ii}</Tag>) }
+        { 
+		  props.tags.map((t, i) => 
+		    <Tag key={i} url={'../../../../../../../../../../browse/'+t}>{t}</Tag>
+		  ) 
+		}
       </div>
 		    
     </Card>

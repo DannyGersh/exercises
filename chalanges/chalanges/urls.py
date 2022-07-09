@@ -59,7 +59,6 @@ def Browse(request, sterm=''):
         
         return render(request, 'browse.html', context={'value': outData})
     
-
 def Home(request):
     return render(request, 'home.html')
 
@@ -84,6 +83,51 @@ def poop(request):
     else:
         return(HttpResponse('this should never happen'))
 
+def User(request, user):
+
+    # inData - user from db users
+    # inData[0] - id
+    # inData[1] - name
+    # inData[2] - answered
+    # inData[3] - liked
+    
+    cur.execute('select * from users where name=\''+user+'\'')
+    inData = cur.fetchone()
+    
+    answered = []
+    liked = []
+    for i in inData[2]:
+        cur.execute('''
+        select 
+            id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+            from chalanges where id=''' + str(i)
+        )
+        q = cur.fetchone()
+        if q:
+            answered.append(q)
+            
+    for i in inData[3]:
+        cur.execute('''
+        select 
+            id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+            from chalanges where id=''' + str(i)
+        )
+        q = cur.fetchone()
+        if q:
+            liked.append(q)
+    
+    print(inData)
+    
+    def myFunc(e):
+        return len(e)
+        
+    liked.sort(key=lambda e: len(e[8]))
+    liked.reverse()
+    answered.sort(key=lambda e: len(e[8]))
+    answered.reverse()
+    
+    return render(request, 'user.html', context={'value': [answered, liked, inData[1]]})
+    
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home),
@@ -92,4 +136,5 @@ urlpatterns = [
     path('browse/<str:sterm>/', Browse),
     path('<int:id>/', Chalange),
     path('poop/', poop),
+    path('user/<str:user>/', User),
 ]

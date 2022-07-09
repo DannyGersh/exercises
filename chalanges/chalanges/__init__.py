@@ -13,3 +13,5 @@ cur = conn.cursor()
 cur.execute('SELECT version();')
 db_version = cur.fetchone()
 print(db_version)
+
+
