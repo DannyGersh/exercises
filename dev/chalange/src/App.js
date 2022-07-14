@@ -9,14 +9,15 @@ function App() {
   if( process.env.NODE_ENV === 'development'){
     window.jsonData = { 'id': 2, 'signInFailure': true }; 
   }  
-  
+    
   return (
     <>
     
     <Nav 
-      narrowWindow={narrowWindow} 
-      currentPage={'./../../../../../../' + String(window.jsonData['id'])}
-      signInFailure={window.jsonData['signInFailure']}
+      narrowWindow = { narrowWindow } 
+      currentPage = { './../../../../../../' + String(window.jsonData['id']) }
+      signInFailure = { window.jsonData['signInFailure'] } 
+      isSignUp = { window.jsonData['isSignUp'] }
     />
     
     <Chalange narrowWindow={narrowWindow}/>

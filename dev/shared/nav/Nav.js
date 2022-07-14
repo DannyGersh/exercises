@@ -32,9 +32,7 @@ function Nav(props) {
   }
 
   //window.addEventListener("myevent", ()=>{console.log("NAAAV")})
-  
-  console.log(window.jsonData['signInFailure']);
-  
+    
   const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
   
   if (!props.narrowWindow) {
@@ -58,13 +56,19 @@ function Nav(props) {
         </div>
       
       {/* log in window */}
-      { dspLogin && <Login currentPage={props.currentPage}/> }
+      { dspLogin && 
+        <Login 
+          signInFailure={window.jsonData['signInFailure']} 
+          isSignUp={window.jsonData['isSignUp']} 
+          currentPage={props.currentPage}
+         /> 
+      }
     
     </> );
     
   } else {
     return (
-      <div>
+      <>
       
         <div className="nav">
         
@@ -93,9 +97,15 @@ function Nav(props) {
       )}
 		
       {/* log in window */}
-      { dspLogin && <Login currentPage={props.currentPage}/> }
-	  
-      </div>
+      { dspLogin && 
+        <Login 
+          signInFailure={window.jsonData['signInFailure']} 
+          isSignUp={window.jsonData['isSignUp']} 
+          currentPage={props.currentPage}
+         /> 
+      }
+      
+      </>
     );
   }
 }

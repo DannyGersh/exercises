@@ -35,23 +35,19 @@ SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 't
 @ensure_csrf_cookie
 def Chalange(request, id):
 
-	# normalView - Boolean:
-	#		if False: a signup faild, return the page but with login form shown
-	#		if True: return the normal page
 	if not request.session.has_key('signInFailure'):
-		print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-		request.session['signInFailure'] = True
-	
-	print(request.session['signInFailure'])
-		
+		request.session['signInFailure'] = False
+			
 	cur.execute('''
 	select 
 			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
 			from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()
+	
 	outData = { k:v for (k,v) in zip(SQLDataKeys, inData)}
-	outData['signInFailure'] = request.session['signInFailure']
+	outData['signInFailure'] = request.session.get('signInFailure')
+	outData['isSignUp'] = request.session.get('isSignUp')
 	
 	return render(request, 'chalange.html', context={'value': outData})
 
@@ -169,17 +165,30 @@ def profile(request, userid):
 def login(request):
 	
 	if request.method == "POST":
+		
+		# this is only redirect view
+		# always redirects to previous page
+		
+		# definitions:
 		# ls - 'login' or 'signup'
 		# currentPage - string of the current page
-		ls = request.POST['login_signup']
-		uname = request.POST['uname']
-		password = request.POST['password']
-		currentPage = request.POST['currentPage']
+		# request.session['signInFailure'] - true if login failed
+		# request.session[isSignUp] - (onley for signup) True if signup fails
 		
+		ls = request.POST.get('login_signup')
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentPage = request.POST.get('currentPage')
+		varPassword = request.POST.get('Verify password')
+				
+		# just in case signInFailure is undefine(should not happen)
 		request.session['signInFailure'] = True
 		
 		if ls == 'login':
+			
+			request.session['isSignUp'] = False
 			user = authenticate(username=uname, password=password)
+			
 			if not user:
 				request.session['signInFailure'] = True
 			else:
@@ -188,6 +197,14 @@ def login(request):
 			return redirect(currentPage)
 
 		elif ls == 'signup':
+		
+			request.session['isSignUp'] = True
+
+			if password != varPassword:
+				print("POOOOOOOOOOOOOP")
+				request.session['signInFailure'] = True
+				return redirect(currentPage)
+				
 			try:
 				user = User.objects.create_user(
 					uname, '', password
@@ -196,7 +213,10 @@ def login(request):
 					
 			except:
 				request.session['signInFailure'] = True
-								
+		
+		else:
+			raise Exception("request.POST['login_signup'] is neither 'login' nor 'signup'.")
+			
 		return redirect(currentPage)
 
 	# this should never happen
