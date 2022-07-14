@@ -3,7 +3,7 @@
 	margin: 0.3rem;
 	font-size: 0.7rem;
 	/*background-color: #5f9de2;*/
-	background-color: #5b92e5;
+	background-color: var(--UNblue);
 	color: white;
 	border: none;
 	height: 3rem;
@@ -11,25 +11,25 @@
 	border-radius: 50%;
 }
 .BtnColorGreen{
-	background-color: #8fbc8f;
+	background-color: var(----DKgreen);
 }
 
 /* active button */
 .activeBlue{
 }
 .activeBlue:hover{
-	background-color: #6ba2f5;
+	background-color: var(--UNblue_hover);
 }
 .activeBlue:active{
-	background-color: #5b92e5;
+	background-color: var(--UNblue);
 }
 
 .activeGreen{
-	background-color: #8fbc8f;
+	background-color: var(--DKgreen);
 }
 .activeGreen:hover{
-	background-color: #9fcc9f;
+	background-color: var(--DKgreen_hover);
 }
 .activeGreen:active{
-	background-color: #8fbc8f;
+	background-color: var(--DKgreen);
 }

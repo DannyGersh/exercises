@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+#AUTH_USER_MODEL = 'users1.user1'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,8 +59,8 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'pages', 'chalange'),
             os.path.join(BASE_DIR, 'pages', 'browse'),
-            os.path.join(BASE_DIR, 'pages', 'user'),
             os.path.join(BASE_DIR, 'pages', 'home'),
+            os.path.join(BASE_DIR, 'pages', 'user'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -79,6 +80,7 @@ WSGI_APPLICATION = 'chalanges.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -89,14 +91,13 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'lk_potok_2',
+        'NAME': 'chalanges',
         'USER': 'postgres',
-        'PASSWORD': 'post222',
-        'HOST': 'db',
-        'PORT': 5432,
-    },
+        'PASSWORD': '#QMrlj76#R',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
 }
-'''
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -143,8 +144,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pages', 'chalange', 'static'),
-    os.path.join(BASE_DIR, 'pages', 'new', 'static'),
     os.path.join(BASE_DIR, 'pages', 'browse', 'static'),
     os.path.join(BASE_DIR, 'pages', 'user', 'static'),
 ]
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+LOGIN_REDIRECT_URL = '/'

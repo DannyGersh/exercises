@@ -4,47 +4,6 @@
 	right: 0;
 	white-space: nowrap;
 }
-.btn2{
-	vertical-align: middle;
-	margin: 0.3rem;
-	font-size: 0.7rem;
-	/*background-color: #5f9de2;*/
-	background-color: #5b92e5;
-	color: white;
-	border: none;
-	height: 3rem;
-	width: 3rem;
-	border-radius: 50%;
-}
-.btn2:hover{
-	background-color: #6ba2f5;
-}
-.btn2:active{
-	background-color: #5b92e5;
-}
-.btn2on{
-	vertical-align: middle;
-	margin: 0.3rem;
-	font-size: 0.7rem;
-	background-color: #8fbc8f;
-	color: white;
-	border: none;
-	height: 3rem;
-	width: 3rem;
-	border-radius: 50%;
-}
-.btn2on:hover{
-	background-color: #9fcc9f;
-}
-.btn2on:active{
-	background-color: #8fbc8f;
-}
-
-
-
-
-
-
 .bottomLeft{
     display: flex;
     align-items: center;

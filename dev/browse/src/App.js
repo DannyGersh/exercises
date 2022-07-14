@@ -8,10 +8,16 @@ function App() {
   //console.log('poop', window.jsonData)
   
   let narrowWindow = useWindowResize();
+  if( process.env.NODE_ENV === 'development'){
+    window.jsonData = {'search term': 'math'}; 
+  }
   
   return (
   <>
-	<Nav narrowWindow={narrowWindow}/>
+    <Nav 
+      narrowWindow={narrowWindow}
+      currentPage={'./../../../../../../browse/' + window.jsonData['search term'] }
+    />
     <Browse/>
 	</>
   );

@@ -6,3 +6,20 @@ body{
 	overflow: auto;
 	white-space: nowrap;
 }
+.hscroll{
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+:root {
+  --backGround: #faebd7;	
+  --apricot: #fbceb1;
+  --champagne: #fad6a5;
+  --champagne_hover: #eac695;
+  --champagne_active: #dab685;
+  --UNblue: #5b92e5;
+  --UNblue_hover: #6ba2f5;
+  --DKgreen: #8fbc8f;
+  --DKgreen_hover: #9fcc9f;
+  --brown: #F1AF86;
+}

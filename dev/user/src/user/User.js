@@ -63,7 +63,7 @@ function User(){
 	  <BtnMenue onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
 	</div>
 	
-	<div ref={refB} className="qscroll">
+	<div ref={refB} className="hscroll scrollStyle">
 	{
 	  selectMenue(menueSelection).map( (item, i) =>
         <Exercise 

@@ -2,16 +2,17 @@
 	vertical-align: middle;
 	padding: 0.3rem;
 	margin: 0.1rem;
-	background-color: #fad6a5;
+	background-color: var(--champagne);
 	border-radius: 0.3rem;
 	border-color: #e7feff;
 	border-width: 0.1rem;
 	border-style: solid;
 	height: 1.8rem;
+	white-space: nowrap;
 }
 .btnMenue:hover{
-	background-color: #eac695;
+	background-color: var(--champagne_hover);
 }
 .btnMenue:active{
-	background-color: #dab685;
+	background-color: var(--champagne_active);
 }

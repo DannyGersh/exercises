@@ -10,7 +10,7 @@ function Exercise(props){
     <Card url={props.url} >
             
 	  <div className='bottomRight'>
-	    <BtnRound on={false} active={false}>
+	    <BtnRound>
 		  {props.likes}<br/>Likes
 	    </BtnRound>
 	  </div>

@@ -17,7 +17,7 @@ function Browse(){
     
   return(
   <>
-	<p>search result for: <strong>{window.jsonData["search term"]}</strong></p>
+	<p style={{'padding': '0rem 0rem 0rem 1rem'}}>search result for: <strong>{window.jsonData["search term"]}</strong></p>
 	
 	{ items.length !== 0 ?
 	  items.map( i =>
