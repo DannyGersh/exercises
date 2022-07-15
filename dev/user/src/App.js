@@ -9,8 +9,23 @@ function App() {
   
   let narrowWindow = useWindowResize();
   if( process.env.NODE_ENV === 'development'){
+		let chalange = {
+			'id': 2, 
+			'question': 'test question', 
+			'answer': 'test answer', 
+			'hints': 'test hints', 
+			'author': 'test author', 
+			'creationdate': '27-7-1996', 
+			'title': 'test title', 
+			'rating': ['b','c'], 
+			'tags': ['math', 'science']
+		};
+		let answered = [chalange];
+		let liked = [chalange]
+		let data = [answered, liked, "Boris"]
+		
 		window.jsonData = {
-			'search term': 'math',
+			'data': data,
 			'signInFailure': false,
 			'isSignUp': false,
 			'isAuth': true,
@@ -21,6 +36,9 @@ function App() {
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
+	const answered = window.jsonData['data'][0]
+	const liked = window.jsonData['data'][1]
+	const userName = window.jsonData['data'][2]
 	
   return (
     <>

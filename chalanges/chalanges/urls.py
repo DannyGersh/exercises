@@ -35,21 +35,14 @@ SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 't
 @ensure_csrf_cookie
 def Chalange(request, id):
 	
-	outData = {} # data for js, will be converted to secure json
-	# get user id
-	if not request.user.id:
-		outData['userid'] = -1 # anonymous user
-	else:
-		outData['userid'] = request.user.id
-		
+	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined
 	if not request.session.has_key('signInFailure'):
 		request.session['signInFailure'] = False
-	
 	outData['signInFailure'] = request.session.get('signInFailure')
 	outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
-	
+	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
 	
@@ -66,26 +59,39 @@ def Chalange(request, id):
 
 @ensure_csrf_cookie		
 def Browse(request, sterm=''):
+
+	outData = {} # data for js. will be converted to secure json.
+	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
+	if not request.session.has_key('signInFailure'):
+		request.session['signInFailure'] = False
+	outData['signInFailure'] = request.session.get('signInFailure')
+	outData['isSignUp'] = request.session.get('isSignUp')
+	outData['isAuth'] = request.session.get('isAuth')
+	outData['userid'] = request.user.id
+	request.session['signInFailure'] = False # not needed enimore
+	request.session['isSignUp'] = False # not needed enimore
+	
+	outData["search term"] = sterm		
+	
+	# first get post data from react,
+	# at this point sterm is empty.
+	# then redirect here again,
+	# but with apropriete sterm (search term)
+	
+	if request.method == "POST" and sterm == '':
+		# if user entered search tearm in search bar
+		return redirect('/browse/'+request.POST['browse']+'/')
+	
+	else:
+		# after initial redirect, now with correct url
+		cur.execute(
+				'select * from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
+		)
+		inData = cur.fetchall() 
 		
-		# first get post data from react,
-		# at this point sterm is empty.
-		# then redirect here again,
-		# but with apropriete sterm (search term)
+		outData['chalanges'] = { k:v for (k,v) in zip(range(len(inData)), inData) }
 		
-		if request.method == "POST":
-		
-				return redirect('/browse/'+request.POST['browse']+'/')
-		
-		else:
-				cur.execute(
-						'select * from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
-				)
-				inData = cur.fetchall() 
-				
-				outData = { k:v for (k,v) in zip(range(len(inData)), inData)}
-				outData.update({"search term": sterm})				
-				
-				return render(request, 'browse.html', context={'value': outData})
+		return render(request, 'browse.html', context={'value': outData})
 
 def Home(request):
 		#print(request.user.is_authenticated)
@@ -121,59 +127,68 @@ def Poop(request):
 @ensure_csrf_cookie	
 def Profile(request, userid):
 
-		# inData will hold all information of the user
+	outData = {} # data for js. will be converted to secure json.
+	# when no signInFailure occures, ssesion.signInFailure is undefined
+	if not request.session.has_key('signInFailure'):
+		request.session['signInFailure'] = False
+	outData['signInFailure'] = request.session.get('signInFailure')
+	outData['isSignUp'] = request.session.get('isSignUp')
+	outData['isAuth'] = request.session.get('isAuth')
+	outData['userid'] = request.user.id
+	request.session['signInFailure'] = False # not needed enimore
+	request.session['isSignUp'] = False # not needed enimore
+	
+	# SQL: fetch user information from "users1" table and store in inData.
+	# columns are:
+	# 1) id - user id: integer, foreigen key refrences serial primary key of table "auth_user" wich is the default(postgres version) django table of users 
+	# 2) answered - answered questions: array of integer
+	# 3) liked - liked questions: array of integer
+	
+	# non SQL version:
+	# inData[0] - user id
+	# inData[1] - list of ids of answered questions
+	# inData[2] - list of ids of liked questions
 		
-		# SQL: fetch user information from "users1" table and store in inData.
-		# columns are:
-		# 1) id - user id: integer, foreigen key refrences serial primary key of table "auth_user" wich is the default(postgres version) django table of users 
-		# 2) answered - answered questions: array of integer
-		# 3) liked - liked questions: array of integer
-		
-		# non SQL version:
-		# inData[0] - user id
-		# inData[1] - list of ids of answered questions
-		# inData[2] - list of ids of liked questions
+	cur.execute('select * from users1 where id='+str(userid))
+	inData = cur.fetchone()
+	
+	if request.user.is_authenticated and request.user.id == userid:		
+			# convert answered list of ids to
+			# a list that holds exercises(list)
+			# same for liked
+			answered = []
+			liked = []
+			for i in inData[1]:
+					cur.execute('''
+					select 
+							id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+							from chalanges where id=''' + str(i)
+					)
+					q = cur.fetchone()
+					if q:
+							answered.append(q)
+							
+			for i in inData[2]:
+					cur.execute('''
+					select 
+							id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+							from chalanges where id=''' + str(i)
+					)
+					q = cur.fetchone()
+					if q:
+							liked.append(q)
 			
-		cur.execute('select * from users1 where id='+str(userid))
-		inData = cur.fetchone()
-		
-		if request.user.is_authenticated and request.user.id == userid:		
-				# convert answered list of ids to
-				# a list that holds exercises(list)
-				# same for liked
-				answered = []
-				liked = []
-				for i in inData[1]:
-						cur.execute('''
-						select 
-								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-								from chalanges where id=''' + str(i)
-						)
-						q = cur.fetchone()
-						if q:
-								answered.append(q)
-								
-				for i in inData[2]:
-						cur.execute('''
-						select 
-								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-								from chalanges where id=''' + str(i)
-						)
-						q = cur.fetchone()
-						if q:
-								liked.append(q)
-				
-				
-				# make sure everithing is sorted by likes descending
-				liked.sort(key=lambda e: len(e[8]))
-				liked.reverse()
-				answered.sort(key=lambda e: len(e[8]))
-				answered.reverse()
-		
-				return render(request, 'user.html', context={'value': [answered, liked, request.user.username]})
-		
-		else:
-				return HttpResponse("trying to peek at other acounts ar ya ?")
+			# make sure everithing is sorted by likes descending
+			liked.sort(key=lambda e: len(e[8]))
+			liked.reverse()
+			answered.sort(key=lambda e: len(e[8]))
+			answered.reverse()
+			outData['data'] = [answered, liked, request.user.username]
+			
+			return render(request, 'user.html', context={'value': outData})
+	
+	else:
+			return HttpResponse("trying to peek at other acounts ar ya ?")
 				
 def Login(request):
 	

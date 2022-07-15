@@ -42,18 +42,23 @@ function App() {
 			'userid': 1
 			}
 	}
-	const chalange = window.jsonData['chalange']
+	const chalanges = window.jsonData['chalanges']
 	const signInFailure = window.jsonData['signInFailure']
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-  
+  const searchTerm = window.jsonData['search term']
+	
   return (
   <>
     <Nav 
-      narrowWindow={narrowWindow}
-      currentPage={'./../../../../../../browse/' + window.jsonData['search term'] }
+      narrowWindow = { narrowWindow } 
+      currentPage = { './../../../../../../browse/' + searchTerm }
+      signInFailure = { signInFailure } 
+      isSignUp = { isSignUp }
+			isAuth = { isAuth }
     />
+		
     <Browse/>
 	</>
   );

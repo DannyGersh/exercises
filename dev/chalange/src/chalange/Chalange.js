@@ -16,7 +16,6 @@ function Chalange(props){
 			'userid': 1
 			}
 	}
-	
 	const chalange = window.jsonData['chalange']
 	const signInFailure = window.jsonData['signInFailure']
 	const isSignUp = window.jsonData['isSignUp']
