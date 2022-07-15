@@ -25,7 +25,7 @@ from . __init__ import cur, conn
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout, login
 
 # exercise format: ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
 # user format: [id, answered, liked]
@@ -34,11 +34,25 @@ SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 't
 
 @ensure_csrf_cookie
 def Chalange(request, id):
-
-	# just in case undefined
+	
+	outData = {} # data for js, will be converted to secure json
+	# get user id
+	if not request.user.id:
+		outData['userid'] = -1 # anonymous user
+	else:
+		outData['userid'] = request.user.id
+		
+	# when no signInFailure occures, ssesion.signInFailure is undefined
 	if not request.session.has_key('signInFailure'):
 		request.session['signInFailure'] = False
-			
+	
+	outData['signInFailure'] = request.session.get('signInFailure')
+	outData['isSignUp'] = request.session.get('isSignUp')
+	outData['isAuth'] = request.session.get('isAuth')
+	
+	request.session['signInFailure'] = False # not needed enimore
+	request.session['isSignUp'] = False # not needed enimore
+	
 	cur.execute('''
 	select 
 			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
@@ -46,17 +60,8 @@ def Chalange(request, id):
 	)
 	inData = cur.fetchone()
 	
-	outData = { k:v for (k,v) in zip(SQLDataKeys, inData)}
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
-	outData['isAuth'] = request.session.get('isAuth')
-	print(request.session.get('isAuth'))
-	
-	# reset custom session vars as default
-	# othewise when user refreshes he gets login menue
-	request.session['signInFailure'] = False
-	request.session['isSignUp'] = False
-	
+	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+
 	return render(request, 'chalange.html', context={'value': outData})
 
 @ensure_csrf_cookie		
@@ -91,7 +96,7 @@ def Home(request):
 		#}
 		return render(request, 'Home.html')
 
-def poop(request):
+def Poop(request):
 		if request.method == "POST":
 				id = request.POST['chalangeId']
 				cur.execute('select rating from chalanges where id='+str(id)+';')
@@ -114,7 +119,7 @@ def poop(request):
 
 #@login_required
 @ensure_csrf_cookie	
-def profile(request, userid):
+def Profile(request, userid):
 
 		# inData will hold all information of the user
 		
@@ -170,82 +175,83 @@ def profile(request, userid):
 		else:
 				return HttpResponse("trying to peek at other acounts ar ya ?")
 				
-def login(request):
+def Login(request):
 	
 	if request.method == "POST":
 		
-		# this is only redirect view
-		# always redirects to previous page
-		
-		# definitions:
-		# ls - 'login' or 'signup'
-		# currentPage - string of the current page
-		# request.session['signInFailure'] - true if login failed
-		# request.session[isSignUp] - (onley for signup) True if signup fails
-		# window.jsonData['isAuth'] - true if user is authenticated
-		
-		ls = request.POST.get('login_signup')
 		uname = request.POST.get('uname')
 		password = request.POST.get('password')
 		currentPage = request.POST.get('currentPage')
-		varPassword = request.POST.get('Verify password')
+		verPassword = request.POST.get('Verify password')
 		validated = request.POST.get('validated')	
+								
+		request.session['isSignUp'] = False
+		user = authenticate(username=uname, password=password)
 		
-		if ls == 'login':
-						
-			request.session['isSignUp'] = False
-			user = authenticate(username=uname, password=password)
-			
-			if not user:
-				request.session['signInFailure'] = True
-			else:
-				request.session['isAuth'] = True
-				request.session['signInFailure'] = False
-				
-			return redirect(currentPage)
-
-		elif ls == 'signup':
-		
-			request.session['isSignUp'] = True
-			
-			if validated == 'false':
-				request.session['signInFailure'] = True
-				request.session['isAuth'] = False
-				return redirect(currentPage)
-				
-			elif password != varPassword:
-				request.session['signInFailure'] = True
-				request.session['isAuth'] = False
-				return redirect(currentPage)
-				
-			try:
-				user = User.objects.create_user(
-					uname, '', password
-				)
-				request.session['signInFailure'] = False
-				request.session['isAuth'] = True	
-			except:
-				request.session['signInFailure'] = True
-				request.session['isAuth'] = False
-		
+		if not user:
+			request.session['isAuth'] = False
+			request.session['signInFailure'] = True
 		else:
-			raise Exception("request.POST['login_signup'] is neither 'login' nor 'signup'.")
+			login(request, user)
+			request.session['isAuth'] = True
+			request.session['signInFailure'] = False
 			
 		return redirect(currentPage)
 
 	# this should never happen
+	return redirect('./../../../../../../../')
+
+def LogOut(request):
+	
+	logout(request)	
+	return redirect("./../../../../")
+
+def SignUp(request):
+	
+	if request.method == "POST":
+		
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentPage = request.POST.get('currentPage')
+		verPassword = request.POST.get('Verify password')
+		validated = request.POST.get('validated')	
+		
+		request.session['signInFailure'] = True
+		request.session['isSignUp'] = True
+		request.session['isAuth'] = False
+		
+		if validated == 'false':
+			return redirect(currentPage)
+			
+		elif password != verPassword:
+			return redirect(currentPage)
+			
+		try:
+			user = User.objects.create_user(
+				uname, '', password
+			)
+			request.session['isAuth'] = True
+			request.session['signInFailure'] = False
+			return redirect(currentPage)
+		
+		except:
+			return redirect(currentPage)
+
+	# this should never happen
 	return redirect('./../../../../../../../home')
-				
+
+
 urlpatterns = [
 		path('', Home),
 		path('admin/', admin.site.urls),
 		
 		path('<int:id>/', Chalange),
 		path('browse/<str:sterm>/', Browse),
-		path('user/<int:userid>/', profile),
+		path('user/<int:userid>/', Profile),
 		
 		path('browse/', Browse),
-		path('poop/', poop),
-		path('login/', login),
-		path('signup/', login),
+		path('poop/', Poop),
+		path('login/', Login),
+		path('logout/', LogOut),
+		path('signup/', SignUp),
 ]

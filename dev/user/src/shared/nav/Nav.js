@@ -7,21 +7,20 @@ import Login from '../login/Login'
 
 function Nav(props) {
 
+	// props:
+	// narrowWindow - true if window is narrow
+  // currentPage - string of current page
+  // signInFailure - true if user failer at sign in\up
+  // isSignUp - true signup menue should be displaid
+	// isAuth - true if user is authenticated
+			
   // this nav comes with a dropdown event
   // which is triggered when search button is clicked.
   // to capture the event:
   // window.addEventListener("navDropDown", func)
   // to get bool var indicating dropdown state:
   // window.addEventListener("navDropDown", (e)=>e.detail.isDropedDown);
-  
-	// IMPORTANT: 
-	// props must contain:
-	// * narrowWindow - true if window is narrow
-	// * currentPage - string of the current page
-	// * signInFailure - true if user failed at signing in
-	// * isSignUp - true if user is signed up
-	// * isAuth - true if user is authenticated
-	
+
 	// dropDownActive - true if nav searchBar is expended
   const [dropDownActive, setDropDownActive] = useState(false);
 	
@@ -47,10 +46,12 @@ function Nav(props) {
   function LogInHandle(){
 		setDspLogin(!dspLogin);
 		// when user clicks, he gets default login menue 
-		window.jsonData['signInFailure'] = false;
-		window.jsonData['isSignUp'] = false;
+		// window.jsonData['signInFailure'] = false;
+		// window.jsonData['isSignUp'] = false;
 	}
-	
+	function LogOutHandle(){
+		window.location = '../../../../../../../../logout/';
+	}
 	
   if (!props.narrowWindow) {
     return ( 
@@ -61,7 +62,7 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-          <BtnMenue onClick={ LogInHandle }>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
+          <BtnMenue onClick={ props.isAuth ? LogOutHandle: LogInHandle }>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
 
           {/* search bar */}
           <div className='searchContainer'>
@@ -97,7 +98,7 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-          <BtnMenue onClick={() => setDspLogin(!dspLogin)}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
+          <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
           
           {/* button for expending search bar */}
           <div className='searchContainer'>

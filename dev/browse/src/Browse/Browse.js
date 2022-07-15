@@ -2,18 +2,14 @@ import Exercise from '../shared/exercise/Exercise'
 
 function Browse(){
 	
-  //console.log("window.jsonData: ", window.jsonData);
-  
-  //window.jsonData = {
-  //0: [3, 'question 2', 'answer 2', 'this is a hint', 'test-Author', '2022-07-03T20:40:36.210', 'test title', ['a','b','c', 'd'], ['math', 'tag1', 'tag1', 'tag1', 'tag1', 'tag1', 'tag1', 'tag1', 'tag1']],
-  //1: [2, 'question 1', 'answer 1', 'this is a hint', 'test-Author', '2022-07-03T20:40:36.210', 'test title', ['a','b','c'], ['math', 'tag1']],
-  //2: [4, 'question 3', 'answer 3', '', 'test-Author', '2022-07-03T20:40:36.210', 'test title', ['a','b','c'], ['math', 'tag1']],
-  //"search term": "test"
-  //}
-
-  let items = Object.assign({}, window.jsonData);
-  delete items["search term"];
-  items = Object.values(items)
+	// defined in apps.js:
+  // const chalange = window.jsonData['chalange']
+	// const signInFailure = window.jsonData['signInFailure']
+	// const isSignUp = window.jsonData['isSignUp']
+	// const isAuth = window.jsonData['isAuth']
+  // const userid = window.jsonData['userid']
+	
+  let items = Object.values(window.jsonData['chalanges'])
     
   return(
   <>

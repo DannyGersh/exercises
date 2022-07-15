@@ -4,9 +4,13 @@ import CSRFToken from "../csrftoken";
 import {useState, createRef} from 'react'
 
 function Login(props){
-  
-  // ls - login or signin
-  
+  	
+	// props:
+  // signInFailure - true if user faild to sign in\up
+	// isSignUp - true if user wase triyng to sign up
+	// currentPage - string of previous page url
+	
+	// states:
 	// lower - L
 	// Upper - U
 	// number - N
