@@ -6,43 +6,62 @@ import Login from '../login/Login'
 
 
 function Nav(props) {
-  
-  let [dropDownActive, setDropDownActive] = useState(false);
 
   // this nav comes with a dropdown event
   // which is triggered when search button is clicked.
   // to capture the event:
-  // window.addEventListener("myevent", func)
+  // window.addEventListener("navDropDown", func)
   // to get bool var indicating dropdown state:
-  // window.addEventListener("myevent", (e)=>e.detail.isDropedDown);
+  // window.addEventListener("navDropDown", (e)=>e.detail.isDropedDown);
   
-  let myevent = new CustomEvent('navDropDown', {
+	// IMPORTANT: 
+	// props must contain:
+	// * narrowWindow - true if window is narrow
+	// * currentPage - string of the current page
+	// * signInFailure - true if user failed at signing in
+	// * isSignUp - true if user is signed up
+	// * isAuth - true if user is authenticated
+	
+	// dropDownActive - true if nav searchBar is expended
+  const [dropDownActive, setDropDownActive] = useState(false);
+	
+  // nav dropDown event
+  const navDropDown = new CustomEvent('navDropDown', {
     detail: {'isDropedDown': !dropDownActive},
     bubbles: true,
     cancelable: true,
     composed: false
   })
   
+	// dispatch event on searchBar button click
   function dropDownHandler() {
     setDropDownActive(!dropDownActive);
     // set timeout prevents asincroneus dispatching of the event
     setTimeout(() => 
-      window.dispatchEvent(myevent)
+      window.dispatchEvent(navDropDown)
     );
   }
 
-  //window.addEventListener("myevent", ()=>{console.log("NAAAV")})
-    
+	// dspLogin - true if login menue should be displayed
   const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
-  
+  function LogInHandle(){
+		setDspLogin(!dspLogin);
+		// when user clicks, he gets default login menue 
+		window.jsonData['signInFailure'] = false;
+		window.jsonData['isSignUp'] = false;
+	}
+	
+	
   if (!props.narrowWindow) {
-    return ( <>
+    return ( 
+			<>
+			
         <div className="nav">
           
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-          <BtnMenue onClick={() => setDspLogin(!dspLogin)}>Log In</BtnMenue>
+          <BtnMenue onClick={ LogInHandle }>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
 
           {/* search bar */}
           <div className='searchContainer'>
@@ -55,27 +74,30 @@ function Nav(props) {
 		  
         </div>
       
-      {/* log in window */}
-      { dspLogin && 
-        <Login 
-          signInFailure={window.jsonData['signInFailure']} 
-          isSignUp={window.jsonData['isSignUp']} 
-          currentPage={props.currentPage}
-         /> 
-      }
+			
+				{/* log in window */}
+				{ dspLogin && 
+					<Login 
+						signInFailure={window.jsonData['signInFailure']} 
+						isSignUp={window.jsonData['isSignUp']} 
+						currentPage={props.currentPage}
+					/> 
+				}
     
-    </> );
+    </> 
+		);
     
   } else {
     return (
-      <>
-      
+			// narriw window, search bar is replaced with search button that expands search bar
+			<>
+
         <div className="nav">
         
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-          <BtnMenue onClick={() => setDspLogin(!dspLogin)}>Log In</BtnMenue>
+          <BtnMenue onClick={() => setDspLogin(!dspLogin)}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
           
           {/* button for expending search bar */}
           <div className='searchContainer'>
@@ -83,30 +105,33 @@ function Nav(props) {
               Search
             </BtnMenue>
           </div>
+					
         </div>
       
-      {/* conditionally display search bar */}
-      {dropDownActive && (
-        <div>
-          <form className='nav' action="/browse/" method="post">
-            { process.env.NODE_ENV !== 'development' && <CSRFToken /> }
-            <button className='searchBtn' type="submit"></button>
-            <input className='searchText' type="text" name="browse" />
-          </form>
-        </div>
-      )}
+			
+				{/* conditionally display search bar */}
+				{dropDownActive && (
+					<div>
+						<form className='nav' action="/browse/" method="post">
+							{ process.env.NODE_ENV !== 'development' && <CSRFToken /> }
+							<button className='searchBtn' type="submit"></button>
+							<input className='searchText' type="text" name="browse" />
+						</form>
+					</div>
+				)}
 		
-      {/* log in window */}
-      { dspLogin && 
-        <Login 
-          signInFailure={window.jsonData['signInFailure']} 
-          isSignUp={window.jsonData['isSignUp']} 
-          currentPage={props.currentPage}
-         /> 
-      }
-      
+				{/* log in window */}
+				{ dspLogin && 
+					<Login 
+						signInFailure={window.jsonData['signInFailure']} 
+						isSignUp={window.jsonData['isSignUp']} 
+						currentPage={props.currentPage}
+					/> 
+				}
+				
       </>
     );
   }
+
 }
 export default Nav;

@@ -3,6 +3,11 @@ import Nav from './shared/nav/Nav'
 import useWindowResize from './shared/Functions'
 import './shared/Global.css'
 
+// required definitions 
+// window.jsonData['signInFailure']
+// window.jsonData['isSignUp']
+// window.jsonData['isAuth']
+
 function App() {
 
   let narrowWindow = useWindowResize();
@@ -18,6 +23,7 @@ function App() {
       currentPage = { './../../../../../../' + String(window.jsonData['id']) }
       signInFailure = { window.jsonData['signInFailure'] } 
       isSignUp = { window.jsonData['isSignUp'] }
+			isAuth = { window.jsonData['isAuth'] }
     />
     
     <Chalange narrowWindow={narrowWindow}/>

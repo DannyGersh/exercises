@@ -24,11 +24,11 @@
 
 
 .main{
-	height: 16rem;
+	height: 18rem;
 	width: 12rem;
 	
 	position: fixed;
-	top: calc(50% - 8rem);
+	top: calc(50% - 9rem);
 	left: calc(50% - 6rem);
 	
 	z-index: 100;
@@ -39,9 +39,10 @@
 	height: 11.5rem;
 }
 .mainBody{
+	font-size: 0.8rem;
 	position: absolute;
 	bottom: 0px;
-	top: 1rem;
+	top: 0.99rem;
 	width: calc(100%);
 	border: solid;
 	border-width: 0.03rem;

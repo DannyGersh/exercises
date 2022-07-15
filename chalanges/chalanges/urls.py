@@ -35,6 +35,7 @@ SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 't
 @ensure_csrf_cookie
 def Chalange(request, id):
 
+	# just in case undefined
 	if not request.session.has_key('signInFailure'):
 		request.session['signInFailure'] = False
 			
@@ -48,6 +49,13 @@ def Chalange(request, id):
 	outData = { k:v for (k,v) in zip(SQLDataKeys, inData)}
 	outData['signInFailure'] = request.session.get('signInFailure')
 	outData['isSignUp'] = request.session.get('isSignUp')
+	outData['isAuth'] = request.session.get('isAuth')
+	print(request.session.get('isAuth'))
+	
+	# reset custom session vars as default
+	# othewise when user refreshes he gets login menue
+	request.session['signInFailure'] = False
+	request.session['isSignUp'] = False
 	
 	return render(request, 'chalange.html', context={'value': outData})
 
@@ -174,24 +182,24 @@ def login(request):
 		# currentPage - string of the current page
 		# request.session['signInFailure'] - true if login failed
 		# request.session[isSignUp] - (onley for signup) True if signup fails
+		# window.jsonData['isAuth'] - true if user is authenticated
 		
 		ls = request.POST.get('login_signup')
 		uname = request.POST.get('uname')
 		password = request.POST.get('password')
 		currentPage = request.POST.get('currentPage')
 		varPassword = request.POST.get('Verify password')
-				
-		# just in case signInFailure is undefine(should not happen)
-		request.session['signInFailure'] = True
+		validated = request.POST.get('validated')	
 		
 		if ls == 'login':
-			
+						
 			request.session['isSignUp'] = False
 			user = authenticate(username=uname, password=password)
 			
 			if not user:
 				request.session['signInFailure'] = True
 			else:
+				request.session['isAuth'] = True
 				request.session['signInFailure'] = False
 				
 			return redirect(currentPage)
@@ -199,10 +207,15 @@ def login(request):
 		elif ls == 'signup':
 		
 			request.session['isSignUp'] = True
-
-			if password != varPassword:
-				print("POOOOOOOOOOOOOP")
+			
+			if validated == 'false':
 				request.session['signInFailure'] = True
+				request.session['isAuth'] = False
+				return redirect(currentPage)
+				
+			elif password != varPassword:
+				request.session['signInFailure'] = True
+				request.session['isAuth'] = False
 				return redirect(currentPage)
 				
 			try:
@@ -210,9 +223,10 @@ def login(request):
 					uname, '', password
 				)
 				request.session['signInFailure'] = False
-					
+				request.session['isAuth'] = True	
 			except:
 				request.session['signInFailure'] = True
+				request.session['isAuth'] = False
 		
 		else:
 			raise Exception("request.POST['login_signup'] is neither 'login' nor 'signup'.")
