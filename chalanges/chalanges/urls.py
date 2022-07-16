@@ -149,9 +149,28 @@ def Profile(request, userid):
 	# inData[1] - list of ids of answered questions
 	# inData[2] - list of ids of liked questions
 		
-	cur.execute('select * from users1 where id='+str(userid))
+	cur.execute('select username,answered,liked,authored from auth_user where id='+str(userid))
 	inData = cur.fetchone()
+		
+	# PERROR: check if exists
+	if not inData:
+		inData = [userid, [], []]
+	# END_PERROR
 	
+	inData = list(inData)
+	
+	# PERROR: handle missing information
+	try:
+		inData[1]
+	except:
+		inData.append([])
+	try:
+		inData[2]
+	except:
+		inData.append([])	
+	# END_PERROR
+	
+		
 	if request.user.is_authenticated and request.user.id == userid:		
 			# convert answered list of ids to
 			# a list that holds exercises(list)

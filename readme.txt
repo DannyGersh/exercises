@@ -1,4 +1,10 @@
 database - chalanges
 tables:
-1) chalanges - id, ... (exercise elements) ...
-2) users1 - id foreign, answered, liked
+* chalanges - id, ... (exercise elements) ...
+* users1 - id foreign, answered, liked
+
+keywords for navigation:
+* TODO - todo, remove when finished.
+* END_TODO
+* PERROR - error prevention
+# END_PERROR

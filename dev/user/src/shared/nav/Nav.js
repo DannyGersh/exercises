@@ -13,7 +13,8 @@ function Nav(props) {
   // signInFailure - true if user failer at sign in\up
   // isSignUp - true signup menue should be displaid
 	// isAuth - true if user is authenticated
-			
+  // userid = user id
+	
   // this nav comes with a dropdown event
   // which is triggered when search button is clicked.
   // to capture the event:
@@ -52,6 +53,9 @@ function Nav(props) {
 	function LogOutHandle(){
 		window.location = '../../../../../../../../logout/';
 	}
+	function profileHandle(){
+		window.location = '../../../../../../../../user/' + String(props.userid);
+	}
 	
   if (!props.narrowWindow) {
     return ( 
@@ -62,6 +66,7 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
+					{ props.isAuth && <BtnMenue onClick={profileHandle} >Profile</BtnMenue> }
           <BtnMenue onClick={ props.isAuth ? LogOutHandle: LogInHandle }>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
 
           {/* search bar */}
@@ -98,6 +103,7 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
+					{ props.isAuth && <BtnMenue>Profile</BtnMenue> }
           <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
           
           {/* button for expending search bar */}

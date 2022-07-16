@@ -40,9 +40,10 @@ function App() {
     <Nav 
       narrowWindow = { narrowWindow } 
       currentPage = { './../../../../../../' + String(chalange['id']) }
-      signInFailure = { window.jsonData['signInFailure'] } 
-      isSignUp = { window.jsonData['isSignUp'] }
-			isAuth = { window.jsonData['isAuth'] }
+      signInFailure = { signInFailure } 
+      isSignUp = { isSignUp }
+			isAuth = { isAuth }
+			userid = { userid }
     />
     
     <Chalange narrowWindow={narrowWindow}/>
