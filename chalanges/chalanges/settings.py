@@ -61,6 +61,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'pages', 'browse'),
             os.path.join(BASE_DIR, 'pages', 'home'),
             os.path.join(BASE_DIR, 'pages', 'user'),
+						os.path.join(BASE_DIR, 'pages', 'new'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -146,6 +147,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pages', 'chalange', 'static'),
     os.path.join(BASE_DIR, 'pages', 'browse', 'static'),
     os.path.join(BASE_DIR, 'pages', 'user', 'static'),
+		os.path.join(BASE_DIR, 'pages', 'new', 'static'),
 ]
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 

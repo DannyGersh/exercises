@@ -22,10 +22,10 @@ function User(){
   const refB = useRef();
   
   function onNavDropDown(){
-	if(refA.current) {
-		let q = refA.current.offsetTop + refA.current.offsetHeight;
-		refB.current.style.top = String(q)+"px";
-	}
+		if(refA.current) {
+			let q = refA.current.offsetTop + refA.current.offsetHeight;
+			refB.current.style.top = String(q)+"px";
+		}
   }
   window.addEventListener("navDropDown", onNavDropDown)
 	

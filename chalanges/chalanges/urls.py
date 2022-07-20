@@ -41,7 +41,7 @@ def Chalange(request, id):
 		request.session['signInFailure'] = False
 	outData['signInFailure'] = request.session.get('signInFailure')
 	outData['isSignUp'] = request.session.get('isSignUp')
-	outData['isAuth'] = request.session.get('isAuth')
+	outData['isAuth'] = request.user.is_authenticated
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
@@ -274,7 +274,24 @@ def SignUp(request):
 	# this should never happen
 	return redirect('./../../../../../../../home')
 
+def New(request):
+	outData = {} # data for js. will be converted to secure json.
+	outData['isAuth'] = request.user.is_authenticated
+	outData['userid'] = request.user.id
+	
+	cur.execute('select * from tags')
+	outData['tags'] = [ i[1] for i in cur.fetchall()]
+	
+	return render(request, 'New.html', context={'value': outData})
 
+def NewSubmited(request):
+
+	if request.method == "POST":
+		
+		print(request.POST)
+		
+	return HttpResponse("POOP")
+		
 urlpatterns = [
 		path('', Home),
 		path('admin/', admin.site.urls),
@@ -282,10 +299,12 @@ urlpatterns = [
 		path('<int:id>/', Chalange),
 		path('browse/<str:sterm>/', Browse),
 		path('user/<int:userid>/', Profile),
+		path('new/', New),
 		
 		path('browse/', Browse),
 		path('poop/', Poop),
 		path('login/', Login),
 		path('logout/', LogOut),
 		path('signup/', SignUp),
+		path('newSubmited/', NewSubmited),
 ]

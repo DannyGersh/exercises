@@ -1,0 +1,12 @@
+.Exercise{
+	padding: 1rem;
+}
+.ExerciseTextArea{
+	resize: none;
+}
+.ExerciseInput{
+	display: inline;
+	width: calc(100% - 5rem);
+	float: right;
+	margin-left: auto;
+}

@@ -1,0 +1,34 @@
+.bottomMenue{
+	display: flex;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	background-color: var(--apricot);
+    justify-content: center;
+}
+.btnSubmit{
+	color: white;
+	background-color: var(--UNblue) !important;
+	height: 2.5rem;
+}
+.btnSubmit:hover{
+	background-color: var(--UNblue_hover) !important;
+}
+.btnSubmit:active{
+	background-color: var(--UNblue) !important;
+}
+
+.btnBottomMenue{
+	height: 2.5rem;
+}
+.green{
+	height: 2.5rem;
+	background-color: var(--DKgreen) !important;
+}
+.green:hover{
+	background-color: var(--DKgreen_hover) !important;
+}
+.green:active{
+	background-color: var(--DKgreen) !important;
+}

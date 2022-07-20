@@ -6,16 +6,6 @@ import BtnRound from '../shared/buttons/BtnRound'
 
 function Chalange(props){
   
-  if( process.env.NODE_ENV === 'development'){
-    let chalange = {'id': 2, 'question': 'test question', 'answer': 'test answer', 'hints': 'test hints', 'author': 'test author', 'creationdate': '27-7-1996', 'title': 'test title', 'rating': ['b','c'], 'tags': ['math', 'science']};
-		window.jsonData = {
-			'chalange': chalange,
-			'signInFailure': false,
-			'isSignUp': false,
-			'isAuth': true,
-			'userid': 1
-			}
-	}
 	const chalange = window.jsonData['chalange']
 	const signInFailure = window.jsonData['signInFailure']
 	const isSignUp = window.jsonData['isSignUp']
@@ -23,7 +13,7 @@ function Chalange(props){
   const userid = window.jsonData['userid']
 
   // dsp = display
-  
+
   const isLike = chalange['rating'].includes(userid); // initial like state
   const isHints = (chalange['hints']);
 

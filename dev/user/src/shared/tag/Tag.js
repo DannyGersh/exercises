@@ -7,12 +7,18 @@ import "./Tag.css";
 function Tag(props){
     
 	function redirect(event){
-		window.location.replace(props.url);
+		
+		if(props.onClick){
+			props.onClick(event); // assign non default function
+		} else {
+			window.location.replace(props.url); // default
+		}
+		
 		event.stopPropagation(); // prevents clickable Card from executing
 	}
 	
 	return(
-        <button onClick={redirect} className="tag">{props.children}</button>
+        <button type='button' onClick={(e)=>redirect(e)} className="tag">{props.children}</button>
 	)
 }
 export default Tag;
