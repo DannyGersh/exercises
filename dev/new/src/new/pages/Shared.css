@@ -3,10 +3,32 @@
 }
 .ExerciseTextArea{
 	resize: none;
+	width: 100%;
 }
 .ExerciseInput{
 	display: inline;
 	width: calc(100% - 5rem);
 	float: right;
 	margin-left: auto;
+}
+
+
+.hoverGreen{
+	background-color: var(--champagne) !important;
+}
+.hoverGreen:hover{
+	background-color: var(--DKgreen_hover) !important;
+}
+.hoverGreen:active{
+	background-color: var(--DKgreen) !important;
+}
+
+.hoverRed{
+	background-color: var(--champagne) !important;
+}
+.hoverRed:hover{
+	background-color: var(--red_hover) !important;
+}
+.hoverRed:active{
+	background-color: var(--red) !important;
 }

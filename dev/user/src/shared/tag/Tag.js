@@ -18,7 +18,7 @@ function Tag(props){
 	}
 	
 	return(
-        <button type='button' onClick={(e)=>redirect(e)} className="tag">{props.children}</button>
+        <button type='button' onClick={(e)=>redirect(e)} className={'tag '+ (props.className && props.className)}>{props.children}</button>
 	)
 }
 export default Tag;
