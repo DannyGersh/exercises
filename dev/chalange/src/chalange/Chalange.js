@@ -106,10 +106,14 @@ function Chalange(props){
         <input type="hidden" name="like" value={dspLike}/>
         <input type="hidden" name="user" value={userid}/>
 		
+				{ isAuth ?
         <BtnRound state={[dspLike,setDspLike]} onClick={dspLikeHandle} type="submit" active={true}>
           {chalange['rating'].length+addToLikes}<br/>Like
         </BtnRound>
-
+				:
+				<BtnRound>{chalange['rating'].length}<br/>Like</BtnRound>
+				}
+				
         { isHints &&
           <BtnRound state={[dspHints, setDspHints]} onClick={hintsHandle}>
             Hints

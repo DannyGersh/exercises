@@ -25,8 +25,8 @@ function App() {
 			'chalange': chalange,
 			'signInFailure': false,
 			'isSignUp': false,
-			'isAuth': true,
-			'userid': 1
+			'isAuth': false,
+			'userid': null
 			}
 	}
 	const chalange = window.jsonData['chalange']
