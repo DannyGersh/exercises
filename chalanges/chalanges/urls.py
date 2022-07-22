@@ -123,7 +123,7 @@ def Poop(request):
 		else:
 				return(HttpResponse('this should never happen'))
 
-#@login_required
+@login_required
 @ensure_csrf_cookie	
 def Profile(request, userid):
 
@@ -154,6 +154,7 @@ def Profile(request, userid):
 		
 	# PERROR: check if exists
 	if not inData:
+		print('ERROR: inData is undefined')
 		inData = [userid, [], []]
 	# END_PERROR
 	
@@ -162,10 +163,12 @@ def Profile(request, userid):
 	# PERROR: handle missing information
 	try:
 		inData[1]
+		print('ERROR: inData[1] is undefined')
 	except:
 		inData.append([])
 	try:
 		inData[2]
+		print('ERROR: inData[2] is undefined')
 	except:
 		inData.append([])	
 	# END_PERROR
@@ -280,16 +283,28 @@ def New(request):
 	outData['userid'] = request.user.id
 	
 	cur.execute('select * from tags')
-	outData['tags'] = [ i[1] for i in cur.fetchall()]
+	outData['tags'] = cur.fetchall()
 	
 	return render(request, 'New.html', context={'value': outData})
 
 def NewSubmited(request):
 
 	if request.method == "POST":
-		
-		print(request.POST)
-		
+		print("POOP", request.POST)
+		cur.execute('''insert into chalanges
+		(question, answer, hints, author, title, tags, rating)
+		values( ''' + 
+			"\'" + request.POST.get('exercise', '') 	+ "\', " + 
+			"\'" + request.POST.get('answere', '') 		+ "\', " + 
+			"\'" + request.POST.get('hints', '') 			+ "\', " + 
+			"\'" + request.user.username							+ "\', " + 
+			"\'" + request.POST.get('title', '') 			+ "\', " + 
+			"\'{" + request.POST.get('tags', '') 			+ "}\'," +
+			"\'{}\'"	 +
+		')'
+		)
+		conn.commit()
+
 	return HttpResponse("POOP")
 		
 urlpatterns = [

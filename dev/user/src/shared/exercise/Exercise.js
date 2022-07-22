@@ -4,7 +4,7 @@ import Tag from '../../shared/tag/Tag'
 import './Exercise.css'
 
 function Exercise(props){
-  
+  	
   return(
   <>
     <Card url={props.url} >
@@ -19,8 +19,8 @@ function Exercise(props){
 	    {props.paragraph} <br/><br/><br/>
       <div style={{'width': 'calc(100% - 3.3rem)'}} className="vscrol">
         { 
-		  props.tags.map((t, i) => 
-		    <Tag key={i} url={'../../../../../../../../../../browse/'+t}>{t}</Tag>
+		  props.tags.map((i) => 
+		    <Tag key={i} url={'../../../../../../../../../../browse/'+i}>{i}</Tag>
 		  ) 
 		}
       </div>

@@ -48,7 +48,7 @@ function App() {
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
   const searchTerm = window.jsonData['search term']
-	
+		
   return (
   <>
     <Nav 
@@ -57,6 +57,7 @@ function App() {
       signInFailure = { signInFailure } 
       isSignUp = { isSignUp }
 			isAuth = { isAuth }
+			userid = { userid }
     />
 		
     <Browse/>

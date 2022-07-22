@@ -1,6 +1,6 @@
 import './Chalange.css'
 import CSRFToken from "../shared/csrftoken";
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Tag from '../shared/tag/Tag'
 import BtnRound from '../shared/buttons/BtnRound'
 
@@ -11,11 +11,39 @@ function Chalange(props){
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-
-  // dsp = display
-
+	
+	// PERROR
+	let errorStr = 'cant find the following: \n';
+	let isError = false;
+	if(!chalange['title'] || !chalange['question'] || !chalange['answer'] || !chalange['rating']) {
+		
+		isError = true;
+		
+		function castumErr(str) {
+			if(!chalange[str]) {
+				chalange[str] = '';
+				errorStr += '* ' + str + '\n';
+			}
+		}
+		castumErr('title');
+		castumErr('question');
+		castumErr('answer');
+		castumErr('rating');
+		castumErr('author');
+		castumErr('creationdate');
+		
+	}
+			
+	useEffect( () => {
+		isError && window.alert(errorStr);
+	}, [])
+	
+	// END_PERROR
+	
   const isLike = chalange['rating'].includes(userid); // initial like state
-  const isHints = (chalange['hints']);
+  const isHints = chalange['hints'];
+	
+	// dsp = display
 
   const [dspLike, setDspLike] = useState(isLike);
   const [addToLikes, setAddToLikes] = useState(0); // add 1 likes (without database intervension)

@@ -18,12 +18,12 @@ function Browse(){
 	
 	{ items.length !== 0 ?
 	  items.map( i =>
-        <Exercise
-	      title={i[6]} 
-	  	paragraph={i[1]} 
-	  	url={'../../' + i[0]} 
-	  	likes={i[7].length} 
-	  	tags={i[8]}
+      <Exercise
+	      title={i[5]} 
+				paragraph={i[1]} 
+				url={'../../' + String(i[0])} 
+				likes={i[6] ? i[6].length: 0} 
+				tags={i[7]}
 	    />
       )
 	  :

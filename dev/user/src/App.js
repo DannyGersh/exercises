@@ -5,8 +5,9 @@ import User from './user/User'
 
 function App() {
   
-  //console.log('poop', window.jsonData)
-  
+	// PERROR - the browser wont record this page on history for some reason
+	window.history.pushState({}, '', window.location);
+	
   let narrowWindow = useWindowResize();
   if( process.env.NODE_ENV === 'development'){
 		let chalange = {

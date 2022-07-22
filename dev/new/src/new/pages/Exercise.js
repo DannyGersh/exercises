@@ -42,7 +42,6 @@ function Exercise(props){
 			defaultValue={localStorage.getItem('exercise')}
 			rows='4' 
 			className='ExerciseTextArea' 
-			name="mainExerciseBodie" 
 			required
 		/>
 	
