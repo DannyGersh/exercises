@@ -108,8 +108,6 @@ def Poop(request):
 				cur.execute('select rating from chalanges where id='+str(id)+';')
 				inData = set(cur.fetchone()[0])
 				
-				print("POOOOOOOOOOP", inData)
-				
 				if request.POST['like'] in ('true', True, 1):
 						if request.POST['user'] not in inData:
 								inData.add(request.POST['user'])

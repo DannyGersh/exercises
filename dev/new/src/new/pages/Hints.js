@@ -20,9 +20,16 @@ function Hints(props){
 		<textarea 
 			onChange={(v)=>onHintsChange(v)} 
 			defaultValue={localStorage.getItem('hints')} 
-			rows='4' 
+			rows='6' 
 			className='ExerciseTextArea' 
 		/>
+		
+		<p >Tips:</p>
+		<ul>
+			<li>try to help the reader</li>
+			<li>don't give away too much</li>
+		</ul>
+		<br/><br/><br/>
 		
 		</div>
 	)

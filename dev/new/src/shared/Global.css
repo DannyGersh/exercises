@@ -2,7 +2,7 @@ body{
 	background-color: #faebd7;
 }
 
-.vscrol{
+.vscroll{
 	overflow: auto;
 	white-space: nowrap;
 }

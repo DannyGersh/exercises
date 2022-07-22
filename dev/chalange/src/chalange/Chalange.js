@@ -31,7 +31,6 @@ function Chalange(props){
 		castumErr('rating');
 		castumErr('author');
 		castumErr('creationdate');
-		
 	}
 			
 	useEffect( () => {
@@ -42,7 +41,8 @@ function Chalange(props){
 	
   const isLike = chalange['rating'].includes(String(userid)); // initial like state
   const isHints = chalange['hints'];
-		
+	const isExplain = chalange['explain'];
+	
 	// dsp = display
 
   const [dspLike, setDspLike] = useState(isLike);
@@ -51,17 +51,25 @@ function Chalange(props){
   const [dspAnswer, setDspAnswer] = useState(false);
   const [dspAdditionalMenue, setAdditionalMenue] = useState(false);
   const [dspReport, setDspReport] = useState(false);
-
+	const [dspExplain, setDspExplain] = useState(false);
+	
   function dspLikeHandle() { 
 	  if(isLike) { !dspLike ? setAddToLikes(0): setAddToLikes(-1) }
 	  else { !dspLike ? setAddToLikes(1): setAddToLikes(0) };
   }
   function hintsHandle() { 
     setDspAnswer(false);
+		setDspExplain(false);
   }
   function answerHandle() { 
     setDspHints(false);
+		setDspExplain(false);
   }
+	function explainHandle() {
+		setDspExplain(!dspExplain);
+		setDspHints(false);
+		setDspAnswer(false);
+	}
   function additionalMenueHandler(){
     setAdditionalMenue(!dspAdditionalMenue);
   }
@@ -72,17 +80,23 @@ function Chalange(props){
   
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
-    
-		<h4>{chalange['title']}</h4>
-    <p>{chalange['question']}</p>
-    { dspAnswer && ( <>
-      <hr /><p>{chalange['answer']}</p>
-      </> ) }
-    { dspHints && ( <>
-      <hr /><p>{chalange['hints']}</p>
-      </> ) }
-      
-      
+	
+		{ ! dspExplain ?
+		<>
+			<h4>{chalange['title']}</h4>
+			<p>{chalange['question']}</p>
+			{ dspAnswer && ( <>
+				<hr />
+				<p>{chalange['answer']}</p>
+				</> ) }
+			{ dspHints && ( <>
+				<hr />
+				<p>{chalange['hints']}</p>
+				</> ) }
+		</>:
+			<p>{chalange['explain']}</p>
+		}  
+	
     <div className='bottomRight'>
     
       <iframe title='dummyframe' name="dummyframe" id="dummyframe" style={{"display": "none"}}></iframe>
@@ -105,6 +119,12 @@ function Chalange(props){
         <BtnRound state={[dspAnswer, setDspAnswer]} onClick={answerHandle}>
           Answer
         </BtnRound>
+				
+				{ isExplain &&
+					<BtnRound state={[dspExplain, setDspExplain]} onClick={explainHandle}>
+						Explain
+					</BtnRound>
+				}
 		
       </form>
     </div>
@@ -139,7 +159,7 @@ function Chalange(props){
       </div>          
 
     </div>
-    
+
   </div> 
 	)
 }

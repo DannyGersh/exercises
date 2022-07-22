@@ -22,3 +22,9 @@ function useWindowResize(){
   return narrowWindow;
 }
 export default useWindowResize;
+
+function remToPx(rem) {    
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+export {remToPx};
+	

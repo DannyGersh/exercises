@@ -14,11 +14,11 @@ function BtnRound(props){
 	//	style, type, onClick, className
 	
   let state = props.state; let dinamic = true;
-  if(!state) { state=[0,(x)=> {}]; dinamic = false; } //dummy incase not set
+  if(!state) { state=[0, ()=>{}]; dinamic = false; } //dummy incase not set
   
   function onHandle(){
-	state[1](!state[0]);
-	if(props.onClick) props.onClick();
+		state[1](!state[0]);
+		if(props.onClick) props.onClick();
   }
 
   if(dinamic) {

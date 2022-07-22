@@ -23,6 +23,15 @@ function Answere(props){
 			className='ExerciseTextArea' 
 		/>
 		
+		<p >Tips:</p>
+		<ul>
+			<li>go through all the steps of solving your exercise</li>
+			<li>
+			<li>avoid confusing the reader with fancy jargon</li>
+			<li></li>
+		</ul>
+		<br/><br/><br/>
+		
 		</div>
 	)
 }

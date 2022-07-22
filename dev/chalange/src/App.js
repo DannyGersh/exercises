@@ -18,7 +18,8 @@ function App() {
 			'creationdate': '27-7-1996', 
 			'title': 'test title', 
 			'rating': ['b','c'], 
-			'tags': ['math', 'science']
+			'tags': ['math', 'science'],
+			'explain': 'ladida'
 		};
 		window.jsonData = {
 			'chalange': chalange,
@@ -33,9 +34,7 @@ function App() {
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-	
-	console.log(isAuth);
-	
+		
   return (
     <>
     
