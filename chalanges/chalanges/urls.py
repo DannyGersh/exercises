@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 
+# databases: chalanges, auth_user
 # exercise format: ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
 # user format: [id, answerd, liked]
 
@@ -150,7 +151,7 @@ def Profile(request, userid):
 	# inData[1] - list of ids of answerd questions
 	# inData[2] - list of ids of liked questions
 		
-	cur.execute('select username,answerd,liked,authored from auth_user where id='+str(userid))
+	cur.execute('select username,answered,liked,authored from auth_user where id='+str(userid))
 	inData = cur.fetchone()
 		
 	# PERROR: check if exists

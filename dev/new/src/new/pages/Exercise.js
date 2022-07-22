@@ -1,6 +1,4 @@
 import './Shared.css'
-import {createRef, useEffect} from 'react'
-import {remToPx} from '../../shared/Functions'
 
 function Exercise(props){
 	
