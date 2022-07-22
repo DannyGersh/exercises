@@ -40,9 +40,9 @@ function Chalange(props){
 	
 	// END_PERROR
 	
-  const isLike = chalange['rating'].includes(userid); // initial like state
+  const isLike = chalange['rating'].includes(String(userid)); // initial like state
   const isHints = chalange['hints'];
-	
+		
 	// dsp = display
 
   const [dspLike, setDspLike] = useState(isLike);
