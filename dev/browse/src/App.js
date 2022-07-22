@@ -5,8 +5,6 @@ import './shared/Global.css'
 
 function App() {
   
-  //console.log('poop', window.jsonData)
-  
   let narrowWindow = useWindowResize();
   
 	if( process.env.NODE_ENV === 'development'){
