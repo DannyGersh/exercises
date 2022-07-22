@@ -21,12 +21,15 @@ function Exercise(props){
 		localStorage.setItem('exercise', text.target.value);
 		props.setState[1](text.target.value); // updates in New.js
 	}
-
+	function onAnswerChange(text){
+		localStorage.setItem('answer', text.target.value);
+		props.setState[2](text.target.value); // updates in New.js
+	}
 	
 	return(
 	<div className='Exercise'>
 		
-		<label className='ExerciseLabel' for='title'>title *</label>
+		<label>title *</label>
 		
 		<input
 			onChange={(v)=>onTitleChange(v)}
@@ -37,8 +40,7 @@ function Exercise(props){
 
 		<br/><br/>
 		
-		<label for="ExerciseTextArea">Exercise bodie *</label>
-		
+		<label>Exercise bodie *</label>
 		<textarea 
 			onChange={(v)=>onExerciseChange(v)}
 			defaultValue={localStorage.getItem('exercise')}
@@ -47,7 +49,15 @@ function Exercise(props){
 			required
 		/>
 		
-		<p>Tips:</p>
+		<label>answer *</label>
+		<textarea
+			onChange={(v)=>onAnswerChange(v)}
+			defaultValue={localStorage.getItem('answer')}
+			rows='4' 
+			className='ExerciseTextArea' 
+		/>
+			
+		<label>Tips:</label>
 		<ul>
 			<li>make the title short and to the point</li>
 			<li>make the exercise focused on the topic you choose</li>

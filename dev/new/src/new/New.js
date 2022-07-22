@@ -3,18 +3,19 @@ import CSRFToken from '../shared/csrftoken'
 import BtnMenue from '../shared/buttons/BtnMenue'
 import Exercise from './pages/Exercise'
 import Hints from './pages/Hints'
-import Answere from './pages/Answere'
+import Explain from './pages/Explain'
 import TagList from './pages/TagList'
 import {useState, useEffect} from 'react'
 
 function New(props){
 	
 	// state - they're all strings, coresponding to form inputs
-	const [title		, setTitle		] = useState();
-	const [exercise	, setExercise	] = useState();
-	const [hints		, setHints		] = useState();
-	const [answere	, setAnswere	] = useState();
-	const [tags			, setTags			] = useState();
+	const [title		, setTitle		] = useState('');
+	const [exercise	, setExercise	] = useState('');
+	const [answer	, setanswer	] = useState('');
+	const [hints		, setHints		] = useState('');
+	const [explain	, setExplain	] = useState('');
+	const [tags			, setTags			] = useState('');
 	
 	// NOTE - local storage
 	// all inputs are being temporarely stored in local storage
@@ -37,12 +38,13 @@ function New(props){
 	
 	function submit(){ // validate form, submit and remove local storage
 		
-		if( title && exercise && answere ) { 
+		if( title && exercise && answer ) { 
 			document.mainForm.submit(); 
 			localStorage.removeItem('title');
 			localStorage.removeItem('exercise');
+			localStorage.removeItem('explain');
 			localStorage.removeItem('hints');
-			localStorage.removeItem('answere');
+			localStorage.removeItem('answer');
 			localStorage.removeItem('tags');
 			localStorage.removeItem('bmt');
 		} 
@@ -50,7 +52,7 @@ function New(props){
 			let str = 'You are missing:\n';
 			if(!title) { str += '* title (in the exercise tab)\n' }
 			if(!exercise) { str += '* exercise bodie\n' }
-			if(!answere) { str += '* answere\n' }
+			if(!answer) { str += '* answer\n' }
 			window.alert(str)
 		}
 		
@@ -63,22 +65,23 @@ function New(props){
 			
 			<input type="hidden" name="title" 		value={	title	}			/>
 			<input type="hidden" name="exercise" 	value={ exercise }	/>
+			<input type="hidden" name="answer" 	value={ answer }		/>
 			<input type="hidden" name="hints" 		value={ hints	}			/>
-			<input type="hidden" name="answere" 	value={ answere }		/>
 			<input type="hidden" name="tags" 			value={ tags }			/>
-			
+			<input type="hidden" name="explain" 	value={ explain }		/>
+
 			<div className='bottomMenue'>
-			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Exercise' && 'green'}`}>Exercise</BtnMenue>
-			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Hints' 	  && 'green'}`}>Hints</BtnMenue>
-			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Answere'	&& 'green'}`}>Answere</BtnMenue>
-			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Tags' 		&& 'green'}`}>Tags</BtnMenue>
+			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Exercise' 		&& 'green'}`}>Exercise</BtnMenue>
+			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Hints' 	  		&& 'green'}`}>Hints</BtnMenue>
+			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Explanation'	&& 'green'}`}>Explanation</BtnMenue>
+			<BtnMenue type="button" onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Tags' 				&& 'green'}`}>Tags</BtnMenue>
 			<BtnMenue type='button' onClick={submit} className='btnSubmit'>Submit</BtnMenue>
 			</div>
 	
-			{ bmt === 'Exercise' && <Exercise setState={[setTitle, setExercise]}/> }
-			{ bmt === 'Hints' && <Hints setState={setHints}/> }
-			{ bmt === 'Answere' && <Answere setState={setAnswere}/> }
-			{ bmt === 'Tags' && <TagList setState={setTags}/> }
+			{ bmt === 'Exercise' 		&& <Exercise setState={[setTitle, setExercise, setanswer]}/> }
+			{ bmt === 'Hints' 			&& <Hints setState={setHints}/> }
+			{ bmt === 'Explanation' && <Explain setState={setExplain}/> }
+			{ bmt === 'Tags' 				&& <TagList setState={setTags}/> }
 		</form>
 		
 	</>

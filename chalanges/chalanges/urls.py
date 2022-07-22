@@ -28,9 +28,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 
 # exercise format: ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
-# user format: [id, answered, liked]
+# user format: [id, answerd, liked]
 
-SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
+SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags', 'explain']
 
 @ensure_csrf_cookie
 def Chalange(request, id):
@@ -48,10 +48,11 @@ def Chalange(request, id):
 	
 	cur.execute('''
 	select 
-			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
 			from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()
+	print(inData)
 	
 	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 
@@ -141,15 +142,15 @@ def Profile(request, userid):
 	# SQL: fetch user information from "users1" table and store in inData.
 	# columns are:
 	# 1) id - user id: integer, foreigen key refrences serial primary key of table "auth_user" wich is the default(postgres version) django table of users 
-	# 2) answered - answered questions: array of integer
+	# 2) answerd - answerd questions: array of integer
 	# 3) liked - liked questions: array of integer
 	
 	# non SQL version:
 	# inData[0] - user id
-	# inData[1] - list of ids of answered questions
+	# inData[1] - list of ids of answerd questions
 	# inData[2] - list of ids of liked questions
 		
-	cur.execute('select username,answered,liked,authored from auth_user where id='+str(userid))
+	cur.execute('select username,answerd,liked,authored from auth_user where id='+str(userid))
 	inData = cur.fetchone()
 		
 	# PERROR: check if exists
@@ -175,10 +176,10 @@ def Profile(request, userid):
 	
 		
 	if request.user.is_authenticated and request.user.id == userid:		
-			# convert answered list of ids to
+			# convert answerd list of ids to
 			# a list that holds exercises(list)
 			# same for liked
-			answered = []
+			answerd = []
 			liked = []
 			for i in inData[1]:
 					cur.execute('''
@@ -188,7 +189,7 @@ def Profile(request, userid):
 					)
 					q = cur.fetchone()
 					if q:
-							answered.append(q)
+							answerd.append(q)
 							
 			for i in inData[2]:
 					cur.execute('''
@@ -203,9 +204,9 @@ def Profile(request, userid):
 			# make sure everithing is sorted by likes descending
 			liked.sort(key=lambda e: len(e[8]))
 			liked.reverse()
-			answered.sort(key=lambda e: len(e[8]))
-			answered.reverse()
-			outData['data'] = [answered, liked, request.user.username]
+			answerd.sort(key=lambda e: len(e[8]))
+			answerd.reverse()
+			outData['data'] = [answerd, liked, request.user.username]
 			
 			return render(request, 'user.html', context={'value': outData})
 	
@@ -292,14 +293,15 @@ def NewSubmited(request):
 	if request.method == "POST":
 		print("POOP", request.POST)
 		cur.execute('''insert into chalanges
-		(question, answer, hints, author, title, tags, rating)
+		(question, answer, hints, author, title, tags, explain, rating)
 		values( ''' + 
-			"\'" + request.POST.get('exercise', '') 	+ "\', " + 
-			"\'" + request.POST.get('answere', '') 		+ "\', " + 
-			"\'" + request.POST.get('hints', '') 			+ "\', " + 
-			"\'" + request.user.username							+ "\', " + 
-			"\'" + request.POST.get('title', '') 			+ "\', " + 
+			"\'"  + request.POST.get('exercise', '') 	+ "\', " + 
+			"\'"  + request.POST.get('answer', '') 		+ "\', " + 
+			"\'"  + request.POST.get('hints', '') 			+ "\', " + 
+			"\'"  + request.user.username							+ "\', " + 
+			"\'"  + request.POST.get('title', '') 			+ "\', " + 
 			"\'{" + request.POST.get('tags', '') 			+ "}\'," +
+			"\'"  + request.POST.get('explain', '') 		+ "\'," +
 			"\'{}\'"	 +
 		')'
 		)
