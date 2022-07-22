@@ -34,6 +34,8 @@ function App() {
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
 	
+	console.log(isAuth);
+	
   return (
     <>
     

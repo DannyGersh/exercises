@@ -57,6 +57,8 @@ function Nav(props) {
 		window.location = '../../../../../../../../user/' + String(props.userid);
 	}
 	
+	const dspProfileBtn = props.isAuth && !/user\/\d/.test(window.location);
+	
   if (!props.narrowWindow) {
     return ( 
 			<>
@@ -66,9 +68,9 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-					{ props.isAuth && <BtnMenue onClick={profileHandle} >Profile</BtnMenue> }
-          <BtnMenue onClick={ props.isAuth ? LogOutHandle: LogInHandle }>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
-
+					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
+          <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>	
+					
           {/* search bar */}
           <div className='searchContainer'>
             <form className='nav' action="/browse/" method="post">
@@ -103,9 +105,9 @@ function Nav(props) {
           {/* menue buttons */}
           <BtnMenue>Home</BtnMenue>
           <BtnMenue>New</BtnMenue>
-					{ props.isAuth && <BtnMenue>Profile</BtnMenue> }
+					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
           <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
-          
+
           {/* button for expending search bar */}
           <div className='searchContainer'>
             <BtnMenue onClick={dropDownHandler}>
