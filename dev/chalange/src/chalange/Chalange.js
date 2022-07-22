@@ -70,14 +70,16 @@ function Chalange(props){
   }
   
   
-  return ( <>
+  return ( 
+	<div style={{paddingLeft: '1rem'}}>
     
-    <h3>{chalange['question']}</h3>
+		<h4>{chalange['title']}</h4>
+    <p>{chalange['question']}</p>
     { dspAnswer && ( <>
-      <hr /><h3>{chalange['answer']}</h3>
+      <hr /><p>{chalange['answer']}</p>
       </> ) }
     { dspHints && ( <>
-      <hr /><h3>{chalange['hints']}</h3>
+      <hr /><p>{chalange['hints']}</p>
       </> ) }
       
       
@@ -138,6 +140,7 @@ function Chalange(props){
 
     </div>
     
-  </> )
+  </div> 
+	)
 }
 export default Chalange;
