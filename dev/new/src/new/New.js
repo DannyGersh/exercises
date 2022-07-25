@@ -17,7 +17,6 @@ bottom menue tabs all have their own page <element>
 
 2)
 all input is stored in local storage, so user wont lose his work.
-the selected bmt is allso stored in localStorage.
 
 3) important
 there are two submit buttons, the blue ones in the bm.
@@ -29,27 +28,16 @@ where the submit button submits to the same browser tab
 
 function New(props){
 	
-	// state - they're all strings, coresponding to form inputs
+	// state - they're all strings, coresponding to form inputs, 
+	// except tags which is a list of strings
 	const [title		, setTitle		] = useState('');
 	const [exercise	, setExercise	] = useState('');
 	const [answer		, setanswer		] = useState('');
 	const [hints		, setHints		] = useState('');
 	const [explain	, setExplain	] = useState('');
 	const [tags			, setTags			] = useState('');
-	
+	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
 	const isSubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
-
-	// NOTE - retrievs previous bmt
-	const [bmt, setBmt] = useState(''); // current bottom menue tab
-	useEffect( () => {
-		if(!localStorage.getItem('bmt')){ 
-			localStorage.setItem('bmt', 'Exercise')
-			setBmt('Exercise');
-		} else {
-			setBmt(localStorage.getItem('bmt'));
-		}
-	}, []);
-	// NOTE
 
 	// when bottomMenue tab is clicked
 	function bottomMenueHandle(e){
@@ -91,7 +79,6 @@ function New(props){
 					localStorage.removeItem('hints');
 					localStorage.removeItem('answer');
 					localStorage.removeItem('tags');
-					localStorage.removeItem('bmt');
 				} else {
 					// must reload or previe button wont function
 					window.location.reload();

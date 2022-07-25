@@ -32,11 +32,8 @@ class Tags { // convenience class for localStorage manipulation
 const tags = new Tags();
 
 
-
 function TagsList(props){
-	
-	localStorage.setItem('bmt', 'Tags');
-	
+		
 	if(!tags.get()) { tags.set([]); }
 	let availableTags = [...new Set(window.jsonData['tags'])];
 	
@@ -72,17 +69,13 @@ function TagsList(props){
 	const [searchTerm, setSearchTerm] = useState('');
 	
 	function filterAvailable(str){
-		
 		let temp = [...availableTags]; // deep copy required
 		temp = temp.filter(i=> RegExp('^'+str).test(i));
 		setDspAvailableTags(temp);
-		
 	}
 	function onSearch(str){
-		
 		filterAvailable(str);
 		setSearchTerm(str);
-		
 	}
 	function addTag(str) {
 		tags.add(str);
