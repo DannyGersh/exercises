@@ -182,7 +182,7 @@ def Profile(request, userid):
 						cur.execute('''
 						select 
 								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-								from chalanges where id=''' + str(i) + ' order by cardinality(rating)'
+								from chalanges where id=''' + str(i) + ' order by cardinality(rating) desc'
 						)
 						q = list(cur.fetchone())
 						
