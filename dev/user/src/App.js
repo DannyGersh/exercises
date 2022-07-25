@@ -21,9 +21,10 @@ function App() {
 			'rating': ['b','c'], 
 			'tags': ['math', 'science']
 		};
-		let answered = [chalange];
-		let liked = [chalange]
-		let data = [answered, liked, "Boris"]
+		let authored = [chalange];
+		let liked = [chalange, chalange, chalange];
+		let answered = [chalange, chalange];
+		let data = [authored, liked, answered, "Boris"];
 		
 		window.jsonData = {
 			'data': data,

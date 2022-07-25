@@ -57,7 +57,7 @@ def Chalange(request, id):
 	inData = cur.fetchone()	
 	
 	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
-	print(outData)
+
 	return render(request, 'chalange.html', context={'value': outData})
 
 @ensure_csrf_cookie		
@@ -140,25 +140,14 @@ def Profile(request, userid):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
-	
-	# SQL: fetch user information from "users1" table and store in inData.
-	# columns are:
-	# 1) id - user id: integer, foreigen key refrences serial primary key of table "auth_user" wich is the default(postgres version) django table of users 
-	# 2) answerd - answerd questions: array of integer
-	# 3) liked - liked questions: array of integer
-	
-	# non SQL version:
-	# inData[0] - user id
-	# inData[1] - list of ids of answerd questions
-	# inData[2] - list of ids of liked questions
-		
-	cur.execute('select username,answered,liked,authored from auth_user where id='+str(userid))
+
+	cur.execute('select authored, liked, answered, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
-		
+	
 	# PERROR: check if exists
 	if not inData:
-		print('ERROR: inData is undefined')
-		inData = [userid, [], []]
+		print('ERROR: inData is undefined\nin: ', frame.filename, frame.lineno)
+		inData = [[], [], [], userid]
 	# END_PERROR
 	
 	inData = list(inData)
@@ -166,51 +155,62 @@ def Profile(request, userid):
 	# PERROR: handle missing information
 	frame = getframeinfo(currentframe())
 	try:
-		inData[1]
+		inData[0]
 	except:
 		print('ERROR: inData[1] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])
 	try:
-		inData[2]
+		inData[1]
 	except:
 		print('ERROR: inData[2] is undefined\nin: ', frame.filename, frame.lineno)
+		inData.append([])	
+	try:
+		inData[2]
+	except:
+		print('ERROR: inData[3] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	# END_PERROR
 	
 		
 	if request.user.is_authenticated and request.user.id == userid:		
-			# convert answerd list of ids to
-			# a list that holds exercises(list)
-			# same for liked
-			answerd = []
+
+			authored = []
 			liked = []
-			for i in inData[1]:
-					cur.execute('''
-					select 
-							id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-							from chalanges where id=''' + str(i)
-					)
-					q = cur.fetchone()
-					if q:
-							answerd.append(q)
-							
-			for i in inData[2]:
-					cur.execute('''
-					select 
-							id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-							from chalanges where id=''' + str(i)
-					)
-					q = cur.fetchone()
-					if q:
-							liked.append(q)
+			answered = []
 			
-			# make sure everithing is sorted by likes descending
-			liked.sort(key=lambda e: len(e[8]))
-			liked.reverse()
-			answerd.sort(key=lambda e: len(e[8]))
-			answerd.reverse()
-			outData['data'] = [answerd, liked, request.user.username]
+			def populate(_inData, _outData):
+
+				for i in _inData:
+						cur.execute('''
+						select 
+								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+								from chalanges where id=''' + str(i) + ' order by cardinality(rating)'
+						)
+						q = cur.fetchone()
+						if q:
+							_outData = q
+							print(_outData)
+							for i in range(len(_outData)):
+								_outData.append( { k:v for (k,v) in zip(SQLDataKeys, _outData[i]) } )
+
 			
+			cur.execute('''
+			select 
+					id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
+					from chalanges where author=''' + '\'' + str(request.user.username) + '\' order by cardinality(rating) desc'
+			)
+			q = cur.fetchall()
+			if q:
+				authored = q
+				for i in range(len(authored)):
+					authored[i] = { k:v for (k,v) in zip(SQLDataKeys, authored[i]) }
+
+				
+			populate(inData[1], liked)	
+			populate(inData[2], answered)	
+
+			outData['data'] = [authored, liked, answered, request.user.username]
+						
 			return render(request, 'user.html', context={'value': outData})
 	
 	else:
@@ -308,13 +308,13 @@ def NewSubmited(request):
 			cur.execute('''insert into chalanges
 			(question, answer, hints, author, title, tags, explain, rating)
 			values( ''' + 
-				"\'"  + request.POST.get('exercise', '') 	+ "\', " + 
+				"\'"  + request.POST.get('exercise', '')	+ "\', " + 
 				"\'"  + request.POST.get('answer', '') 		+ "\', " + 
-				"\'"  + request.POST.get('hints', '') 			+ "\', " + 
+				"\'"  + request.POST.get('hints', '') 		+ "\', " + 
 				"\'"  + request.user.username							+ "\', " + 
-				"\'"  + request.POST.get('title', '') 			+ "\', " + 
-				"\'{" + tags 			+ "}\'," +
-				"\'"  + request.POST.get('explain', '') 		+ "\'," +
+				"\'"  + request.POST.get('title', '') 		+ "\', " + 
+				"\'{" + tags 															+ "}\'," +
+				"\'"  + request.POST.get('explain', '') 	+ "\'," +
 				"\'{}\'"	 +
 			')'
 			)
