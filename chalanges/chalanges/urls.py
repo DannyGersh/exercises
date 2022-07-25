@@ -304,7 +304,7 @@ def NewSubmited(request):
 		tags = tags.replace(']', '')
 		
 		if(request.POST.get('isSubmit')=='true'):
-
+			
 			cur.execute('''insert into chalanges
 			(question, answer, hints, author, title, tags, explain, rating)
 			values( ''' + 
@@ -318,8 +318,9 @@ def NewSubmited(request):
 				"\'{}\'"	 +
 			')'
 			)
-
+			cur.execute("update auth_user set authored[cardinality(authored)] = (select count(*) from chalanges)::varchar(255) where id = "+str(request.user.id))
 			conn.commit()
+			
 			return redirect("../../../../user/" + str(request.user.id))
 		
 		else:
