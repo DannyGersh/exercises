@@ -27,3 +27,12 @@ body{
 }
 
 
+.green{
+	background-color: var(--DKgreen) !important;
+}
+.green:hover{
+	background-color: var(--DKgreen_hover) !important;
+}
+.green:active{
+	background-color: var(--DKgreen) !important;
+}
