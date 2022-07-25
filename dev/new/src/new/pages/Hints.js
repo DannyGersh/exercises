@@ -1,9 +1,7 @@
 
 
 function Hints(props){
-	
-	localStorage.setItem('bmt', 'Hints');
-	
+		
 	if(!localStorage.getItem('hints')){
 		localStorage.setItem('hints', '');
 	}

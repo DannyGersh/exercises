@@ -1,8 +1,6 @@
 
 function Explain(props){
-	
-	localStorage.setItem('bmt', 'Explanation');
-	
+		
 	if(!localStorage.getItem('Explanation')) {
 		localStorage.setItem('Explanation', '');
 	}

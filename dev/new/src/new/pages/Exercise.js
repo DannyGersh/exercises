@@ -1,9 +1,7 @@
 import './Shared.css'
 
 function Exercise(props){
-	
-	localStorage.setItem('bmt', 'Exercise');
-	
+		
 	if(!localStorage.getItem('title')){
 		localStorage.setItem('title', '');
 	}
