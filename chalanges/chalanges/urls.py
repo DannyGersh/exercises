@@ -27,10 +27,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 
-# databases: chalanges, auth_user
-# exercise format: ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags']
-# user format: [id, answerd, liked]
+from inspect import currentframe, getframeinfo
 
+
+# databases: chalanges, auth_user
+# user format: [id, answerd, liked]
+# exercise format:
 SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags', 'explain']
 
 @ensure_csrf_cookie
@@ -52,11 +54,10 @@ def Chalange(request, id):
 			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
 			from chalanges where id=''' + str(id)
 	)
-	inData = cur.fetchone()
-	print(inData)
+	inData = cur.fetchone()	
 	
 	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
-
+	print(outData)
 	return render(request, 'chalange.html', context={'value': outData})
 
 @ensure_csrf_cookie		
@@ -163,15 +164,16 @@ def Profile(request, userid):
 	inData = list(inData)
 	
 	# PERROR: handle missing information
+	frame = getframeinfo(currentframe())
 	try:
 		inData[1]
-		print('ERROR: inData[1] is undefined')
 	except:
+		print('ERROR: inData[1] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])
 	try:
 		inData[2]
-		print('ERROR: inData[2] is undefined')
 	except:
+		print('ERROR: inData[2] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	# END_PERROR
 	
@@ -284,32 +286,67 @@ def New(request):
 	outData['isAuth'] = request.user.is_authenticated
 	outData['userid'] = request.user.id
 	
-	cur.execute('select * from tags')
-	outData['tags'] = cur.fetchall()
+	cur.execute('select name from tags')
+	outData['tags'] = [i[0] for i in cur.fetchall()] 
 	
 	return render(request, 'New.html', context={'value': outData})
 
 def NewSubmited(request):
-
+	
+	outData = {} # data for js. will be converted to secure json.
+	
 	if request.method == "POST":
-		print("POOP", request.POST)
-		cur.execute('''insert into chalanges
-		(question, answer, hints, author, title, tags, explain, rating)
-		values( ''' + 
-			"\'"  + request.POST.get('exercise', '') 	+ "\', " + 
-			"\'"  + request.POST.get('answer', '') 		+ "\', " + 
-			"\'"  + request.POST.get('hints', '') 			+ "\', " + 
-			"\'"  + request.user.username							+ "\', " + 
-			"\'"  + request.POST.get('title', '') 			+ "\', " + 
-			"\'{" + request.POST.get('tags', '') 			+ "}\'," +
-			"\'"  + request.POST.get('explain', '') 		+ "\'," +
-			"\'{}\'"	 +
-		')'
-		)
-		conn.commit()
-
-	return HttpResponse("POOP")
 		
+		tags = request.POST.get('tags', '')
+		if tags == []: tags = ''
+		if tags == '[]': tags = ''
+		tags = tags.replace('[', '')
+		tags = tags.replace(']', '')
+		
+		if(request.POST.get('isSubmit')=='true'):
+
+			cur.execute('''insert into chalanges
+			(question, answer, hints, author, title, tags, explain, rating)
+			values( ''' + 
+				"\'"  + request.POST.get('exercise', '') 	+ "\', " + 
+				"\'"  + request.POST.get('answer', '') 		+ "\', " + 
+				"\'"  + request.POST.get('hints', '') 			+ "\', " + 
+				"\'"  + request.user.username							+ "\', " + 
+				"\'"  + request.POST.get('title', '') 			+ "\', " + 
+				"\'{" + tags 			+ "}\'," +
+				"\'"  + request.POST.get('explain', '') 		+ "\'," +
+				"\'{}\'"	 +
+			')'
+			)
+
+			conn.commit()
+			return redirect("../../../../user/" + str(request.user.id))
+		
+		else:
+			cur.execute('''select to_char(now(), 'MM/DD/YYYY - HH24:MI')''')
+			timestamp = cur.fetchone()			
+			
+			tags = tags.split(',')
+			
+			inData = [
+				request.user.id									 ,
+				request.POST.get('exercise', '') ,
+				request.POST.get('answer', '') 	 ,
+				request.POST.get('hints', '') 	 ,
+				request.user.username						 ,
+				timestamp 											 ,
+				request.POST.get('title', '')		 ,
+				[]															 ,
+				tags														 ,
+				request.POST.get('explain', '')  ,
+			]
+			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+			
+			return render(request, 'chalange.html', context={'value': outData})
+	
+	return HttpResponse("POOP")
+
+
 urlpatterns = [
 		path('', Home),
 		path('admin/', admin.site.urls),
@@ -324,5 +361,5 @@ urlpatterns = [
 		path('login/', Login),
 		path('logout/', LogOut),
 		path('signup/', SignUp),
-		path('newSubmited/', NewSubmited),
+		path('newSubmit/', NewSubmited),
 ]
