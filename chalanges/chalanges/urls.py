@@ -105,21 +105,19 @@ def Home(request):
 		#}
 		return render(request, 'Home.html')
 
-def Poop(request):
+def Like(request):
+		
 		if request.method == "POST":
 				id = request.POST['chalangeId']
-				cur.execute('select rating from chalanges where id='+str(id)+';')
-				inData = set(cur.fetchone()[0])
-				
+
 				if request.POST['like'] in ('true', True, 1):
-						if request.POST['user'] not in inData:
-								inData.add(request.POST['user'])
+					cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+					cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+
 				else:
-						if request.POST['user'] in inData:
-								inData.remove(request.POST['user'])
-				
-				inDataStr = '{' + ''.join(str+',' for str in inData)[0:-1] + '}'
-				cur.execute('update chalanges set rating=\''+inDataStr+'\' where id='+str(id)+';')
+					cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+					cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+
 				conn.commit()
 				
 				return(HttpResponse('all good'))
@@ -186,13 +184,10 @@ def Profile(request, userid):
 								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
 								from chalanges where id=''' + str(i) + ' order by cardinality(rating)'
 						)
-						q = cur.fetchone()
+						q = list(cur.fetchone())
+						
 						if q:
-							_outData = q
-							print(_outData)
-							for i in range(len(_outData)):
-								_outData.append( { k:v for (k,v) in zip(SQLDataKeys, _outData[i]) } )
-
+							_outData.append({k:v for (k,v) in zip(SQLDataKeys, q)})
 			
 			cur.execute('''
 			select 
@@ -358,7 +353,7 @@ urlpatterns = [
 		path('new/', New),
 		
 		path('browse/', Browse),
-		path('poop/', Poop),
+		path('poop/', Like),
 		path('login/', Login),
 		path('logout/', LogOut),
 		path('signup/', SignUp),
