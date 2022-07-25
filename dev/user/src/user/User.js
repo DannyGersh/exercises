@@ -14,7 +14,7 @@ function User(){
 	const answered = window.jsonData['data'][2]
 	const userName = window.jsonData['data'][3]
 		
-  let [menueSelection, setMenueSelection] = useState("Answered");
+  let [menueSelection, setMenueSelection] = useState("Authored");
   function menueHandle(event, selection){
 		setMenueSelection(selection);
   }
@@ -49,9 +49,9 @@ function User(){
 		<p style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</p>
 		
 		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
-			<BtnMenue onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
-			<BtnMenue onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
-			<BtnMenue onClick={(e)=>menueHandle(e,"Answered")}>Answered</BtnMenue>
+			<BtnMenue className={`${menueSelection==='Authored'  	&& 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
+			<BtnMenue className={`${menueSelection==='Liked'		  && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
+			<BtnMenue className={`${menueSelection==='Answered'		&& 'green'}`} onClick={(e)=>menueHandle(e,"Answered")}>Answered</BtnMenue>
 		</div>
 				
 		<div ref={refB} className="hscroll scrollStyle">
