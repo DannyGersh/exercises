@@ -143,6 +143,7 @@ def Profile(request, userid):
 	inData = cur.fetchone()
 	
 	# PERROR: check if exists
+	frame = getframeinfo(currentframe())
 	if not inData:
 		print('ERROR: inData is undefined\nin: ', frame.filename, frame.lineno)
 		inData = [[], [], [], userid]
@@ -151,7 +152,6 @@ def Profile(request, userid):
 	inData = list(inData)
 	
 	# PERROR: handle missing information
-	frame = getframeinfo(currentframe())
 	try:
 		inData[0]
 	except:
@@ -168,7 +168,6 @@ def Profile(request, userid):
 		print('ERROR: inData[3] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	# END_PERROR
-	
 		
 	if request.user.is_authenticated and request.user.id == userid:		
 
@@ -235,11 +234,14 @@ def Login(request):
 		return redirect(currentPage)
 
 	# this should never happen
+	frame = getframeinfo(currentframe())
+	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
 	return redirect('./../../../../../../../')
 
 def LogOut(request):
 	
 	logout(request)	
+	# this is ok
 	return redirect("./../../../../")
 
 def SignUp(request):
@@ -274,7 +276,9 @@ def SignUp(request):
 			return redirect(currentPage)
 
 	# this should never happen
-	return redirect('./../../../../../../../home')
+	frame = getframeinfo(currentframe())
+	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
+	return redirect('./../../../../../../../')
 
 def New(request):
 	outData = {} # data for js. will be converted to secure json.
@@ -340,7 +344,10 @@ def NewSubmited(request):
 			
 			return render(request, 'chalange.html', context={'value': outData})
 	
-	return HttpResponse("POOP")
+	# this should never happen
+	frame = getframeinfo(currentframe())
+	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
+	return redirect('./../../../../../../../')
 
 
 urlpatterns = [
@@ -353,7 +360,7 @@ urlpatterns = [
 		path('new/', New),
 		
 		path('browse/', Browse),
-		path('poop/', Like),
+		path('like/', Like),
 		path('login/', Login),
 		path('logout/', LogOut),
 		path('signup/', SignUp),

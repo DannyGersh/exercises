@@ -1,14 +1,13 @@
 import psycopg2
-import getpass
+#import getpass
+from dotenv import load_dotenv
+from os import getenv
+from pathlib import Path
 
-DB_NAME = "postgres"
-DB_USER = "IdontKnow"
-#DB_PASS = getpass.getpass(prompt='Password: ')
-DB_PASS = '#QMrlj76#R'
-DB_HOST = "localhost"
-DB_PORT = "5432"
+dotenv_path = Path('../../.env')
+load_dotenv()
 
-conn = psycopg2.connect("dbname=chalanges user=postgres password=#QMrlj76#R")
+conn = psycopg2.connect("dbname=chalanges user=postgres password="+getenv('ENV_PSQL'))
 cur = conn.cursor()
 cur.execute('SELECT version();')
 db_version = cur.fetchone()

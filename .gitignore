@@ -15,3 +15,5 @@ dev/user/node_modules/**
 dev/user/build/**
 dev/user/src/shared/**
 dev/user/.eslintcache
+
+*.env
