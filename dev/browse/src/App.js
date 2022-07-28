@@ -1,4 +1,4 @@
-import useWindowResize from './shared/functions'
+import useWindowResize from './shared/Functions'
 import Nav from "./shared/nav/Nav"
 import Browse from './Browse/Browse'
 import './shared/Global.css'
