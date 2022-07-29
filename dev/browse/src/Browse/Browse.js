@@ -10,8 +10,7 @@ function Browse(){
   // const userid = window.jsonData['userid']
 	// const searchTerm = window.jsonData['search term']
 	
-  let items = Object.values(window.jsonData['chalanges'])
-    console.log(items)
+  let items = (window.jsonData['chalanges'])
 		
   return(
   <>
@@ -20,11 +19,11 @@ function Browse(){
 	{ items.length !== 0 ?
 	  items.map( i =>
       <Exercise
-	      title={i['title']} 
-				paragraph={i['exercise']} 
-				url={'../../' + String(i['id'])} 
-				likes={i['rating'] ? i['rating'].length: 0} 
-				tags={i['tags']}
+	      title={i[5]} 
+				paragraph={i[1]} 
+				url={'../../' + String(i[0])} 
+				likes={i[6] ? i[6].length: 0} 
+				tags={i[7]}
 	    />
       )
 	  :

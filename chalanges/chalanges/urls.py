@@ -92,7 +92,7 @@ def Browse(request, sterm=''):
 		)
 		inData = cur.fetchall() 
 		
-		outData['chalanges'] = { k:v for (k,v) in zip(range(len(inData)), inData) }
+		outData['chalanges'] = inData
 		
 		return render(request, 'browse.html', context={'value': outData})
 
