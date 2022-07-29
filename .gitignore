@@ -9,4 +9,5 @@ venv/**
 dev/chalange/src/shared/**
 dev/browse/src/shared/**
 dev/user/src/shared/**
+dev/home/src/shared/**
 
