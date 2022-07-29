@@ -100,7 +100,7 @@ function Chalange(props){
     <div className='bottomRight'>
     
       <iframe title='dummyframe' name="dummyframe" id="dummyframe" style={{"display": "none"}}></iframe>
-      <form action="/poop/" target="dummyframe" method='POST'>
+      <form action="/like/" target="dummyframe" method='POST'>
         <CSRFToken />
         <input type="hidden" name="chalangeId" value={chalange['id']}/>
         <input type="hidden" name="like" value={dspLike}/>
