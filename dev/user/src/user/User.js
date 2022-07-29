@@ -51,7 +51,6 @@ function User(){
 		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
 			<BtnMenue className={`${menueSelection==='Authored'  	&& 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
 			<BtnMenue className={`${menueSelection==='Liked'		  && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
-			<BtnMenue className={`${menueSelection==='Answered'		&& 'green'}`} onClick={(e)=>menueHandle(e,"Answered")}>Answered</BtnMenue>
 		</div>
 				
 		<div ref={refB} className="hscroll scrollStyle">
