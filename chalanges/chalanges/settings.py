@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from . env import ENV_PSQL
 from pathlib import Path
 import os
 
@@ -94,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'chalanges',
         'USER': 'postgres',
-        'PASSWORD': '#QMrlj76#R',
+        'PASSWORD': ENV_PSQL,
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -148,6 +149,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'pages', 'browse', 'static'),
     os.path.join(BASE_DIR, 'pages', 'user', 'static'),
 		os.path.join(BASE_DIR, 'pages', 'new', 'static'),
+		os.path.join(BASE_DIR, 'pages', 'home', 'static'),
 ]
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 

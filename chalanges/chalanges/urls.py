@@ -20,15 +20,20 @@ import json
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
 
-import psycopg2 as pg
-from . __init__ import cur, conn
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, logout, login
 
 from inspect import currentframe, getframeinfo
 
+import psycopg2
+from . env import ENV_PSQL
+
+conn = psycopg2.connect("dbname=chalanges user=postgres password="+ENV_PSQL)
+cur = conn.cursor()
+cur.execute('SELECT version();')
+db_version = cur.fetchone()
+print(db_version)
 
 # databases: chalanges, auth_user
 # user format: [id, answerd, liked]
@@ -97,12 +102,7 @@ def Browse(request, sterm=''):
 		return render(request, 'browse.html', context={'value': outData})
 
 def Home(request):
-		#print(request.user.is_authenticated)
-		#outData = {
-		#		'userName': request.user.username,
-		#		'userPassword': request.user.password,
-		#		'is_authenticated': request.user.is_authenticated,
-		#}
+
 		return render(request, 'Home.html')
 
 def Like(request):

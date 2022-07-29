@@ -3,12 +3,12 @@ import Exercise from '../shared/exercise/Exercise'
 function Browse(){
 	
 	// defined in apps.js:
-  // const chalanges = window.jsonData['chalanges']
-	// const signInFailure = window.jsonData['signInFailure']
-	// const isSignUp = window.jsonData['isSignUp']
-	// const isAuth = window.jsonData['isAuth']
-  // const userid = window.jsonData['userid']
-	// const searchTerm = window.jsonData['search term']
+  // window.jsonData['chalanges']
+	// window.jsonData['signInFailure']
+	// window.jsonData['isSignUp']
+	// window.jsonData['isAuth']
+  // window.jsonData['userid']
+	// window.jsonData['search term']
 	
   let items = (window.jsonData['chalanges'])
 		

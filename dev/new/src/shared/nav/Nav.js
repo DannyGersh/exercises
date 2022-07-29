@@ -50,7 +50,13 @@ function Nav(props) {
 		// window.jsonData['signInFailure'] = false;
 		// window.jsonData['isSignUp'] = false;
 	}
-	function LogOutHandle(){
+	function homeHandle(){
+		window.location = '../../../../../../../../../';
+	}
+	function newHandle(){
+		window.location = '../../../../../../../../../new/';
+	}
+	function logOutHandle(){
 		window.location = '../../../../../../../../logout/';
 	}
 	function profileHandle(){
@@ -66,10 +72,10 @@ function Nav(props) {
         <div className="nav">
           
           {/* menue buttons */}
-          <BtnMenue>Home</BtnMenue>
-          <BtnMenue>New</BtnMenue>
+          <BtnMenue onClick={homeHandle}>Home</BtnMenue>
+          <BtnMenue onClick={newHandle}>New</BtnMenue>
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
-          <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>	
+          <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>	
 					
           {/* search bar */}
           <div className='searchContainer'>
@@ -103,10 +109,10 @@ function Nav(props) {
         <div className="nav">
         
           {/* menue buttons */}
-          <BtnMenue>Home</BtnMenue>
-          <BtnMenue>New</BtnMenue>
+          <BtnMenue onClick={homeHandle}>Home</BtnMenue>
+          <BtnMenue onClick={newHandle}>New</BtnMenue>
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
-          <BtnMenue onClick={props.isAuth ? LogOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
+          <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
 
           {/* button for expending search bar */}
           <div className='searchContainer'>

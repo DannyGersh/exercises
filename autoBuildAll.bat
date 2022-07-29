@@ -9,3 +9,5 @@ cd %~dp0\dev\new
 start cmd /c npm run build
 cd %~dp0\dev\user
 start cmd /c npm run build
+cd %~dp0\dev\home
+start cmd /c npm run build

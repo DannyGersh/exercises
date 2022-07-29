@@ -1,0 +1,35 @@
+.btnRound{
+	vertical-align: middle;
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	/*background-color: #5f9de2;*/
+	background-color: var(--UNblue);
+	color: white;
+	border: none;
+	height: 3rem;
+	width: 3rem;
+	border-radius: 50%;
+}
+.BtnColorGreen{
+	background-color: var(----DKgreen);
+}
+
+/* active button */
+.activeBlue{
+}
+.activeBlue:hover{
+	background-color: var(--UNblue_hover);
+}
+.activeBlue:active{
+	background-color: var(--UNblue);
+}
+
+.activeGreen{
+	background-color: var(--DKgreen);
+}
+.activeGreen:hover{
+	background-color: var(--DKgreen_hover);
+}
+.activeGreen:active{
+	background-color: var(--DKgreen);
+}
