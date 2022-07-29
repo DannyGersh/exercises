@@ -36,7 +36,6 @@ db_version = cur.fetchone()
 print(db_version)
 
 # databases: chalanges, auth_user
-# user format: [id, answerd, liked]
 # exercise format:
 SQLDataKeys = ['id', 'question', 'answer', 'hints', 'author', 'creationdate', 'title', 'rating', 'tags', 'explain']
 
@@ -102,8 +101,40 @@ def Browse(request, sterm=''):
 		return render(request, 'browse.html', context={'value': outData})
 
 def Home(request):
-
-		return render(request, 'Home.html')
+	
+	outData = {} # data for js. will be converted to secure json.
+	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
+	if not request.session.has_key('signInFailure'):
+		request.session['signInFailure'] = False
+	outData['signInFailure'] = request.session.get('signInFailure')
+	outData['isSignUp'] = request.session.get('isSignUp')
+	outData['isAuth'] = request.session.get('isAuth')
+	outData['userid'] = request.user.id
+	request.session['signInFailure'] = False # not needed enimore
+	request.session['isSignUp'] = False # not needed enimore
+	
+	cur.execute('''
+	select 
+			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
+			from chalanges order by creationdate desc limit 10'''
+	)
+	in_latest = cur.fetchall()	
+	for i in range(len(in_latest)):
+		in_latest[i] = {k:v for (k,v) in zip(SQLDataKeys, in_latest[i]) }
+	
+	cur.execute('''
+	select 
+			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
+			from chalanges order by cardinality(rating) desc limit 10'''
+	)
+	in_hotest = cur.fetchall()	
+	for i in range(len(in_hotest)):
+		in_hotest[i] = {k:v for (k,v) in zip(SQLDataKeys, in_hotest[i]) }
+	
+	outData['latest'] = in_latest
+	outData['hotest'] = in_hotest
+	
+	return render(request, 'Home.html', context={'value': outData})
 
 def Like(request):
 		

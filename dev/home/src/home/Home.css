@@ -1,0 +1,9 @@
+.gridContainer{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.btnHomeMenue{
+	height: 2rem;
+	width: 6rem;
+}
