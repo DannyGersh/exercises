@@ -1,6 +1,6 @@
 import "./Nav.css";
 import CSRFToken from "../csrftoken";
-import { useState } from "react";
+import { useState, createRef, useEffect } from "react";
 import BtnMenue from '../buttons/BtnMenue'
 import Login from '../login/Login'
 
@@ -34,16 +34,27 @@ function Nav(props) {
   })
   
 	// dispatch event on searchBar button click
-  function dropDownHandler() {
+	function dropDownHandler() {
     setDropDownActive(!dropDownActive);
     // set timeout prevents asincroneus dispatching of the event
     setTimeout(() => 
       window.dispatchEvent(navDropDown)
     );
   }
-
+	
+	// search input focuse manipulation
+	const dropDownRef = createRef();
+	useEffect(()=>{
+		if(dropDownRef.current) {
+			// focuse when searchBtn is clicked
+			dropDownRef.current.focus(); 
+			// unFocuse when search input looses focuse
+			dropDownRef.current.addEventListener('focusout', dropDownHandler); 
+		}
+	},[dropDownActive])
+	
 	// dspLogin - true if login menue should be displayed
-  const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
+	const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
   function LogInHandle(){
 		setDspLogin(!dspLogin);
 		// when user clicks, he gets default login menue 
@@ -123,14 +134,13 @@ function Nav(props) {
 					
         </div>
       
-			
 				{/* conditionally display search bar */}
 				{dropDownActive && (
 					<div>
 						<form className='nav' action="/browse/" method="post">
 							{ process.env.NODE_ENV !== 'development' && <CSRFToken /> }
 							<button className='searchBtn' type="submit"></button>
-							<input className='searchText' type="text" name="browse" />
+							<input ref={dropDownRef} className='searchText' type="text" name="browse" />
 						</form>
 					</div>
 				)}
