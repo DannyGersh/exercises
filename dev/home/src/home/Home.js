@@ -8,15 +8,14 @@ function Home(props) {
 	const latest = window.jsonData['latest'];
 	const hotest = window.jsonData['hotest'];
 	const ms = useState(true) // Menue Selection - true: latest, false: hotest
-	function msh() { ms[1](!ms[0]); } // Menue Selection Handle
 	
 	return(
 	<>
 		<center>
 		<h1>~ Exercises ~</h1>
 		<p>The website for uploading and solving exercises in any field</p>
-		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={msh}>latest</BtnMenue>
-		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={msh}>hotest</BtnMenue>
+		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
+		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={()=>ms[1](false)}>hotest</BtnMenue>
 		</center>
 		
 		<div className='gridContainer'>
