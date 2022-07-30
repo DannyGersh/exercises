@@ -64,6 +64,8 @@ function Nav(props) {
 	}
 	
 	const dspProfileBtn = props.isAuth && !/user\/\d/.test(window.location);
+	const dspNewBtn = /.*[\\/]new/.test(window.location)
+	console.log(dspNewBtn)
 	
   if (!props.narrowWindow) {
     return ( 
@@ -73,7 +75,7 @@ function Nav(props) {
           
           {/* menue buttons */}
           <BtnMenue onClick={homeHandle}>Home</BtnMenue>
-          <BtnMenue onClick={newHandle}>New</BtnMenue>
+					{ !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
           <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>	
 					
@@ -110,7 +112,7 @@ function Nav(props) {
         
           {/* menue buttons */}
           <BtnMenue onClick={homeHandle}>Home</BtnMenue>
-          <BtnMenue onClick={newHandle}>New</BtnMenue>
+					{ !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
           <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
 
