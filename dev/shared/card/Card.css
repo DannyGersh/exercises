@@ -8,7 +8,6 @@
 	border: none;
 	text-align: left;
 	max-height: 15rem;
-	max-width: 30rem;
 }
 .card:hover{
 	/*background-color: #ffd5b8;*/

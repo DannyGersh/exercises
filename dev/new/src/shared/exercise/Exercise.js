@@ -7,7 +7,7 @@ function Exercise(props){
   	
   return(
   <>
-    <Card url={props.url} >
+    <Card url={props.url} style={props.style} className={props.className}>
             
 	  <div className='bottomRight'>
 	    <BtnRound>

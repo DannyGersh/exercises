@@ -36,3 +36,9 @@ body{
 .green:active{
 	background-color: var(--DKgreen) !important;
 }
+
+.gridContainer{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}

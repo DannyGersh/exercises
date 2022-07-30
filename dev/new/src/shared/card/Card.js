@@ -1,9 +1,6 @@
 import "./Card.css"
-//import CSRFToken from '../shared/csrftoken'
 
-/* 	
-	define props.url to be a url for redirection.
-*/
+// define props.url to be a url for redirection.
 
 function Card(props){
 	
@@ -12,7 +9,10 @@ function Card(props){
 	}
 	return(
 	<>
-		<div className="card" onClick={redirect}>
+		<div 
+			className={`card ${props.className && props.className}`}
+			style={props.style}
+			onClick={redirect}>
 		{ props.children }
 		</div>
 	</>

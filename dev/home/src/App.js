@@ -8,8 +8,8 @@ function App() {
 	// PERROR - the browser wont record this page on history for some reason
 	window.history.pushState({}, '', window.location);
 	
-  let narrowWindow = useWindowResize();
-  
+  window.nrw = useWindowResize(); // nrw - narrow window - boolean
+	
 	if( process.env.NODE_ENV === 'development'){
     let chalange1 = {
 			'id': 2, 
@@ -53,7 +53,7 @@ function App() {
   return (
   <>
     <Nav 
-      narrowWindow = { narrowWindow } 
+      narrowWindow = { window.nrw } 
       currentPage = { './../../../../../../../' }
       signInFailure = { signInFailure } 
       isSignUp = { isSignUp }

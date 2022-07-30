@@ -22,6 +22,7 @@ function Home(props) {
 		<div className='gridContainer'>
 		{ (ms[0] ? latest: hotest).map( i =>
 				<Exercise
+					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
 					key={i['id']}
 					title={i['title']} 
 					paragraph={i['question']} 

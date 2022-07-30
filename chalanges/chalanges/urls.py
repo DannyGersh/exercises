@@ -92,10 +92,13 @@ def Browse(request, sterm=''):
 	else:
 		# after initial redirect, now with correct url
 		cur.execute(
-				'select * from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
+				'select id,question,answer,hints,author,creationdate,title,rating,tags,explain from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
 		)
-		inData = cur.fetchall() 
-		
+		inData = cur.fetchall()
+		for i in range(len(inData)):
+			inData[i] = {k:v for (k,v) in zip(SQLDataKeys, inData[i])}
+			
+		print(inData)
 		outData['chalanges'] = inData
 		
 		return render(request, 'browse.html', context={'value': outData})

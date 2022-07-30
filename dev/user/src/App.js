@@ -8,7 +8,9 @@ function App() {
 	// PERROR - the browser wont record this page on history for some reason
 	window.history.pushState({}, '', window.location);
 	
-  let narrowWindow = useWindowResize();
+	// nrw - narrow window - boolean
+  window.nrw = useWindowResize();
+	
   if( process.env.NODE_ENV === 'development'){
 		let chalange = {
 			'id': 2, 
@@ -38,14 +40,11 @@ function App() {
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-	const answered = window.jsonData['data'][0]
-	const liked = window.jsonData['data'][1]
-	const userName = window.jsonData['data'][2]
 	
   return (
     <>
     <Nav 
-      narrowWindow = { narrowWindow } 
+      narrowWindow = { window.nrw } 
       currentPage = { './../../../../../../' + String(userid) }
       signInFailure = { signInFailure } 
       isSignUp = { isSignUp }

@@ -5,10 +5,6 @@ import './User.css'
 
 function User(){
 
-  const signInFailure = window.jsonData['signInFailure']
-	const isSignUp = window.jsonData['isSignUp']
-	const isAuth = window.jsonData['isAuth']
-  const userid = window.jsonData['userid']
 	const authored = window.jsonData['data'][0]
 	const liked = window.jsonData['data'][1]
 	const answered = window.jsonData['data'][2]
@@ -49,14 +45,15 @@ function User(){
 		<p style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</p>
 		
 		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
-			<BtnMenue className={`${menueSelection==='Authored'  	&& 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
-			<BtnMenue className={`${menueSelection==='Liked'		  && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
+			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Authored' && 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
+			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Liked'		 && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
 		</div>
 				
-		<div ref={refB} className="hscroll scrollStyle">
+		<div ref={refB} className="hscroll scrollStyle gridContainer">
 		{
 			selectMenue(menueSelection).map( (item, index) =>
-				<Exercise 
+				<Exercise
+					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
 					key={index}
 					title={item['title']} 
 					paragraph={item['question']} 

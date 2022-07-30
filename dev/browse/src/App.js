@@ -5,7 +5,7 @@ import './shared/Global.css'
 
 function App() {
   
-  let narrowWindow = useWindowResize();
+  window.nrw = useWindowResize(); // nrw - narrow window - boolean
   
 	if( process.env.NODE_ENV === 'development'){
     let chalange1 = {
@@ -21,16 +21,16 @@ function App() {
 		};
 		let chalange2 = {
 			'id': 2, 
-			'question': 'test question', 
-			'answer': 'test answer', 
-			'hints': 'test hints', 
-			'author': 'test author', 
+			'question': 'test question 2', 
+			'answer': 'test answer 2', 
+			'hints': 'test hints 2', 
+			'author': 'test author 2', 
 			'creationdate': '27-7-1996', 
-			'title': 'test title', 
+			'title': 'test title 2', 
 			'rating': ['b','c'], 
 			'tags': ['math', 'science']
 		};
-		let chalanges = [chalange1, chalange2]
+		let chalanges = [chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2]
 		window.jsonData = {
 			'search term': 'math',
 			'chalanges': chalanges,
@@ -50,7 +50,7 @@ function App() {
   return (
   <>
     <Nav 
-      narrowWindow = { narrowWindow } 
+      narrowWindow = { window.nrw } 
       currentPage = { './../../../../../../browse/' + searchTerm }
       signInFailure = { signInFailure } 
       isSignUp = { isSignUp }

@@ -1,6 +1,6 @@
 import "./Nav.css";
 import CSRFToken from "../csrftoken";
-import { useState, createRef, useEffect } from "react";
+import { useState } from "react";
 import BtnMenue from '../buttons/BtnMenue'
 import Login from '../login/Login'
 
@@ -41,17 +41,6 @@ function Nav(props) {
       window.dispatchEvent(navDropDown)
     );
   }
-	
-	// search input focuse manipulation
-	const dropDownRef = createRef();
-	useEffect(()=>{
-		if(dropDownRef.current) {
-			// focuse when searchBtn is clicked
-			dropDownRef.current.focus(); 
-			// unFocuse when search input looses focuse
-			dropDownRef.current.addEventListener('focusout', dropDownHandler); 
-		}
-	},[dropDownActive])
 	
 	// dspLogin - true if login menue should be displayed
 	const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
@@ -140,7 +129,7 @@ function Nav(props) {
 						<form className='nav' action="/browse/" method="post">
 							{ process.env.NODE_ENV !== 'development' && <CSRFToken /> }
 							<button className='searchBtn' type="submit"></button>
-							<input ref={dropDownRef} className='searchText' type="text" name="browse" />
+							<input className='searchText' type="text" name="browse" />
 						</form>
 					</div>
 				)}
