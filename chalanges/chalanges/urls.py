@@ -52,6 +52,7 @@ def Chalange(request, id):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
+	request.session['currentUrl'] = '../../../../../'+str(id)
 	
 	cur.execute('''
 	select 
@@ -77,9 +78,10 @@ def Browse(request, sterm=''):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
-	
+	request.session['currentUrl'] = '../../../../../browse/'+sterm
+
 	outData["search term"] = sterm		
-	
+
 	# first get post data from react,
 	# at this point sterm is empty.
 	# then redirect here again,
@@ -98,7 +100,6 @@ def Browse(request, sterm=''):
 		for i in range(len(inData)):
 			inData[i] = {k:v for (k,v) in zip(SQLDataKeys, inData[i])}
 			
-		print(inData)
 		outData['chalanges'] = inData
 		
 		return render(request, 'browse.html', context={'value': outData})
@@ -115,7 +116,8 @@ def Home(request):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
-	
+	request.session['currentUrl'] = '../../../../../'
+
 	cur.execute('''
 	select 
 			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
@@ -172,6 +174,7 @@ def Profile(request, userid):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
+	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
 
 	cur.execute('select authored, liked, answered, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
@@ -245,7 +248,7 @@ def Profile(request, userid):
 			return HttpResponse("trying to peek at other acounts ar ya ?")
 				
 def Login(request):
-	
+		
 	if request.method == "POST":
 		
 		uname = request.POST.get('uname')
@@ -264,7 +267,13 @@ def Login(request):
 			login(request, user)
 			request.session['isAuth'] = True
 			request.session['signInFailure'] = False
-			
+		
+		# after unauth user clicks new and registers
+		if request.session.get('isNew') and request.user.is_authenticated:
+			request.session['isNew'] = False
+			request.session['signInFailure'] = False
+			return redirect('../../../../../../new')
+		
 		return redirect(currentPage)
 
 	# this should never happen
@@ -315,14 +324,22 @@ def SignUp(request):
 	return redirect('./../../../../../../../')
 
 def New(request):
-	outData = {} # data for js. will be converted to secure json.
-	outData['isAuth'] = request.user.is_authenticated
-	outData['userid'] = request.user.id
 	
-	cur.execute('select name from tags')
-	outData['tags'] = [i[0] for i in cur.fetchall()] 
+	if request.user.is_authenticated:
+		
+		outData = {} # data for js. will be converted to secure json.
+		outData['isAuth'] = request.user.is_authenticated
+		outData['userid'] = request.user.id
+
+		cur.execute('select name from tags')
+		outData['tags'] = [i[0] for i in cur.fetchall()] 
+		
+		return render(request, 'New.html', context={'value': outData})
 	
-	return render(request, 'New.html', context={'value': outData})
+	else:
+		request.session['signInFailure'] = True
+		request.session['isNew'] = True
+		return redirect(request.session.get('currentUrl'))
 
 def NewSubmited(request):
 	
