@@ -1,15 +1,3 @@
-body{
-	background-color: #faebd7;
-}
-
-.vscroll{
-	overflow: auto;
-	white-space: nowrap;
-}
-.hscroll{
-	overflow-x: hidden;
-	overflow-y: auto;
-}
 
 :root {
   --backGround: #faebd7;	
@@ -27,6 +15,26 @@ body{
 }
 
 
+
+body{
+	background-color: #faebd7;
+}
+.vscroll{
+	overflow: auto;
+	white-space: nowrap;
+}
+.hscroll{
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.gridContainer{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+
+
 .green{
 	background-color: var(--DKgreen) !important;
 }
@@ -37,8 +45,24 @@ body{
 	background-color: var(--DKgreen) !important;
 }
 
-.gridContainer{
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
+.red{
+	background-color: var(--red) !important;
 }
+.red:hover{
+	background-color: var(--red_hover) !important;
+}
+.red:active{
+	background-color: var(--red) !important;
+}
+
+.blue{
+	background-color: var(--UNblue) !important;
+}
+.blue:hover{
+	background-color: var(--UNblue_hover) !important;
+}
+.blue:active{
+	background-color: var(--UNblue) !important;
+}
+
+

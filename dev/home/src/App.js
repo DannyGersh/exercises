@@ -40,7 +40,7 @@ function App() {
 			'hotest': hotest,
 			'signInFailure': false,
 			'isSignUp': false,
-			'isAuth': true,
+			'isAuth': false,
 			'userid': 1
 			}
 	}

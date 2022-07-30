@@ -7,15 +7,15 @@ function Home(props) {
 	
 	const latest = window.jsonData['latest'];
 	const hotest = window.jsonData['hotest'];
-	const ms = useState(true) // Menue Selection - true: latest, false: hotest
+	const ms = useState(false) // Menue Selection - true: latest, false: hotest
 	
 	return(
 	<>
 		<center>
 		<h1>~ Exercises ~</h1>
 		<p>The website for uploading and solving exercises in any field</p>
-		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
 		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={()=>ms[1](false)}>hotest</BtnMenue>
+		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
 		</center>
 		
 		<div className='gridContainer'>

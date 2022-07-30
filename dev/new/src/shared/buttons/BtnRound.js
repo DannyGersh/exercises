@@ -20,7 +20,7 @@ function BtnRound(props){
 		state[1](!state[0]);
 		if(props.onClick) props.onClick();
   }
-
+	
   if(dinamic) {
   
     return(
@@ -28,7 +28,7 @@ function BtnRound(props){
 				style={props.style} 
 				type={props.type==='submit'? 'submit': 'button'} 
 				onClick={onHandle} 
-				className={`btnRound ${state[0] ? 'activeGreen': 'activeBlue'}`}
+				className={`btnRound ${state[0] ? 'activeGreen': 'activeBlue'} ${props.className}`}
 			>
 				{props.children}
 			</button>
@@ -38,7 +38,9 @@ function BtnRound(props){
 		return(
 			<button 
 				type='button' 
-				className={`btnRound ${state[0] && "BtnColorGreen"}`}
+				style={props.style} 
+				onClick={props.onClick}
+				className={`btnRound ${state[0] && "BtnColorGreen"} ${props.className}`}
 			>
 				{props.children}
 			</button>

@@ -1,5 +1,6 @@
 import './Login.css'
 import '../Global.css'
+import BtnRound from '../buttons/BtnRound'
 import CSRFToken from "../csrftoken";
 import {useState, createRef} from 'react'
 
@@ -11,10 +12,10 @@ function Login(props){
 	// currentPage - string of previous page url
 	
 	// states:
-	// lower - L
-	// Upper - U
-	// number - N
-	// length - S
+	// validate - L - lower 
+	// validate - U - Upper 
+	// validate - N - number
+	// validate - S - length
 	const [Lcase, setLcase] = useState(false);
 	const [Ucase, setUcase] = useState(false);
 	const [Ncase, setNcase] = useState(false);
@@ -41,10 +42,13 @@ function Login(props){
     setLs(e.target.innerHTML);
     failureHandle();    
   }
-  
+  	
   return(
   <div className='main'> 
     
+		
+		<BtnRound onClick={props.sfLogin} className='escape blue'>🞬</BtnRound>
+		
     <div style={{'display':'flex'}}>
       <button className={`btnLs ${ls==='login' && 'noBottom'}`} onClick={lsHandle}>login</button>
       <button className={`btnLs ${ls==='signup' && 'noBottom'}`} onClick={lsHandle}>signup</button>
@@ -90,6 +94,8 @@ function Login(props){
       </form>
     
     </div>
+		
+		
 		
   </div>
   )

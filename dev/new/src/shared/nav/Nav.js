@@ -65,7 +65,6 @@ function Nav(props) {
 	
 	const dspProfileBtn = props.isAuth && !/user\/\d/.test(window.location);
 	const dspNewBtn = /.*[\\/]new/.test(window.location)
-	console.log(dspNewBtn)
 	
   if (!props.narrowWindow) {
     return ( 
@@ -97,6 +96,7 @@ function Nav(props) {
 						signInFailure={window.jsonData['signInFailure']} 
 						isSignUp={window.jsonData['isSignUp']} 
 						currentPage={props.currentPage}
+						sfLogin={LogInHandle}
 					/> 
 				}
     
@@ -142,6 +142,7 @@ function Nav(props) {
 						signInFailure={window.jsonData['signInFailure']} 
 						isSignUp={window.jsonData['isSignUp']} 
 						currentPage={props.currentPage}
+						sfLogin={LogInHandle}
 					/> 
 				}
 				
