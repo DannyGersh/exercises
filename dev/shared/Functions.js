@@ -1,5 +1,8 @@
 import {useState} from 'react'
 
+
+window.is_debug = (process.env.NODE_ENV === 'development')
+
 function useWindowResize(){
 	let WidthHeightRatio = 1.1;
   const [narrowWindow, setNarrowWindow] = useState(

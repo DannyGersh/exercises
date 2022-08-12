@@ -1,4 +1,5 @@
 import './Shared.css'
+import {useEffect} from 'react'
 
 function Exercise(props){
 		
@@ -22,12 +23,15 @@ function Exercise(props){
 		props.setState[2](text.target.value); // updates in New.js
 	}
 	
+	
+	
 	return(
 	<div className='Exercise'>
 		
 		<label>title *</label>
 		
 		<input
+			id = 'title'
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
 			className='ExerciseInput' 

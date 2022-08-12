@@ -37,7 +37,7 @@ function New(props){
 	const [explain	, setExplain	] = useState('');
 	const [tags			, setTags			] = useState('');
 	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
-	const isSubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
+	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
 
 	// when bottomMenue tab is clicked
 	function bottomMenueHandle(e){
@@ -45,15 +45,15 @@ function New(props){
 	}
 	
 	// submit buttons
-	function onSubmit() { isSubmit[1](true); }
-	function onPrevie() { isSubmit[1](false); }
+	function onSubmit() { issubmit[1](true); }
+	function onPrevie() { issubmit[1](false); }
 	
 	/* NOTE
 		when the user clicks one of the two submit buttons
 		the page is rerendered so that the form
 		while update its action and target to the 
 		current proper values.
-		this useEffect detects if isSubmit is set
+		this useEffect detects if issubmit is set
 		and performs the form submition.
 		allso it loads local storage.
 	*/
@@ -66,13 +66,13 @@ function New(props){
 		setExplain(localStorage.getItem('Explanation'));
 		setTags(localStorage.getItem('tags'));
 	 		
-		// isSubmit[0] = false - meaning the user clicked 'preview'
+		// issubmit[0] = false - meaning the user clicked 'preview'
 		
-		if(isSubmit[0] !== 'none') {
+		if(issubmit[0] !== 'none') {
 		
 			if( title && exercise && answer ) {
 				document.mainForm.submit();
-				if(isSubmit[0]) {
+				if(issubmit[0]) {
 					localStorage.removeItem('title');
 					localStorage.removeItem('exercise');
 					localStorage.removeItem('Explanation');
@@ -92,12 +92,12 @@ function New(props){
 			}
 			
 		}
-	},[isSubmit[0]])
+	},[issubmit[0]])
 	// NOTE
 	
 	return(
 	<>
-			<form name='mainForm' action={'/newSubmit/'} isSubmit={isSubmit[0]} method='POST' target={isSubmit[0] ? "_self": "_blank"}>
+			<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
 			<CSRFToken />
 			
 			<input type="hidden" name="title" 		value={	title	}			/>
@@ -106,7 +106,7 @@ function New(props){
 			<input type="hidden" name="hints" 		value={ hints	}			/>
 			<input type="hidden" name="tags" 			value={ tags }			/>
 			<input type="hidden" name="explain" 	value={ explain }		/>
-			<input type="hidden" name="isSubmit" 	value={ isSubmit[0] }	/>
+			<input type="hidden" name="issubmit" 	value={ issubmit[0] }	/>
 
 			<div className='bottomMenue'>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Exercise' 		&& 'green'}`}>Exercise</BtnMenue>
