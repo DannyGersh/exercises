@@ -22,5 +22,6 @@ with open('%s/%s.html'%(page,page), 'r') as f:
 	data = f.read()
 with open('%s/%s.html'%(page,page), 'w', newline='') as f:
 	res = data.replace('/static/js/','/static/pages/%s/static/js/'%page)
+	res = data.replace('/static/css/','/static/pages/%s/static/css/'%page)
 	data = f.write(res)
 		
