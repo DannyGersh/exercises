@@ -6,22 +6,26 @@
 
 import re
 from os import rename, system, getcwd, path
-from shutil import copytree
+from shutil import copytree, move, copytree
 
 page = path.basename(getcwd())
-	
-if path.exists(page):	
-	system('rmdir /s /q %s'%page)
 
-copytree('build', page)
-	
-rename('%s/index.html'%page, '%s/%s.html'%(page,page))
+if path.exists('build/%s/'%page):
+	system('rmdir /s /q ' + path.join('build',page))		
 
+copytree('build','build/%s'%page)
+
+try:
+	rename('build/%s/index.html'%page, 'build/%s/%s.html'%(page,page))
+except:
+	pass
+	
 data = ''
-with open('%s/%s.html'%(page,page), 'r') as f:
+with open('build/%s/%s.html'%(page,page), 'r') as f:
 	data = f.read()
-with open('%s/%s.html'%(page,page), 'w', newline='') as f:
+with open('build/%s/%s.html'%(page,page), 'w', newline='') as f:
 	res = data.replace('/static/js/','/static/pages/%s/static/js/'%page)
 	res = res.replace('/static/css/','/static/pages/%s/static/css/'%page)
 	data = f.write(res)
-		
+
+
