@@ -12,7 +12,7 @@ function Exercise(props){
 	
 	function onTitleChange(text){
 		localStorage.setItem('title', text.target.value);
-		props.setState[0](text.target.value); // updates in New.js
+		props.state[0][1](text.target.value); // updates in New.js
 	}
 	function onExerciseChange(text){
 		localStorage.setItem('exercise', text.target.value);
@@ -23,8 +23,7 @@ function Exercise(props){
 		props.setState[2](text.target.value); // updates in New.js
 	}
 	
-	
-	
+		
 	return(
 	<div className='Exercise'>
 		
@@ -32,6 +31,7 @@ function Exercise(props){
 		
 		<input
 			id = 'title'
+			ref={props.m}
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
 			className='ExerciseInput' 

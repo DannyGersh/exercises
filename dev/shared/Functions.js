@@ -3,6 +3,10 @@ import {useState} from 'react'
 
 window.is_debug = (process.env.NODE_ENV === 'development')
 
+export function compArr(arr1, arr2) {
+		return JSON.stringify(arr1) === JSON.stringify(arr2);
+}
+
 function useWindowResize(){
 	let WidthHeightRatio = 1.1;
   const [narrowWindow, setNarrowWindow] = useState(

@@ -5,7 +5,8 @@ import Exercise from './pages/Exercise'
 import Hints from './pages/Hints'
 import Explain from './pages/Explain'
 import TagList from './pages/TagList'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
+import {compArr} from '../shared/Functions'
 
 /* GUID
 
@@ -25,12 +26,27 @@ where the submit button submits to the same browser tab
 
 */
 
+window.activeTimers = 0;
+window.setTimer = function(func, delay) {
+    window.activeTimers++;
+    return window.setInterval(func, delay);
+};
+window.rmTimer = function(timerID) {
+    window.activeTimers--;
+    window.clearInterval(timerID);
+};
+
 
 function New(props){
 	
+	const m = [useRef([]), useRef('')]
+			
+	// m[0].current - list of latex expressions in title
+	// m[1] - refrence to title text
+
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings
-	const [title		, setTitle		] = useState('');
+	const title = useState('');
 	const [exercise	, setExercise	] = useState('');
 	const [answer		, setanswer		] = useState('');
 	const [hints		, setHints		] = useState('');
@@ -57,17 +73,48 @@ function New(props){
 		and performs the form submition.
 		allso it loads local storage.
 	*/
+		
+	// initiate m[0] with default title text
+	useEffect(()=>{
+		let t = m[1].current.value.match(/(\$\$.+?\$\$)/g);
+		if(t) {
+		t = t.map(i=>i.substring(2,i.length-2));
+		} else {
+			t = [];
+		}
+		m[0].current = t;
+	},[])
+	
 	useEffect(()=>{
 		
-		setTitle(localStorage.getItem('title'));
+		// for avoiding multiple timers
+		window.rmTimer(window.id);
+		
+		// update m[0] every 2 sec
+		window.id = window.setTimer(()=>
+		{
+			let temp = m[1].current.value.match(/(\$\$.+?\$\$)/g);
+			if(!temp) temp=[];
+			temp = temp.map(i=>i.substring(2,i.length-2));
+			// POST if change detected
+			if(!compArr(temp,m[0].current)){
+				m[0].current = temp;
+				console.log(m[0].current);
+				document.getElementById("compileLatex").submit();
+			}
+		}, 2000);
+		
+	},[title[0]])
+	
+	useEffect(()=>{
+				
+		title[1](localStorage.getItem('title'));		
 		setExercise(localStorage.getItem('exercise'));
 		setanswer(localStorage.getItem('answer'));
 		setHints(localStorage.getItem('hints'));
 		setExplain(localStorage.getItem('Explanation'));
 		setTags(localStorage.getItem('tags'));
-	 		
-		// issubmit[0] = false - meaning the user clicked 'preview'
-		
+
 		if(issubmit[0] !== 'none') {
 		
 			if( title && exercise && answer ) {
@@ -92,11 +139,18 @@ function New(props){
 			}
 			
 		}
+
 	},[issubmit[0]])
 	// NOTE
 	
+	
 	return(
 	<>
+			<iframe name="dummyframe" id="dummyframe" style={{display:'none'}}></iframe>
+			<form method='POST' id='compileLatex' action='../../../../compileLatex/' target="dummyframe">
+				<input type='hidden' name='title' value={m[0].current}/>
+			</form>
+			
 			<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
 			<CSRFToken />
 			
@@ -117,7 +171,7 @@ function New(props){
 				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>Submit</BtnMenue>
 			</div>
 	
-			{ bmt === 'Exercise' 		&& <Exercise setState={[setTitle, setExercise, setanswer]}/> }
+			{ bmt === 'Exercise' 		&& <Exercise m={m[1]} state={[title, setExercise, setanswer]}/> }
 			{ bmt === 'Hints' 			&& <Hints setState={setHints}/> }
 			{ bmt === 'Explanation' && <Explain setState={setExplain}/> }
 			{ bmt === 'Tags' 				&& <TagList setState={setTags}/> }
