@@ -2,6 +2,7 @@ chalanges/pages/**
 
 venv/**
 *.env
+**/*.venv
 **/node_modules/**
 **/build/**
 **/*.eslintcache
