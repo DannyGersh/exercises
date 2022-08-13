@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-sf!$kucoop&2_wnx0$f_$4-$^a%hw1d6lb7y(sk&j3=p06cn%w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['91.226.72.17']
+ALLOWED_HOSTS = ['91.226.72.17', 'localhost']
 
 # Application definition
 
@@ -90,7 +90,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'exercises',
-        'USER': 'postgres',
+        'USER': 'danny',
         'PASSWORD': 'danny',
         'HOST': 'localhost',
         'PORT': '',
@@ -133,7 +133,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/volume/static/'
-CSRF_TRUSTED_ORIGINS = ['http://91.226.72.17']
+CSRF_TRUSTED_ORIGINS = ['http://91.226.72.17', 'http://localhost']
 # CSRF_COOKIE_DOMAIN = '91.226.72.17'
 
 

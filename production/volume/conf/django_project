@@ -1,0 +1,15 @@
+server {
+	listen 80;
+	# server_name 91.226.72.17;
+	server_name localhost;
+
+	location / {
+		# proxy_pass http://91.226.72.17:8000;
+		proxy_pass http://localhost:8000;
+	}
+	location /static/ {
+		alias /volume/static/;
+	}
+}
+
+
