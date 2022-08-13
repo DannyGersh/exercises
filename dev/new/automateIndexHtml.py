@@ -5,7 +5,7 @@
 # and execute with no args
 
 import re
-from os import rename, system, getcwd, path
+from os import rename, system, getcwd, path, chdir
 from shutil import copytree, move, copytree
 
 page = path.basename(getcwd())

@@ -44,15 +44,15 @@ SQLDataKeys = [
 	'author',       # varchar(100)
 	'creationdate', # timestamp default current_timestamp
 	'title',        # varchar(400) not null
-	'rating',       # integer[] not null
-	'tags',         # varchar(100)[] not null
+	'rating',       # integer[] not null default '{}'
+	'tags',         # varchar(100)[] not null default '{}'
 	'explain'       # varchar(4000)
 ]
 # auth_user database extra columns
 auth_user_extra = [
-	'authored', # integer[]
-	'liked',    # integer[]
-	'answered'  # integer[]
+	'authored', # integer[] default '{}'
+	'liked',    # integer[] default '{}'
+	'answered'  # integer[] default '{}'
 ]
 # tags database
 database_tags = [

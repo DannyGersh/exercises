@@ -8,7 +8,7 @@
   
   {{ value|json_script:"jsonElement" }}
   <script>
-	if(window.is_debug){
+	if(!window.is_debug){
 	  window.jsonData = JSON.parse(document.getElementById('jsonElement').textContent);
 	}  
   </script>

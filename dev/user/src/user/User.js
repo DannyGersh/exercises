@@ -42,8 +42,8 @@ function User(){
 		
   return(
   <>	
-		<p style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</p>
-		
+		<h3 style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</h3>
+				
 		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
 			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Authored' && 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
 			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Liked'		 && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
