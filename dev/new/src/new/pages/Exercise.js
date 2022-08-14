@@ -31,7 +31,7 @@ function Exercise(props){
 		
 		<input
 			id = 'title'
-			ref={props.m}
+			ref={props.titleRef}
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
 			className='ExerciseInput' 

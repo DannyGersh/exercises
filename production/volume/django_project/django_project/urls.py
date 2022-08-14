@@ -18,6 +18,8 @@ from django.urls import path
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
+import json
+
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -61,6 +63,7 @@ database_tags = [
 ]
 
 def test(request):
+	print(json.loads(request.body.decode("utf-8")))
 	return HttpResponse('test')
 
 @ensure_csrf_cookie		
@@ -427,18 +430,20 @@ def NewSubmited(request):
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-		
-		path('', Home),
-		path('new/', New),
-		path('<int:id>/', Chalange),
-		path('browse/<str:sterm>/', Browse),
-		
-		path('like/', Like),
-		path('login/', Login),
-		path('browse/', Browse),
-		path('logout/', LogOut),
-		path('signup/', SignUp),
-		path('newSubmit/', NewSubmited),
-		path('user/<int:userid>/', Profile),
+  path('admin/', admin.site.urls),
+	
+	path('', Home),
+	path('new/', New),
+	path('<int:id>/', Chalange),
+	path('browse/<str:sterm>/', Browse),
+	
+	path('like/', Like),
+	path('login/', Login),
+	path('browse/', Browse),
+	path('logout/', LogOut),
+	path('signup/', SignUp),
+	path('newSubmit/', NewSubmited),
+	path('user/<int:userid>/', Profile),
+	
+	path('test/', test),
 ]

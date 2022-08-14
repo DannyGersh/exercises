@@ -18,6 +18,7 @@ from django.shortcuts import render, redirect
 
 import json
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import HttpResponse
 
 from django.contrib.auth.decorators import login_required
@@ -323,8 +324,12 @@ def SignUp(request):
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
 	return redirect('./../../../../../../../')
 
-def New(request):
+def CompileLatex(request):
+	return HttpResponse('compileLatex')
 	
+@xframe_options_exempt
+def New(request):
+
 	if request.user.is_authenticated:
 		
 		outData = {} # data for js. will be converted to secure json.

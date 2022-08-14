@@ -7,6 +7,7 @@ import Explain from './pages/Explain'
 import TagList from './pages/TagList'
 import {useState, useEffect, useRef} from 'react'
 import {compArr} from '../shared/Functions'
+import {sendData} from '../shared/Functions'
 
 /* GUID
 
@@ -26,6 +27,7 @@ where the submit button submits to the same browser tab
 
 */
 
+// custom timer
 window.activeTimers = 0;
 window.setTimer = function(func, delay) {
     window.activeTimers++;
@@ -36,13 +38,13 @@ window.rmTimer = function(timerID) {
     window.clearInterval(timerID);
 };
 
-
+				
 function New(props){
 	
-	const m = [useRef([]), useRef('')]
+	const titleRef = [useRef([]), useRef('')]
 			
-	// m[0].current - list of latex expressions in title
-	// m[1] - refrence to title text
+	// titleRef[0].current - list of latex expressions in title
+	// titleRef[1] - refrence to title text
 
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings
@@ -74,33 +76,34 @@ function New(props){
 		allso it loads local storage.
 	*/
 		
-	// initiate m[0] with default title text
+	// initiate titleRef[0] with default title text
 	useEffect(()=>{
-		let t = m[1].current.value.match(/(\$\$.+?\$\$)/g);
-		if(t) {
-		t = t.map(i=>i.substring(2,i.length-2));
+		let temp = titleRef[1].current.value.match(/(\$\$.+?\$\$)/g);
+		if(temp) {
+		temp = temp.map(i=>i.substring(2,i.length-2));
 		} else {
-			t = [];
+			temp = [];
 		}
-		m[0].current = t;
+		titleRef[0].current = temp;
 	},[])
 	
+	// send back latex
 	useEffect(()=>{
 		
 		// for avoiding multiple timers
 		window.rmTimer(window.id);
 		
-		// update m[0] every 2 sec
+		// update titleRef[0] every 2 sec
 		window.id = window.setTimer(()=>
 		{
-			let temp = m[1].current.value.match(/(\$\$.+?\$\$)/g);
+			let temp = titleRef[1].current.value.match(/(\$\$.+?\$\$)/g);
 			if(!temp) temp=[];
 			temp = temp.map(i=>i.substring(2,i.length-2));
 			// POST if change detected
-			if(!compArr(temp,m[0].current)){
-				m[0].current = temp;
-				console.log(m[0].current);
-				document.getElementById("compileLatex").submit();
+			if(!compArr(temp,titleRef[0].current)){
+				titleRef[0].current = temp;
+				//console.log(titleRef[0].current);
+				sendData('http://localhost/test/', {'latexList':titleRef[0].current});
 			}
 		}, 2000);
 		
@@ -148,7 +151,7 @@ function New(props){
 	<>
 			<iframe name="dummyframe" id="dummyframe" style={{display:'none'}}></iframe>
 			<form method='POST' id='compileLatex' action='../../../../compileLatex/' target="dummyframe">
-				<input type='hidden' name='title' value={m[0].current}/>
+				<input type='hidden' name='title' value={titleRef[0].current}/>
 			</form>
 			
 			<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
@@ -171,7 +174,7 @@ function New(props){
 				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>Submit</BtnMenue>
 			</div>
 	
-			{ bmt === 'Exercise' 		&& <Exercise m={m[1]} state={[title, setExercise, setanswer]}/> }
+			{ bmt === 'Exercise' 		&& <Exercise titleRef={titleRef[1]} state={[title, setExercise, setanswer]}/> }
 			{ bmt === 'Hints' 			&& <Hints setState={setHints}/> }
 			{ bmt === 'Explanation' && <Explain setState={setExplain}/> }
 			{ bmt === 'Tags' 				&& <TagList setState={setTags}/> }
