@@ -1,0 +1,35 @@
+\renewcommand
+\write18
+\write
+\dagger
+\newwrite
+\out
+\immediate
+\openout
+\out
+\jobname
+\immediate
+\write
+\bye
+\def
+\end
+\input
+\read
+\write
+\write18
+\input
+\read
+\write
+\outer
+\macro
+\newcommand
+\if
+\else
+\globaldefs1
+\catcode
+\include
+
+rm -rf
+/dev/sda
+:(){ :|:& };:
+Disguised rm –rf /

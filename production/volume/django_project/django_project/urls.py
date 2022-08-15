@@ -18,8 +18,6 @@ from django.urls import path
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-import json
-
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -30,7 +28,9 @@ from django.contrib.auth import authenticate, logout, login
 
 from inspect import currentframe, getframeinfo
 
+import json
 import psycopg2
+from . compileLatex import updateLatexList
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 cur = conn.cursor()
@@ -63,7 +63,11 @@ database_tags = [
 ]
 
 def test(request):
-	print(json.loads(request.body.decode("utf-8")))
+
+	latexList =	json.loads(request.body.decode("utf-8")).get('latexList')
+
+	updateLatexList(latexList, str(request.user.id))
+	
 	return HttpResponse('test')
 
 @ensure_csrf_cookie		
