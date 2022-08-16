@@ -77,13 +77,16 @@ function Chalange(props){
 	  setDspReport(!dspReport)
   }
   
-  
+  useEffect(()=>{
+		document.getElementById('title').innerHTML = chalange['title'];
+	},[])
+	
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
 	
 		{ ! dspExplain ?
 		<>
-			<h4>{chalange['title']}</h4>
+			<h4 id='title'>{chalange['title']}</h4>
 			<p>{chalange['question']}</p>
 			{ dspAnswer && ( <>
 				<hr />

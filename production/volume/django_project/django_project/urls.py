@@ -34,6 +34,7 @@ from inspect import currentframe, getframeinfo
 import json
 import psycopg2
 from . compileLatex import updateLatexList
+import re
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 cur = conn.cursor()
@@ -51,7 +52,8 @@ SQLDataKeys = [
 	'title',        # varchar(400) not null
 	'rating',       # integer[] not null default '{}'
 	'tags',         # varchar(100)[] not null default '{}'
-	'explain'       # varchar(4000)
+	'explain',      # varchar(4000)
+	'latex',				# varchar(30)[] not null default '{}'
 ]
 # auth_user database extra columns
 auth_user_extra = [
@@ -70,7 +72,8 @@ def test(request):
 
 	latexList =	json.loads(request.body.decode("utf-8")).get('latexList')
 
-	updateLatexList(latexList, str(request.user.id))
+	latexList = updateLatexList(latexList, str(request.user.id))
+	request.session['latexList'] = latexList
 	
 	return HttpResponse('test')
 
@@ -417,6 +420,29 @@ def NewSubmited(request):
 			
 			tags = tags.split(',')
 			
+			title = request.POST.get('title', '').replace(r'','')
+			#title = re.sub(r'\$\$(.+?)\$\$', r'<p>\1</p>', title)
+			
+			titleLatex = request.session.get('latexList', [])
+
+			reg = r'$$___latex$$'
+			a = (re.sub(r'\$\$(.+?)\$\$', reg, title))
+			a = re.split(r'(\$\$___latex\$\$)', a)
+			
+			try:
+				a.remove('')
+			except:
+				pass
+			
+			index = 0
+			for i in range(len(a)):
+				if(a[i] == reg):
+					# convert to html
+					a[i] = "<img class='latex' src='/static/users/%s/svg/%s.svg'/>"%(str(request.user.id),titleLatex[index][1])
+					index += 1
+			
+			title = '<p>%s</p>'%''.join(a)
+			
 			inData = [
 				request.user.id									 ,
 				request.POST.get('exercise', '') ,
@@ -424,10 +450,11 @@ def NewSubmited(request):
 				request.POST.get('hints', '') 	 ,
 				request.user.username						 ,
 				timestamp 											 ,
-				request.POST.get('title', '')		 ,
+				title														 ,
 				[]															 ,
 				tags														 ,
 				request.POST.get('explain', '')  ,
+				[i[1] for i in titleLatex]			 ,
 			]
 			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 			

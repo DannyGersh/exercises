@@ -145,13 +145,16 @@ function New(props){
 
 	},[issubmit[0]])
 	// NOTE
-
+	
 	return(
 	<>
+	
+		<img src='/static/users/1/svg/16606560148095725.svg'/>
+		
 		<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
 			<CSRFToken/>
 			
-			<input type="hidden" name="title" 		value={	title	}			/>
+			<input type="hidden" name="title" 		value={	title[0]	}	/>
 			<input type="hidden" name="exercise" 	value={ exercise }	/>
 			<input type="hidden" name="answer" 		value={ answer }		/>
 			<input type="hidden" name="hints" 		value={ hints	}			/>

@@ -3,32 +3,33 @@ import json
 from time import time
 
 latex_a = '\\documentclass{article}\n\\usepackage{amsmath}'
-latex_b = '\\begin{document}\n'
-latex_c = '\\end{document}\n'
+latex_b = '\\begin{document}\n\\begin{LARGE}'
+latex_c = '\\thispagestyle{empty}\n'
+latex_d = '\\end{LARGE}\n\\end{document}\n'
 
 forbiden = (
-'\\renewcommand', 
-'\\write18', 
-'\\write', 
-'\\dagger', 
-'\\newwrite', 
-'\\openout', 
-'\\out', 
-'\\jobname', 
-'\\immediate', 
-'\\bye', 
-'\\def', 
-'\\end', 
-'\\input', 
-'\\read', 
-'\\outer', 
-'\\macro', 
-'\\newcommand', 
-'\\if', 
-'\\else', 
-'\\globaldefs1', 
-'\\catcode', 
-'\\include', 
+	'\\renewcommand', 
+	'\\write18', 
+	'\\write', 
+	'\\dagger', 
+	'\\newwrite', 
+	'\\openout', 
+	'\\out', 
+	'\\jobname', 
+	'\\immediate', 
+	'\\bye', 
+	'\\def', 
+#	'\\end', 
+	'\\input', 
+	'\\read', 
+	'\\outer', 
+	'\\macro', 
+	'\\newcommand', 
+	'\\if', 
+	'\\else', 
+	'\\globaldefs1', 
+	'\\catcode', 
+	'\\include', 
 
 #'rm -rf', 
 #'/dev/sda', 
@@ -38,7 +39,7 @@ forbiden = (
 )
 
 command_gen_pdf = 'pdflatex -interaction batchmode -parse-first-line -no-shell-escape -file-line-error '
-dir_static = '/volume/static/users/'
+dir_static = r'/volume/static/users/'
 
 def gen_svg(latex, user, identifier):
 
@@ -59,7 +60,10 @@ def gen_svg(latex, user, identifier):
 	os.chdir('svg')
 	
 	with open(identifier+'.tex', 'w') as f:
-		f.write(latex_a+latex_b+'\n'+latex+'\n\n'+latex_c)
+		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
+	
+	with open('poop.tex', 'w') as f:
+		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 	
 	# TODO - add return false on falure and true on success
 	# dangere zone
@@ -78,7 +82,7 @@ def updateLatexList(latexList, user):
 	
 	dir_base = os.path.join(dir_static, user)
 	file_json = os.path.join(dir_base, 'json.json')
-	
+		
 	# create dir structure if not exists
 	if not os.path.exists(dir_base):
 		os.makedirs(dir_base)
@@ -131,6 +135,7 @@ def updateLatexList(latexList, user):
 	
 	os.chdir(dir_original)
 
+	return l
 
 #updateLatexList(latex, user)
 
