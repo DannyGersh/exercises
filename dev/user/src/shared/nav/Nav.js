@@ -69,7 +69,6 @@ function Nav(props) {
   if (!props.narrowWindow) {
     return ( 
 			<>
-			
         <div className="nav">
           
           {/* menue buttons */}

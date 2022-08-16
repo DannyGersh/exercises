@@ -133,12 +133,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/volume/static/'
-CSRF_TRUSTED_ORIGINS = ['http://91.226.72.17', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = [
+	'http://91.226.72.17', 
+	'http://localhost',
+]
+#CSRF_HEADER_NAME = 'X-CSRFToken'
 # CSRF_COOKIE_DOMAIN = '91.226.72.17'
 
 
-# CSRF_COOKIE_NAME = 'csrftoken'
-# CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
+#CSRF_COOKIE_NAME = 'csrftoken'
+#CSRF_HEADER_NAME = 'HTTP_X-CSRFTOKEN'
+#CSRF_COOKIE_DOMAIN = '.localhost'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

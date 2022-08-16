@@ -21,6 +21,9 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import requires_csrf_token
+from django.template.context_processors import csrf
+from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -62,6 +65,7 @@ database_tags = [
 	'name',	# varchar(100) not null unique
 ]
 
+@ensure_csrf_cookie		
 def test(request):
 
 	latexList =	json.loads(request.body.decode("utf-8")).get('latexList')
@@ -70,7 +74,7 @@ def test(request):
 	
 	return HttpResponse('test')
 
-@ensure_csrf_cookie		
+@ensure_csrf_cookie	
 def Chalange(request, id):
 	
 	outData = {} # data for js. will be converted to secure json.
@@ -96,7 +100,7 @@ def Chalange(request, id):
 
 	return render(request, 'chalange.html', context={'value': outData})
 
-@ensure_csrf_cookie		
+@ensure_csrf_cookie	
 def Browse(request, sterm=''):
 
 	outData = {} # data for js. will be converted to secure json.
@@ -136,6 +140,8 @@ def Browse(request, sterm=''):
 		return render(request, 'browse.html', context={'value': outData})
 
 def Home(request):
+	
+	print(get_token(request))
 	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
@@ -354,6 +360,7 @@ def Like(request):
 		else:
 				return(HttpResponse('this should never happen'))
 
+@ensure_csrf_cookie		
 def New(request):
 	
 	if request.user.is_authenticated:

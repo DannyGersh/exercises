@@ -30,7 +30,7 @@ from inspect import currentframe, getframeinfo
 import psycopg2
 from . env import ENV_PSQL
 
-conn = psycopg2.connect("dbname=chalanges user=postgres password="+ENV_PSQL)
+conn = psycopg2.connect("dbname=chalanges user=postgres password=#QMrlj76#R")
 cur = conn.cursor()
 cur.execute('SELECT version();')
 db_version = cur.fetchone()
@@ -105,6 +105,7 @@ def Browse(request, sterm=''):
 		
 		return render(request, 'browse.html', context={'value': outData})
 
+@ensure_csrf_cookie				
 def Home(request):
 	
 	outData = {} # data for js. will be converted to secure json.
@@ -142,6 +143,7 @@ def Home(request):
 	
 	return render(request, 'Home.html', context={'value': outData})
 
+@ensure_csrf_cookie				
 def Like(request):
 		
 		if request.method == "POST":
@@ -247,7 +249,8 @@ def Profile(request, userid):
 	
 	else:
 			return HttpResponse("trying to peek at other acounts ar ya ?")
-				
+
+@ensure_csrf_cookie				
 def Login(request):
 		
 	if request.method == "POST":
@@ -282,12 +285,14 @@ def Login(request):
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
 	return redirect('./../../../../../../../')
 
+@ensure_csrf_cookie				
 def LogOut(request):
 	
 	logout(request)	
 	# this is ok
 	return redirect("./../../../../")
 
+@ensure_csrf_cookie				
 def SignUp(request):
 	
 	if request.method == "POST":
@@ -324,6 +329,7 @@ def SignUp(request):
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
 	return redirect('./../../../../../../../')
 
+@ensure_csrf_cookie				
 def CompileLatex(request):
 	return HttpResponse('compileLatex')
 	
@@ -346,6 +352,7 @@ def New(request):
 		request.session['isNew'] = True
 		return redirect(request.session.get('currentUrl'))
 
+@ensure_csrf_cookie				
 def NewSubmited(request):
 	
 	outData = {} # data for js. will be converted to secure json.

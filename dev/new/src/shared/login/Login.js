@@ -58,7 +58,7 @@ function Login(props){
 	
       <form id='with-captcha' action={ ls==='login' ? '/login/': '/signup/'  } method='POST'>
         
-        { process.env.NODE_ENV !== 'development' && <CSRFToken /> }
+        <CSRFToken/>
         
         <input type="hidden" name="login_signup" value={ls}/>
         <input type="hidden" name="currentPage" value={props.currentPage}/>

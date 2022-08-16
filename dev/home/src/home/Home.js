@@ -1,14 +1,16 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Exercise from '../shared/exercise/Exercise'
 import BtnMenue from '../shared/buttons/BtnMenue'
 import './Home.css'
+
+import {getCookie} from '../shared/Functions'
 
 function Home(props) {
 	
 	const latest = window.jsonData['latest'];
 	const hotest = window.jsonData['hotest'];
 	const ms = useState(false) // Menue Selection - true: latest, false: hotest
-	
+
 	return(
 	<>
 		<center>

@@ -4,7 +4,7 @@ import './shared/Global.css'
 import Home from './home/Home'
 
 function App() {
-  
+  	
 	// PERROR - the browser wont record this page on history for some reason
 	window.history.pushState({}, '', window.location);
 	

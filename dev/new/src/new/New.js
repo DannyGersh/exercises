@@ -8,7 +8,8 @@ import TagList from './pages/TagList'
 import {useState, useEffect, useRef} from 'react'
 import {compArr} from '../shared/Functions'
 import {sendData} from '../shared/Functions'
-
+import {getCookie} from '../shared/Functions'
+ 
 /* GUID
 
 bm - bottom menue
@@ -146,16 +147,17 @@ function New(props){
 	},[issubmit[0]])
 	// NOTE
 	
+	//		<CSRFToken />
+	
+	const csrf = useRef(getCookie("csrftoken"));
+	useEffect(()=>{
+		csrf.current = getCookie("csrftoken");
+	},[])
 	
 	return(
 	<>
-			<iframe name="dummyframe" id="dummyframe" style={{display:'none'}}></iframe>
-			<form method='POST' id='compileLatex' action='../../../../compileLatex/' target="dummyframe">
-				<input type='hidden' name='title' value={titleRef[0].current}/>
-			</form>
-			
-			<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
-			<CSRFToken />
+		<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
+			<input csrf={csrf.current} type="hidden" name="csrfmiddlewaretoken" value={getCookie('')} />
 			
 			<input type="hidden" name="title" 		value={	title	}			/>
 			<input type="hidden" name="exercise" 	value={ exercise }	/>
