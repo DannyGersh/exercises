@@ -37,15 +37,8 @@ forbiden = (
 
 )
 
-#a = {'latexList': ['Q'], 'user': 'user1'}
-#latex = a.get('latexList')
-#user = a.get('user')
-
-#dir_original = os.getcwd() # remember to chdir to original dir
-#dir_base = '/volume/test/'
-#file_json = os.path.join(dir_base, 'json.json')
-
 command_gen_pdf = 'pdflatex -interaction batchmode -parse-first-line -no-shell-escape -file-line-error '
+dir_static = '/volume/static/users/'
 
 def gen_svg(latex, user, identifier):
 
@@ -57,7 +50,7 @@ def gen_svg(latex, user, identifier):
 		if i in latex:
 			return -1
 			
-	dir_base = os.path.join('/volume/test/', user)
+	dir_base = os.path.join(dir_static, user)
 	os.chdir(dir_base)
 	
 	if not os.path.exists('svg'):
@@ -83,7 +76,7 @@ def updateLatexList(latexList, user):
 	
 	dir_original = os.getcwd()
 	
-	dir_base = os.path.join('/volume/test/', user)
+	dir_base = os.path.join(dir_static, user)
 	file_json = os.path.join(dir_base, 'json.json')
 	
 	# create dir structure if not exists
