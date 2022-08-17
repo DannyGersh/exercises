@@ -56,7 +56,7 @@ function New(props){
 	const [tags			, setTags			] = useState('');
 	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
 	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
-
+	
 	// when bottomMenue tab is clicked
 	function bottomMenueHandle(e){
 		setBmt(e.target.innerHTML);
@@ -102,7 +102,6 @@ function New(props){
 			// POST if change detected
 			if(!compArr(temp,titleRef[0].current)){
 				titleRef[0].current = temp;
-				//console.log(titleRef[0].current);
 				sendData('http://localhost/test/', {'latexList':titleRef[0].current});
 			}
 		}, 2000);

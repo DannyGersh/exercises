@@ -35,6 +35,8 @@ import json
 import psycopg2
 from . compileLatex import updateLatexList
 import re
+import os
+from time import time
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 cur = conn.cursor()
@@ -67,6 +69,11 @@ database_tags = [
 	'name',	# varchar(100) not null unique
 ]
 
+dir_users = os.path.join('/','volume','static','users')
+
+reg_latex = r'$$___latex$$'
+reg_latex_search = r'\$\$(.+?)\$\$'
+
 @ensure_csrf_cookie		
 def test(request):
 
@@ -94,7 +101,7 @@ def Chalange(request, id):
 	
 	cur.execute('''
 	select 
-			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
+			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
 			from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()	
@@ -105,7 +112,7 @@ def Chalange(request, id):
 
 @ensure_csrf_cookie	
 def Browse(request, sterm=''):
-
+	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
 	if not request.session.has_key('signInFailure'):
@@ -143,9 +150,7 @@ def Browse(request, sterm=''):
 		return render(request, 'browse.html', context={'value': outData})
 
 def Home(request):
-	
-	print(get_token(request))
-	
+		
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
 	if not request.session.has_key('signInFailure'):
@@ -383,7 +388,7 @@ def New(request):
 		return redirect(request.session.get('currentUrl'))
 
 def NewSubmited(request):
-	
+
 	outData = {} # data for js. will be converted to secure json.
 	
 	if request.method == "POST":
@@ -393,20 +398,49 @@ def NewSubmited(request):
 		if tags == '[]': tags = ''
 		tags = tags.replace('[', '')
 		tags = tags.replace(']', '')
-		
-		if(request.POST.get('isSubmit')=='true'):
+				
+		if(request.POST.get('issubmit')=='true'):
+
+			titleLatexList = request.session.get('latexList','')
+			titleLatexList = [i[1] for i in titleLatexList]
+			titleLatexList = json.dumps(titleLatexList)
+			request.session['latexList'] = []
+			
+			now = str(time()).replace('.','')
+			
+			dir_base 		 = dir_users
+			dir_user 		 = os.path.join(dir_base, str(request.user.id))
+			dir_svg 		 = os.path.join(dir_user, 'svg')
+			dir_exercise = os.path.join(dir_user, now)
+			file_json 	 = os.path.join(dir_exercise,'.json')
+			files_svg 	 = os.listdir(dir_svg)
+			
+			# TODO add error handling
+			if not os.path.exists(dir_exercise):
+				os.makedirs(dir_exercise)
+			with open(file_json, 'w') as f:
+				f.write(titleLatexList)
+			
+			for i in files_svg:
+				file_src = os.path.join(dir_svg,i)
+				file_dst = os.path.join(dir_exercise,i)
+				os.system('mv ' + file_src + ' ' + file_dst)
+			
+			title = request.POST.get('title', '')
+			title = re.sub(reg_latex_search, reg_latex, title)
 			
 			cur.execute('''insert into chalanges
-			(question, answer, hints, author, title, tags, explain, rating)
+			(question, answer, hints, author, title, tags, explain, rating, latex)
 			values( ''' + 
 				"\'"  + request.POST.get('exercise', '')	+ "\', " + 
 				"\'"  + request.POST.get('answer', '') 		+ "\', " + 
 				"\'"  + request.POST.get('hints', '') 		+ "\', " + 
 				"\'"  + request.user.username							+ "\', " + 
-				"\'"  + request.POST.get('title', '') 		+ "\', " + 
+				"\'"  + title													 		+ "\', " + 
 				"\'{" + tags 															+ "}\'," +
 				"\'"  + request.POST.get('explain', '') 	+ "\'," +
-				"\'{}\'"	 +
+				"\'{}\',"	 					+	
+				"\'" + now + "\'" 	+
 			')'
 			)
 			cur.execute("update auth_user set authored[cardinality(authored)] = (select count(*) from chalanges)::integer where id = "+str(request.user.id))
@@ -414,19 +448,17 @@ def NewSubmited(request):
 			
 			return redirect("../../../../user/" + str(request.user.id))
 		
-		else:
+		else:			
 			cur.execute('''select to_char(now(), 'MM/DD/YYYY - HH24:MI')''')
 			timestamp = cur.fetchone()			
 			
 			tags = tags.split(',')
 			
-			title = request.POST.get('title', '').replace(r'','')
-			#title = re.sub(r'\$\$(.+?)\$\$', r'<p>\1</p>', title)
+			title = request.POST.get('title', '').replace(r'','')		
 			
 			titleLatex = request.session.get('latexList', [])
 
-			reg = r'$$___latex$$'
-			a = (re.sub(r'\$\$(.+?)\$\$', reg, title))
+			a = (re.sub(r'\$\$(.+?)\$\$', reg_latex, title))
 			a = re.split(r'(\$\$___latex\$\$)', a)
 			
 			try:
@@ -436,7 +468,7 @@ def NewSubmited(request):
 			
 			index = 0
 			for i in range(len(a)):
-				if(a[i] == reg):
+				if(a[i] == reg_latex):
 					# convert to html
 					a[i] = "<img class='latex' src='/static/users/%s/svg/%s.svg'/>"%(str(request.user.id),titleLatex[index][1])
 					index += 1
