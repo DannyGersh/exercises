@@ -77,8 +77,27 @@ function Chalange(props){
 	  setDspReport(!dspReport)
   }
   
-  useEffect(()=>{
-		document.getElementById('title').innerHTML = chalange['title'];
+	let dir_latex		= chalange['dir_latex' ];
+	let list_latex	= chalange['list_latex'];
+	
+	const reg_latex = /(\$\$___latex\$\$)/
+	let latex_title = chalange['title'].split(reg_latex)
+	latex_title = latex_title.filter(i=>i!=='')
+
+	let index = 0;
+	for(let i=0 ; i<latex_title.length ; i++) {
+		if(latex_title[i] === '$$___latex$$') {
+			const tempLatex = list_latex[index];
+			const tempId = userid.toString()
+			const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
+			latex_title[i] = '<img src="'+tempPath+'" />'
+			index++;
+		}
+	}
+	const res = '<h4>' + latex_title.join('') + '</h4>'
+	
+	useEffect(()=>{
+		document.getElementById('title').innerHTML = res;
 	},[])
 	
   return ( 
@@ -86,7 +105,7 @@ function Chalange(props){
 	
 		{ ! dspExplain ?
 		<>
-			<h4 id='title'>{chalange['title']}</h4>
+			<div id='title'></div>
 			<p>{chalange['question']}</p>
 			{ dspAnswer && ( <>
 				<hr />

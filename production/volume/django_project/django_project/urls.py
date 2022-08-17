@@ -107,7 +107,15 @@ def Chalange(request, id):
 	inData = cur.fetchone()	
 	
 	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
-
+	
+	dir_exercise = os.path.join(dir_users, str(request.user.id), outData['chalange']['latex'])
+	file_json = os.path.join(dir_exercise, '.json')
+	with open(file_json, 'r') as f:
+		identifiers = json.loads(f.read())
+	
+	outData['chalange']['dir_latex'] = outData['chalange']['latex']
+	outData['chalange']['list_latex'] = identifiers
+	
 	return render(request, 'chalange.html', context={'value': outData})
 
 @ensure_csrf_cookie	
@@ -420,6 +428,7 @@ def NewSubmited(request):
 				os.makedirs(dir_exercise)
 			with open(file_json, 'w') as f:
 				f.write(titleLatexList)
+			# END_TODO
 			
 			for i in files_svg:
 				file_src = os.path.join(dir_svg,i)
@@ -455,7 +464,6 @@ def NewSubmited(request):
 			tags = tags.split(',')
 			
 			title = request.POST.get('title', '').replace(r'','')		
-			
 			titleLatex = request.session.get('latexList', [])
 
 			a = (re.sub(r'\$\$(.+?)\$\$', reg_latex, title))
@@ -486,7 +494,7 @@ def NewSubmited(request):
 				[]															 ,
 				tags														 ,
 				request.POST.get('explain', '')  ,
-				[i[1] for i in titleLatex]			 ,
+				'ignored'												 ,
 			]
 			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 			

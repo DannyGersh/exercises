@@ -24,4 +24,3 @@ xcopy /y /e dev\home\build\home          %~dp0production\volume\static\pages\hom
 xcopy /y /e dev\new\build\new            %~dp0production\volume\static\pages\new
 xcopy /y /e dev\user\build\user          %~dp0production\volume\static\pages\user
 
-pause
