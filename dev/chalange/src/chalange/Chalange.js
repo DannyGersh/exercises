@@ -53,6 +53,56 @@ function Chalange(props){
   const [dspReport, setDspReport] = useState(false);
 	const [dspExplain, setDspExplain] = useState(false);
 	
+	// latex
+	let dir_latex		= chalange['latex'];
+	let list_latex	= chalange['list_latex'];
+
+	function mainText2html(target) {
+		
+		/*TODO - fix workaround
+			this is a huge workeround.
+			the problem being worked around is realy wide spred
+			and hard to fix.
+			the problem:
+			the target exercise is defind as 'exercise'
+			in targets, but is defined as 'question'
+			in the database at table chalanges.
+			e.g. chalanges allso needs renaming.
+		*/
+		let workeround = target;
+		if(target==='exercise') {
+			workeround = 'question';
+		}
+		
+		const reg_latex = /(\$\$___latex\$\$)/
+		let textList = chalange[workeround].split(reg_latex)
+		textList = textList.filter(i=>i!=='')
+	
+		let index = 0;
+		for(let i=0 ; i<textList.length ; i++) {
+			if(textList[i] === '$$___latex$$') {
+				const tempLatex = list_latex[target][index][1]; // TODO - workeround here, needs fixin 
+				const tempId = chalange['authid'];
+				const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
+				textList[i] = '<img src="'+tempPath+'" />'
+				index++;
+			}
+		}
+		return textList.join('');
+	}
+
+	const htmlTitle = '<h4>'+mainText2html('title')+'</h4>';
+	const htmlExercise = '<p>'+mainText2html('exercise')+'</p>';
+	const htmlAnswer = '<p>'+mainText2html('answer')+'</p>';
+	
+	useEffect(()=>{
+		document.getElementById('title').innerHTML = htmlTitle;
+		document.getElementById('exercise').innerHTML = htmlExercise;
+		//document.getElementById('answer').innerHTML = htmlAnswer;
+	},[])
+	
+	// end_latex
+
   function dspLikeHandle() { 
 	  if(isLike) { !dspLike ? setAddToLikes(0): setAddToLikes(-1) }
 	  else { !dspLike ? setAddToLikes(1): setAddToLikes(0) };
@@ -64,7 +114,7 @@ function Chalange(props){
   function answerHandle() { 
     setDspHints(false);
 		setDspExplain(false);
-  }
+	}
 	function explainHandle() {
 		setDspExplain(!dspExplain);
 		setDspHints(false);
@@ -77,28 +127,12 @@ function Chalange(props){
 	  setDspReport(!dspReport)
   }
   
-	let dir_latex		= chalange['dir_latex' ];
-	let list_latex	= chalange['list_latex'];
-	
-	const reg_latex = /(\$\$___latex\$\$)/
-	let latex_title = chalange['title'].split(reg_latex)
-	latex_title = latex_title.filter(i=>i!=='')
-
-	let index = 0;
-	for(let i=0 ; i<latex_title.length ; i++) {
-		if(latex_title[i] === '$$___latex$$') {
-			const tempLatex = list_latex[index];
-			const tempId = userid.toString()
-			const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
-			latex_title[i] = '<img src="'+tempPath+'" />'
-			index++;
-		}
-	}
-	const res = '<h4>' + latex_title.join('') + '</h4>'
-	
 	useEffect(()=>{
-		document.getElementById('title').innerHTML = res;
-	},[])
+		if(dspAnswer) {
+			document.getElementById('answer').innerHTML = htmlAnswer;
+		}
+	},[dspAnswer])
+	
 	
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
@@ -106,10 +140,10 @@ function Chalange(props){
 		{ ! dspExplain ?
 		<>
 			<div id='title'></div>
-			<p>{chalange['question']}</p>
+			<p id='exercise'></p>
 			{ dspAnswer && ( <>
 				<hr />
-				<p>{chalange['answer']}</p>
+				<p id='answer'></p>
 				</> ) }
 			{ dspHints && ( <>
 				<hr />

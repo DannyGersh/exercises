@@ -10,3 +10,5 @@ keywords for navigation:
 * END_PERROR
 * DEBUG
 * END_DEBUG
+* IMPORTENT
+* END_IMPORTENT

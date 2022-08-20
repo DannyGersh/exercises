@@ -1,5 +1,4 @@
 import './Shared.css'
-import {useEffect} from 'react'
 
 function Exercise(props){
 		
@@ -16,14 +15,13 @@ function Exercise(props){
 	}
 	function onExerciseChange(text){
 		localStorage.setItem('exercise', text.target.value);
-		props.setState[1](text.target.value); // updates in New.js
+		props.state[1][1](text.target.value); // updates in New.js
 	}
 	function onAnswerChange(text){
 		localStorage.setItem('answer', text.target.value);
-		props.setState[2](text.target.value); // updates in New.js
+		props.state[2][1](text.target.value); // updates in New.js
 	}
-	
-		
+
 	return(
 	<div className='Exercise'>
 		
@@ -31,7 +29,7 @@ function Exercise(props){
 		
 		<input
 			id = 'title'
-			ref={props.titleRef}
+			ref={props.ref_exercise[0][1]}
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
 			className='ExerciseInput' 
@@ -42,6 +40,7 @@ function Exercise(props){
 		
 		<label>Exercise bodie *</label>
 		<textarea 
+			ref={props.ref_exercise[1][1]}
 			onChange={(v)=>onExerciseChange(v)}
 			defaultValue={localStorage.getItem('exercise')}
 			rows='6' 
@@ -51,6 +50,7 @@ function Exercise(props){
 		
 		<label>answer *</label>
 		<textarea
+			ref={props.ref_exercise[2][1]}
 			onChange={(v)=>onAnswerChange(v)}
 			defaultValue={localStorage.getItem('answer')}
 			rows='4' 

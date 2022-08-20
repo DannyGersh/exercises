@@ -68,6 +68,15 @@ database_tags = [
 	'id',		# serial primary key not null
 	'name',	# varchar(100) not null unique
 ]
+# new(page) targets
+targets = [
+	'title',
+	'exercise',
+	'answer',
+	'hints',
+	'explain'
+]
+
 
 dir_users = os.path.join('/','volume','static','users')
 
@@ -77,10 +86,9 @@ reg_latex_search = r'\$\$(.+?)\$\$'
 @ensure_csrf_cookie		
 def test(request):
 
-	latexList =	json.loads(request.body.decode("utf-8")).get('latexList')
-
-	latexList = updateLatexList(latexList, str(request.user.id))
-	request.session['latexList'] = latexList
+	latexList =	json.loads(request.body.decode("utf-8"))
+	latexList = updateLatexList(latexList[1], str(request.user.id), latexList[0])
+	#request.session['latexList'] = latexList
 	
 	return HttpResponse('test')
 
@@ -101,10 +109,14 @@ def Chalange(request, id):
 	
 	cur.execute('''
 	select 
-			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
-			from chalanges where id=''' + str(id)
+		id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
+		from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()	
+	
+	# TODO - authid should be set in the chalanges table, for avoiding this second sql call.
+	cur.execute("select id from auth_user where username='"+inData[4]+"'")
+	authid = cur.fetchone()[0]
 	
 	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 	
@@ -113,8 +125,8 @@ def Chalange(request, id):
 	with open(file_json, 'r') as f:
 		identifiers = json.loads(f.read())
 	
-	outData['chalange']['dir_latex'] = outData['chalange']['latex']
 	outData['chalange']['list_latex'] = identifiers
+	outData['chalange']['authid'] = authid
 	
 	return render(request, 'chalange.html', context={'value': outData})
 
@@ -409,51 +421,50 @@ def NewSubmited(request):
 				
 		if(request.POST.get('issubmit')=='true'):
 
-			titleLatexList = request.session.get('latexList','')
-			titleLatexList = [i[1] for i in titleLatexList]
-			titleLatexList = json.dumps(titleLatexList)
-			request.session['latexList'] = []
+			dir_original = os.getcwd()
+			dir_current_user = os.path.join(dir_users, str(request.user.id))
+			dir_current_svg = os.path.join(dir_current_user, 'svg')
+			file_json = os.path.join(dir_current_user, '.json')
 			
 			now = str(time()).replace('.','')
 			
-			dir_base 		 = dir_users
-			dir_user 		 = os.path.join(dir_base, str(request.user.id))
-			dir_svg 		 = os.path.join(dir_user, 'svg')
-			dir_exercise = os.path.join(dir_user, now)
-			file_json 	 = os.path.join(dir_exercise,'.json')
-			files_svg 	 = os.listdir(dir_svg)
+			os.chdir(dir_current_user)
+			os.mkdir(now)
+			for i in os.listdir(dir_current_svg):
+				os.system('mv ' + os.path.join('svg',i) + ' ' + os.path.join(now, i))
 			
-			# TODO add error handling
-			if not os.path.exists(dir_exercise):
-				os.makedirs(dir_exercise)
-			with open(file_json, 'w') as f:
-				f.write(titleLatexList)
-			# END_TODO
+			os.system('mv .json ' + os.path.join(now, '.json'))
+
+			title 	 = request.POST.get('title', '')
+			exercise = request.POST.get('exercise', '')
+			answer 	 = request.POST.get('answer', '')
+			hints 	 = request.POST.get('hints', '')
+			explain  = request.POST.get('hints', '')
 			
-			for i in files_svg:
-				file_src = os.path.join(dir_svg,i)
-				file_dst = os.path.join(dir_exercise,i)
-				os.system('mv ' + file_src + ' ' + file_dst)
-			
-			title = request.POST.get('title', '')
-			title = re.sub(reg_latex_search, reg_latex, title)
-			
+			title 	 = re.sub(reg_latex_search, reg_latex, title)
+			exercise = re.sub(reg_latex_search, reg_latex, exercise)
+			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
+			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
+			explain	 = re.sub(reg_latex_search, reg_latex, hints)
+
 			cur.execute('''insert into chalanges
 			(question, answer, hints, author, title, tags, explain, rating, latex)
 			values( ''' + 
-				"\'"  + request.POST.get('exercise', '')	+ "\', " + 
-				"\'"  + request.POST.get('answer', '') 		+ "\', " + 
-				"\'"  + request.POST.get('hints', '') 		+ "\', " + 
-				"\'"  + request.user.username							+ "\', " + 
-				"\'"  + title													 		+ "\', " + 
-				"\'{" + tags 															+ "}\'," +
-				"\'"  + request.POST.get('explain', '') 	+ "\'," +
+				"\'"  + exercise							+ "\', " + 
+				"\'"  + answer 								+ "\', " + 
+				"\'"  + hints 								+ "\', " + 
+				"\'"  + request.user.username	+ "\', " + 
+				"\'"  + title									+ "\', " + 
+				"\'{" + tags 									+ "}\'," +
+				"\'"  + explain 							+ "\'," +
 				"\'{}\',"	 					+	
 				"\'" + now + "\'" 	+
 			')'
 			)
 			cur.execute("update auth_user set authored[cardinality(authored)] = (select count(*) from chalanges)::integer where id = "+str(request.user.id))
 			conn.commit()
+			
+			os.chdir(dir_original)
 			
 			return redirect("../../../../user/" + str(request.user.id))
 		

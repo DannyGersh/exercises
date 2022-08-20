@@ -1,6 +1,13 @@
 import os
 import json
 from time import time
+targets = [
+	'title',
+	'exercise',
+	'answer',
+	'hints',
+	'explain'
+]
 
 latex_a = '\\documentclass{article}\n\\usepackage{amsmath}'
 latex_b = '\\begin{document}\n\\begin{LARGE}'
@@ -47,6 +54,11 @@ def gen_svg(latex, user, identifier):
 	# user - string of user id
 	# identifier - string of file name, unique
 	
+	dir_original = os.getcwd()
+	os.chdir( os.path.join(dir_static, str(user)) )
+	
+	# PERROR - validate input
+	# TODO - add to error database
 	for i in forbiden:
 		if i in latex:
 			return -1
@@ -62,9 +74,6 @@ def gen_svg(latex, user, identifier):
 	with open(identifier+'.tex', 'w') as f:
 		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 	
-	with open('poop.tex', 'w') as f:
-		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
-	
 	# TODO - add return false on falure and true on success
 	# dangere zone
 	os.system(command_gen_pdf + identifier+'.tex')
@@ -75,47 +84,54 @@ def gen_svg(latex, user, identifier):
 	os.system('rm '+identifier+'.pdf')
 	os.system('rm '+identifier+'.tex')
 	# end dangere zone
-		
-def updateLatexList(latexList, user):
+	
+	os.chdir(dir_original)
+	
+def updateLatexList(latexList, user, target):
 	
 	dir_original = os.getcwd()
 	
 	dir_base = os.path.join(dir_static, user)
-	file_json = os.path.join(dir_base, 'json.json')
+	dir_svg = os.path.join(dir_base, 'svg')
+	file_json = os.path.join(dir_base, '.json')
 		
 	# create dir structure if not exists
 	if not os.path.exists(dir_base):
 		os.makedirs(dir_base)
 		with open(file_json, 'w') as f:
-			f.write( json.dumps([]) )
+			f.write( json.dumps(
+				{i:[] for i in targets}
+			))
 	
+	# create json file if not exists
 	if not os.path.exists(file_json):
 		with open(file_json, 'w') as f:
-			f.write( json.dumps([]) )
-	
+			f.write( json.dumps({i:[] for i in targets}) )
+		
 	# read excisting latex list
-	data = ''
 	with open(file_json, 'r') as f:
-		data = json.loads(f.read())
+		data_file = json.loads(f.read())
+		data_target = data_file[target]
 	
-	# PERROR
-	if len(data) != 0:
+	# PERROR - test if json information is proper, else default to empty list
+	# TODO - add database of errors and add this error if acures
+	if len(data_target) != 0:
 		try:
-			data[0][1]
+			data_target[0][1]
 		except:
-			data = []
+			data_target = []
 			with open(file_json, 'w') as f:
-				f.write( json.dumps([]) )
+				f.write( json.dumps({i:[] for i in targets}) )
 	# END_PERROR
 	
 	# latex list to be updated
 	l = []
 	
-	# update l
+	# update l and generate svgs
 	for x in latexList:
 		identifier = str(time()).replace('.', '')
 		makeNewIndex = True
-		for y in data:
+		for y in data_target:
 			if x == y[0]:
 				makeNewIndex = False
 				l.append(y)
@@ -126,13 +142,22 @@ def updateLatexList(latexList, user):
 			l.append([x,identifier])
 				
 	with open(file_json, 'w') as f:
-		f.write(json.dumps(l))
+		data_file[target] = l
+		f.write(json.dumps(data_file))
 	
-	os.chdir(os.path.join(dir_base,'svg'))
-	for i in os.listdir(os.getcwd()):
-		if i not in [q[1]+'.svg' for q in l]:
+	temp= []
+	with open(file_json, 'r') as f:
+		data = json.loads(f.read())
+		for x in data.values():
+			for y in x:
+				temp.append(y[1]+'.svg')
+
+	# remove all files that are not in main .json
+	os.chdir(dir_svg)
+	for i in os.listdir():
+		if i not in temp:
 			os.system('rm '+i)
-	
+				
 	os.chdir(dir_original)
 
 	return l
