@@ -7,7 +7,7 @@ function Explain(props){
 	
 	function onExplainChange(text){
 		localStorage.setItem('Explanation', text.target.value);
-		props.setState(text.target.value); // updates in New.js
+		props.state[1](text.target.value); // updates in New.js
 	}
 	
 	return(
@@ -15,6 +15,7 @@ function Explain(props){
 			<label for="AnswereTextArea">Explanation bodie</label>
 			
 			<textarea
+				ref={props.ref_explain[1]}
 				onChange={(v)=>onExplainChange(v)}
 				defaultValue={localStorage.getItem('Explanation')}
 				rows='4' 

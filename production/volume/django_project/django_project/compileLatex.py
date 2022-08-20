@@ -145,6 +145,7 @@ def updateLatexList(latexList, user, target):
 		data_file[target] = l
 		f.write(json.dumps(data_file))
 	
+	# get all nesessery files by name(no extension)
 	temp= []
 	with open(file_json, 'r') as f:
 		data = json.loads(f.read())

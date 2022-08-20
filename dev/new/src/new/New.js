@@ -54,15 +54,15 @@ function New(props){
 	// titleRef[0].current - list of latex expressions in title
 	// titleRef[1] - refrence to title text
 
-	const temp_titleRef 		= [useRef([]), useRef(''), targets[0] ]
-	const temp_exerciseRef 	= [useRef([]), useRef(''), targets[1] ]
-	const temp_answerRef 		= [useRef([]), useRef(''), targets[2] ]
-	const temp_hintsRef 		= [useRef([]), useRef(''), targets[3] ]
-	const temp_explainRef 	= [useRef([]), useRef(''), targets[4] ]
+	const temp_titleRef 		= [useRef([]), useRef(''), targets[0] ];
+	const temp_exerciseRef 	= [useRef([]), useRef(''), targets[1] ];
+	const temp_answerRef 		= [useRef([]), useRef(''), targets[2] ];
+	const temp_hintsRef 		= [useRef([]), useRef(''), targets[3] ];
+	const temp_explainRef 	= [useRef([]), useRef(''), targets[4] ];
 	
-	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef]
-	const ref_hints 		= [temp_hintsRef]
-	const ref_explain 	= [temp_explainRef]
+	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef];
+	const ref_hints 		= temp_hintsRef;
+	const ref_explain 	= temp_explainRef;
 	
 	/* NOTE - evalRefChange
 		POST latex if detected change 
@@ -74,6 +74,8 @@ function New(props){
 	function evalRefChange(ref) {
 		
 		// get latex list
+		if(ref[1]){
+			
 		if(ref[1].current) {
 			let temp = ref[1].current.value.match(/(\$\$.+?\$\$)/g);
 			if(!temp) temp=[];
@@ -91,9 +93,12 @@ function New(props){
 				
 				if(!window.is_debug) {
 					sendData('http://localhost/test/', [ ref[2] , ref[0].current ]);
+				} else {
+					console.log([ ref[2] , ref[0].current ])
 				}
-				console.log(ref)
 			}
+		}
+		
 		}
 	}
 	function init_ref(ref) {
@@ -114,12 +119,12 @@ function New(props){
 		
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings
-	const title			= useState('');
-	const exercise	= useState('');
-	const answer 		= useState('');
-	const [hints		, setHints		] = useState('');
-	const [explain	, setExplain	] = useState('');
-	const [tags			, setTags			] = useState('');
+	const title		 = useState('');
+	const exercise = useState('');
+	const answer 	 = useState('');
+	const hints		 = useState('');
+	const explain  = useState('');
+	const tags		 = useState('');
 	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
 	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
 	
@@ -147,6 +152,8 @@ function New(props){
 		init_ref(ref_exercise[0])
 		init_ref(ref_exercise[1])
 		init_ref(ref_exercise[2])
+		init_ref(ref_hints)
+		init_ref(ref_explain)
 	},[])
 	
 	// send back latex
@@ -161,6 +168,8 @@ function New(props){
 			evalRefChange(ref_exercise[0]);
 			evalRefChange(ref_exercise[1]);
 			evalRefChange(ref_exercise[2]);
+			evalRefChange(ref_hints);
+			evalRefChange(ref_explain);
 		}, 2000);
 		
 	},[])
@@ -170,9 +179,9 @@ function New(props){
 		title[1](localStorage.getItem('title'));		
 		exercise[1](localStorage.getItem('exercise'));
 		answer[1](localStorage.getItem('answer'));
-		setHints(localStorage.getItem('hints'));
-		setExplain(localStorage.getItem('Explanation'));
-		setTags(localStorage.getItem('tags'));
+		hints[1](localStorage.getItem('hints'));
+		explain[1](localStorage.getItem('Explanation'));
+		tags[1](localStorage.getItem('tags'));
 
 		if(issubmit[0] !== 'none') {
 		
@@ -213,9 +222,9 @@ function New(props){
 			<input type="hidden" name="title" 		value={	title[0]	}	/>
 			<input type="hidden" name="exercise" 	value={ exercise[0] }	/>
 			<input type="hidden" name="answer" 		value={ answer[0] }		/>
-			<input type="hidden" name="hints" 		value={ hints	}			/>
-			<input type="hidden" name="tags" 			value={ tags }			/>
-			<input type="hidden" name="explain" 	value={ explain }		/>
+			<input type="hidden" name="hints" 		value={ hints[0]	}			/>
+			<input type="hidden" name="tags" 			value={ tags[0] }			/>
+			<input type="hidden" name="explain" 	value={ explain[0] }		/>
 			<input type="hidden" name="issubmit" 	value={ issubmit[0] }	/>
 
 			<div className='bottomMenue'>
@@ -228,9 +237,9 @@ function New(props){
 			</div>
 	
 			{ bmt === 'Exercise' 		&& <Exercise ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
-			{ bmt === 'Hints' 			&& <Hints setState={setHints}/> }
-			{ bmt === 'Explanation' && <Explain setState={setExplain}/> }
-			{ bmt === 'Tags' 				&& <TagList setState={setTags}/> }
+			{ bmt === 'Hints' 			&& <Hints ref_hints={ref_hints} state={hints}/> }
+			{ bmt === 'Explanation' && <Explain ref_explain={ref_explain} state={explain}/> }
+			{ bmt === 'Tags' 				&& <TagList state={tags}/> }
 		</form>
 		
 	</>

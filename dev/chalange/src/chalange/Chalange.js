@@ -77,14 +77,20 @@ function Chalange(props){
 		const reg_latex = /(\$\$___latex\$\$)/
 		let textList = chalange[workeround].split(reg_latex)
 		textList = textList.filter(i=>i!=='')
-	
+
 		let index = 0;
 		for(let i=0 ; i<textList.length ; i++) {
 			if(textList[i] === '$$___latex$$') {
-				const tempLatex = list_latex[target][index][1]; // TODO - workeround here, needs fixin 
-				const tempId = chalange['authid'];
-				const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
-				textList[i] = '<img src="'+tempPath+'" />'
+				
+				try {
+					const tempLatex = list_latex[target][index][1]; // TODO - workeround here, needs fixin 
+					const tempId = chalange['authid'];
+					const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
+					textList[i] = '<img src="'+tempPath+'" />'
+				}
+				catch{
+					throw new Error('probably index out of range ...( list_latex[target][index][?] ) ');
+				}
 				index++;
 			}
 		}
@@ -94,11 +100,12 @@ function Chalange(props){
 	const htmlTitle = '<h4>'+mainText2html('title')+'</h4>';
 	const htmlExercise = '<p>'+mainText2html('exercise')+'</p>';
 	const htmlAnswer = '<p>'+mainText2html('answer')+'</p>';
-	
+	const htmlExplain = '<p>'+mainText2html('explain')+'</p>';
+	const htmlHints = '<p>'+mainText2html('hints')+'</p>';
+
 	useEffect(()=>{
 		document.getElementById('title').innerHTML = htmlTitle;
 		document.getElementById('exercise').innerHTML = htmlExercise;
-		//document.getElementById('answer').innerHTML = htmlAnswer;
 	},[])
 	
 	// end_latex
@@ -133,6 +140,20 @@ function Chalange(props){
 		}
 	},[dspAnswer])
 	
+	useEffect(()=>{
+		if(dspHints) {
+			document.getElementById('hints').innerHTML = htmlHints;
+		}
+	},[dspHints])
+	
+	useEffect(()=>{
+		if(dspExplain) {
+			document.getElementById('explain').innerHTML = htmlExplain;
+		} else {
+			document.getElementById('title').innerHTML = htmlTitle;
+			document.getElementById('exercise').innerHTML = htmlExercise;
+		}
+	},[dspExplain])
 	
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
@@ -146,11 +167,11 @@ function Chalange(props){
 				<p id='answer'></p>
 				</> ) }
 			{ dspHints && ( <>
-				<hr />
-				<p>{chalange['hints']}</p>
+				<hr/>
+				<p id='hints'></p>
 				</> ) }
 		</>:
-			<p>{chalange['explain']}</p>
+			<p id='explain'></p>
 		}  
 	
     <div className='bottomRight'>

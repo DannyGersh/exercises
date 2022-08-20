@@ -439,14 +439,16 @@ def NewSubmited(request):
 			exercise = request.POST.get('exercise', '')
 			answer 	 = request.POST.get('answer', '')
 			hints 	 = request.POST.get('hints', '')
-			explain  = request.POST.get('hints', '')
+			explain  = request.POST.get('explain', '')
 			
 			title 	 = re.sub(reg_latex_search, reg_latex, title)
 			exercise = re.sub(reg_latex_search, reg_latex, exercise)
 			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
-			explain	 = re.sub(reg_latex_search, reg_latex, hints)
+			explain	 = re.sub(reg_latex_search, reg_latex, explain)
 
+			print(answer)
+			
 			cur.execute('''insert into chalanges
 			(question, answer, hints, author, title, tags, explain, rating, latex)
 			values( ''' + 

@@ -8,7 +8,7 @@ function Hints(props){
 	
 	function onHintsChange(text){
 		localStorage.setItem('hints', text.target.value);
-		props.setState(text.target.value); // updates in New.js
+		props.state[1](text.target.value); // updates in New.js
 	}
 	
 	return(
@@ -16,6 +16,7 @@ function Hints(props){
 		<label for="HintsTextArea">Hints bodie</label>
 		
 		<textarea 
+			ref={props.ref_hints[1]}
 			onChange={(v)=>onHintsChange(v)} 
 			defaultValue={localStorage.getItem('hints')} 
 			rows='6' 

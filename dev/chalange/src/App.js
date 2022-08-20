@@ -19,11 +19,11 @@ function App() {
 			'title': 'test $$___latex$$ title', 
 			'rating': ['b','c'], 
 			'tags': ['math', 'science'],
-			'explain': 'ladida',
+			'explain': 'ladida $$___latex$$ ladida',
 			'authid': '1',
 			// latex currently onley works in production
 			'latex': '1660953238601182',
-			'list_latex': {'title': [['A', '16609532299723427']], 'exercise': [['A', '16609532339731061']], 'answer': [['A', '16609532352807']], 'hints': [], 'explain': []}
+			'list_latex': {'title': [['A', '16609532299723427']], 'exercise': [['A', '16609532339731061']], 'answer': [['A', '16609532352807']], 'hints': [['A', '16609532352807']], 'explain': [['A', '16609532352807']]}
 		};
 		
 		window.jsonData = {
@@ -39,7 +39,7 @@ function App() {
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-		
+	console.log(chalange['list_latex'])
   return (
     <>
     

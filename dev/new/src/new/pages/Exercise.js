@@ -53,7 +53,7 @@ function Exercise(props){
 			ref={props.ref_exercise[2][1]}
 			onChange={(v)=>onAnswerChange(v)}
 			defaultValue={localStorage.getItem('answer')}
-			rows='4' 
+			rows='6' 
 			className='ExerciseTextArea' 
 		/>
 			
