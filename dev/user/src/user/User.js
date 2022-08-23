@@ -7,8 +7,7 @@ function User(){
 
 	const authored = window.jsonData['data'][0]
 	const liked = window.jsonData['data'][1]
-	const answered = window.jsonData['data'][2]
-	const userName = window.jsonData['data'][3]
+	const userName = window.jsonData['data'][2]
 		
   let [menueSelection, setMenueSelection] = useState("Authored");
   function menueHandle(event, selection){
@@ -31,15 +30,13 @@ function User(){
   })
   
   function selectMenue(selection){
-		if(selection==="Answered") {
-			return Object.values(answered);	
-		} else if (selection==="Liked") {
-			return Object.values(liked);
+		if (selection==="Liked") {
+			return liked.map(i=>Object.values(i)[0]);
 		} else {
-			return Object.values(authored);
+			return authored.map(i=>Object.values(i)[0]);
 		}
   }
-		
+
   return(
   <>	
 		<h3 style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</h3>
@@ -55,11 +52,13 @@ function User(){
 				<Exercise
 					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
 					key={index}
+					identifier={index}
 					title={item['title']} 
 					paragraph={item['question']} 
 					url={'../../' + item['id']} 
 					likes={item['rating'].length} 
 					tags={item['tags']}
+					chalange={item}
 				/>
 				)
 		}	
@@ -68,3 +67,17 @@ function User(){
   )
 }
 export default User;
+
+
+//selectMenue(menueSelection).map( (item, index) =>
+//				<Exercise
+//					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
+//					key={index}
+//					title={item['title']} 
+//					paragraph={item['question']} 
+//					url={'../../' + item['id']} 
+//					likes={item['rating'].length} 
+//					tags={item['tags']}
+//					chalange={item}
+//				/>
+//				)

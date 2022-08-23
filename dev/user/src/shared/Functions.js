@@ -80,8 +80,8 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	
 	/* explanation:
 		
-		converts text with latex expressions to paragraph with svg images.
-	
+		replaces latex expressions in text to image tags (svg)
+		
 		1)	identifier_exercise - a long number (string)
 				of the directorie name that contains the exercise svg's.
 		

@@ -91,6 +91,42 @@ def test(request):
 		
 	return HttpResponse('test')
 
+
+def getChalange(outData, id):
+	
+	cur.execute('''
+	select 
+		id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
+		from chalanges where id=''' + str(id)
+	)
+	inData = cur.fetchone()	
+	
+	if inData:
+		# TODO - authid should be set in the chalanges table, for avoiding this second sql call.
+		cur.execute("select id from auth_user where username='"+inData[4]+"'")
+		authid = cur.fetchone()[0]
+		
+		outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+		
+		dir_exercise = os.path.join(dir_users, str(authid), outData['chalange']['latex'])
+		file_json = os.path.join(dir_exercise, '.json')
+		if not os.path.exists(dir_exercise):
+			os.makedirs(dir_exercise)
+		if not os.path.exists(file_json):
+			with open(file_json, 'w') as f:
+				f.write(json.dumps({"title": [], "exercise": [], "answer": [], "hints": [], "explain": []}))
+
+		with open(file_json, 'r') as f:
+			identifiers = json.loads(f.read())
+		
+		outData['chalange']['list_latex'] = identifiers
+		outData['chalange']['authid'] = authid
+	
+	else:
+		inData = None
+		
+	return outData
+	
 @ensure_csrf_cookie	
 def Chalange(request, id):
 	
@@ -106,29 +142,13 @@ def Chalange(request, id):
 	request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'+str(id)
 	
-	cur.execute('''
-	select 
-		id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
-		from chalanges where id=''' + str(id)
-	)
-	inData = cur.fetchone()	
+	outData = getChalange(outData, id)
 	
-	# TODO - authid should be set in the chalanges table, for avoiding this second sql call.
-	cur.execute("select id from auth_user where username='"+inData[4]+"'")
-	authid = cur.fetchone()[0]
-	
-	outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
-	
-	dir_exercise = os.path.join(dir_users, str(request.user.id), outData['chalange']['latex'])
-	file_json = os.path.join(dir_exercise, '.json')
-	with open(file_json, 'r') as f:
-		identifiers = json.loads(f.read())
-	
-	outData['chalange']['list_latex'] = identifiers
-	outData['chalange']['authid'] = authid
-	
-	return render(request, 'chalange.html', context={'value': outData})
-
+	if outData:
+		return render(request, 'chalange.html', context={'value': outData})
+	else:
+		return HttpResponse("could not find this exercise")
+		
 @ensure_csrf_cookie	
 def Browse(request, sterm=''):
 	
@@ -220,14 +240,15 @@ def Profile(request, userid):
 	request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
 
-	cur.execute('select authored, liked, answered, username from auth_user where id='+str(userid))
+	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
 	
 	# PERROR: check if exists
 	frame = getframeinfo(currentframe())
+	
 	if not inData:
 		print('ERROR: inData is undefined\nin: ', frame.filename, frame.lineno)
-		inData = [[], [], [], userid]
+		inData = [[], [], request.user.username]
 	# END_PERROR
 	
 	inData = list(inData)
@@ -236,17 +257,17 @@ def Profile(request, userid):
 	try:
 		inData[0]
 	except:
-		print('ERROR: inData[1] is undefined\nin: ', frame.filename, frame.lineno)
+		print('ERROR: inData[0] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])
 	try:
 		inData[1]
 	except:
-		print('ERROR: inData[2] is undefined\nin: ', frame.filename, frame.lineno)
+		print('ERROR: inData[1] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	try:
 		inData[2]
 	except:
-		print('ERROR: inData[3] is undefined\nin: ', frame.filename, frame.lineno)
+		print('ERROR: inData[2] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	# END_PERROR
 		
@@ -254,41 +275,19 @@ def Profile(request, userid):
 
 			authored = []
 			liked = []
-			answered = []
 			
-			def populate(_inData, _outData):
-
-				for i in _inData:
-						cur.execute('''
-						select 
-								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-								from chalanges where id=''' + str(i) + ' order by cardinality(rating) desc'
-						)
-						try:
-							q = list(cur.fetchone())
-						except:
-							q = []
-							
-						if q:
-							_outData.append({k:v for (k,v) in zip(SQLDataKeys, q)})
-			
-			cur.execute('''
-			select 
-					id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
-					from chalanges where author=''' + '\'' + str(request.user.username) + '\' order by cardinality(rating) desc'
-			)
-			q = cur.fetchall()
-			if q:
-				authored = q
-				for i in range(len(authored)):
-					authored[i] = { k:v for (k,v) in zip(SQLDataKeys, authored[i]) }
-
+			for i in inData[0]:
+				data = getChalange({}, i)
+				if data:
+					authored.append(data)
+					
+			for i in inData[1]:
+				data = getChalange({}, i)
+				if data:
+					liked.append(data)
 				
-			populate(inData[1], liked)	
-			populate(inData[2], answered)	
-
-			outData['data'] = [authored, liked, answered, request.user.username]
-						
+			outData['data'] = [authored, liked, request.user.username]
+				
 			return render(request, 'user.html', context={'value': outData})
 	
 	else:
@@ -463,7 +462,7 @@ def NewSubmited(request):
 				"\'" + now + "\'" 	+
 			')'
 			)
-			cur.execute("update auth_user set authored[cardinality(authored)] = (select count(*) from chalanges)::integer where id = "+str(request.user.id))
+			cur.execute("update auth_user set authored[cardinality(authored)] = (select id from chalanges where latex='"+now+"')::integer where id = "+str(request.user.id))
 			conn.commit()
 			
 			os.chdir(dir_original)
