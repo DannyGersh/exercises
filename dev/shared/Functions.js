@@ -74,3 +74,61 @@ function sendData(url, data) {
 	.then(res => console.log(res));
 }
 export {sendData}
+
+
+function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
+	
+	/* explanation:
+		
+		replaces latex expressions in text to image tags (svg)
+		
+		1)	identifier_exercise - a long number (string)
+				of the directorie name that contains the exercise svg's.
+		
+		2)	chalange - the chalange data structure as given by django
+	
+		3)	formFile_latex - the content of the .json file inside identifier_exercise dir
+		
+		4)	target - one of ['title','exercise','answer','hints','explain']
+	
+	*/
+	
+	/*TODO - fix workaround
+		this is a huge workeround.
+		the problem being worked around is realy wide spred
+		and hard to fix.
+		the problem:
+		the target exercise is defind as 'exercise'
+		in targets, but is defined as 'question'
+		in the database at table chalanges.
+		e.g. chalanges allso needs renaming.
+	*/
+	let workeround = target;
+	if(target==='exercise') {
+		workeround = 'question';
+	}
+	
+	// TODO - add database of errors and add this to it if cant load latex
+	const reg_latex = /(\$\$___latex\$\$|___ERROR___)/
+	let textList = chalange[workeround].split(reg_latex)
+	textList = textList.filter(i=>i!=='')
+	
+	let index = 0;
+	for(let i=0 ; i<textList.length ; i++) {
+		if(textList[i] === '$$___latex$$') {
+			
+			try {
+				const tempLatex = formFile_latex[target][index][1]; // TODO - workeround here, needs fixin 
+				const tempId = chalange['authid'];
+				const tempPath = ['/static/users', tempId, identifier_exercise, tempLatex+'.svg'].join('/')
+				textList[i] = '<img src="'+tempPath+'" />'
+			}
+			catch{
+				throw new Error('probably index out of range ... ( list_latex[target][index][?] ) ');
+			}
+			index++;
+		}
+	}
+	return textList.join('');
+}
+export {mainText2html}

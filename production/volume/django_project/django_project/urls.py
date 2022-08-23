@@ -264,8 +264,11 @@ def Profile(request, userid):
 								id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags
 								from chalanges where id=''' + str(i) + ' order by cardinality(rating) desc'
 						)
-						q = list(cur.fetchone())
-						
+						try:
+							q = list(cur.fetchone())
+						except:
+							q = []
+							
 						if q:
 							_outData.append({k:v for (k,v) in zip(SQLDataKeys, q)})
 			

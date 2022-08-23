@@ -3,6 +3,7 @@ import CSRFToken from "../shared/csrftoken";
 import {useState, useEffect} from 'react'
 import Tag from '../shared/tag/Tag'
 import BtnRound from '../shared/buttons/BtnRound'
+import {mainText2html} from '../shared/Functions'
 
 function Chalange(props){
   
@@ -54,55 +55,55 @@ function Chalange(props){
 	const [dspExplain, setDspExplain] = useState(false);
 	
 	// latex
-	let dir_latex		= chalange['latex'];
-	let list_latex	= chalange['list_latex'];
+	let identifier_latex = chalange['latex'];
+	let formFile_latex = chalange['list_latex'];
 
-	function mainText2html(target) {
-		
-		/*TODO - fix workaround
-			this is a huge workeround.
-			the problem being worked around is realy wide spred
-			and hard to fix.
-			the problem:
-			the target exercise is defind as 'exercise'
-			in targets, but is defined as 'question'
-			in the database at table chalanges.
-			e.g. chalanges allso needs renaming.
-		*/
-		let workeround = target;
-		if(target==='exercise') {
-			workeround = 'question';
-		}
-		
-		// TODO - add database of errors and add this to it if cant load latex
-		const reg_latex = /(\$\$___latex\$\$|___ERROR___)/
-		let textList = chalange[workeround].split(reg_latex)
-		textList = textList.filter(i=>i!=='')
-		
-		let index = 0;
-		for(let i=0 ; i<textList.length ; i++) {
-			if(textList[i] === '$$___latex$$') {
-				
-				try {
-					const tempLatex = list_latex[target][index][1]; // TODO - workeround here, needs fixin 
-					const tempId = chalange['authid'];
-					const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
-					textList[i] = '<img src="'+tempPath+'" />'
-				}
-				catch{
-					throw new Error('probably index out of range ...( list_latex[target][index][?] ) ');
-				}
-				index++;
-			}
-		}
-		return textList.join('');
-	}
+	//function mainText2html(formFile_latex, target) {
+	//	
+	//	/*TODO - fix workaround
+	//		this is a huge workeround.
+	//		the problem being worked around is realy wide spred
+	//		and hard to fix.
+	//		the problem:
+	//		the target exercise is defind as 'exercise'
+	//		in targets, but is defined as 'question'
+	//		in the database at table chalanges.
+	//		e.g. chalanges allso needs renaming.
+	//	*/
+	//	let workeround = target;
+	//	if(target==='exercise') {
+	//		workeround = 'question';
+	//	}
+	//	
+	//	// TODO - add database of errors and add this to it if cant load latex
+	//	const reg_latex = /(\$\$___latex\$\$|___ERROR___)/
+	//	let textList = chalange[workeround].split(reg_latex)
+	//	textList = textList.filter(i=>i!=='')
+	//	
+	//	let index = 0;
+	//	for(let i=0 ; i<textList.length ; i++) {
+	//		if(textList[i] === '$$___latex$$') {
+	//			
+	//			try {
+	//				const tempLatex = formFile_latex[target][index][1]; // TODO - workeround here, needs fixin 
+	//				const tempId = chalange['authid'];
+	//				const tempPath = ['/static/users', tempId, dir_latex, tempLatex+'.svg'].join('/')
+	//				textList[i] = '<img src="'+tempPath+'" />'
+	//			}
+	//			catch{
+	//				throw new Error('probably index out of range ...( list_latex[target][index][?] ) ');
+	//			}
+	//			index++;
+	//		}
+	//	}
+	//	return textList.join('');
+	//}
 
-	const htmlTitle = '<h4>'+mainText2html('title')+'</h4>';
-	const htmlExercise = '<p>'+mainText2html('exercise')+'</p>';
-	const htmlAnswer = '<p>'+mainText2html('answer')+'</p>';
-	const htmlExplain = '<p>'+mainText2html('explain')+'</p>';
-	const htmlHints = '<p>'+mainText2html('hints')+'</p>';
+	const htmlTitle = '<h4>'+mainText2html(identifier_latex, chalange, formFile_latex, 'title')+'</h4>';
+	const htmlExercise = '<p>'+mainText2html(identifier_latex, chalange, formFile_latex, 'exercise')+'</p>';
+	const htmlAnswer = '<p>'+mainText2html(identifier_latex, chalange, formFile_latex, 'answer')+'</p>';
+	const htmlExplain = '<p>'+mainText2html(identifier_latex, chalange, formFile_latex, 'explain')+'</p>';
+	const htmlHints = '<p>'+mainText2html(identifier_latex, chalange, formFile_latex, 'hints')+'</p>';
 
 	useEffect(()=>{
 		document.getElementById('title').innerHTML = htmlTitle;
