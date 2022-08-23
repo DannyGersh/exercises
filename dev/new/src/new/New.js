@@ -74,8 +74,7 @@ function New(props){
 	function evalRefChange(ref) {
 		
 		// get latex list
-		if(ref[1]){
-			
+
 		if(ref[1].current) {
 			let temp = ref[1].current.value.match(/(\$\$.+?\$\$)/g);
 			if(!temp) temp=[];
@@ -94,12 +93,11 @@ function New(props){
 				if(!window.is_debug) {
 					sendData('http://localhost/test/', [ ref[2] , ref[0].current ]);
 				} else {
-					console.log([ ref[2] , ref[0].current ])
+					// console.log([ ref[2] , ref[0].current ])
 				}
 			}
 		}
 		
-		}
 	}
 	function init_ref(ref) {
 		
@@ -125,17 +123,46 @@ function New(props){
 	const hints		 = useState('');
 	const explain  = useState('');
 	const tags		 = useState('');
+	// TODO - change bmt to be like the rest
 	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
 	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
 	
 	// when bottomMenue tab is clicked
 	function bottomMenueHandle(e){
+		
+		//if(bmt==='Exercise') {
+			evalRefChange(ref_exercise[0])
+			evalRefChange(ref_exercise[1])
+			evalRefChange(ref_exercise[2])
+		//} else if(bmt==='Hints') {
+			evalRefChange(ref_hints)
+		//} else if(bmt==='Explain') {
+			evalRefChange(ref_explain)
+		//}
+			
 		setBmt(e.target.innerHTML);
 	}
 	
 	// submit buttons
-	function onSubmit() { issubmit[1](true); }
-	function onPrevie() { issubmit[1](false); }
+	function onSubmit() { 
+	
+		evalRefChange(ref_exercise[0] )
+		evalRefChange(ref_exercise[1]	)
+		evalRefChange(ref_exercise[2] )
+		evalRefChange(ref_hints		 		)
+		evalRefChange(ref_explain 		)
+			
+		issubmit[1](true); 
+	}
+	function onPrevie() { 
+	
+		evalRefChange(ref_exercise[1]	)
+		evalRefChange(ref_exercise[2] )
+		evalRefChange(ref_hints		 		)
+		evalRefChange(ref_explain 		)
+		
+		issubmit[1](false); 
+	}
 		
 	/* NOTE
 		when the user clicks one of the two submit buttons
@@ -162,7 +189,7 @@ function New(props){
 		// for avoiding multiple timers
 		window.rmTimer(window.id);
 		
-		// update titleRef[0] every 2 sec
+		// update refs every 2 sec
 		window.id = window.setTimer(()=>{
 			// TODO - optimise
 			evalRefChange(ref_exercise[0]);

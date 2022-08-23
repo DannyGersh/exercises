@@ -19,11 +19,11 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.csrf import csrf_protect
+#from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.decorators.csrf import requires_csrf_token
-from django.template.context_processors import csrf
-from django.middleware.csrf import get_token
+#from django.views.decorators.csrf import requires_csrf_token
+#from django.template.context_processors import csrf
+#from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -88,8 +88,7 @@ def test(request):
 
 	latexList =	json.loads(request.body.decode("utf-8"))
 	latexList = updateLatexList(latexList[1], str(request.user.id), latexList[0])
-	#request.session['latexList'] = latexList
-	
+		
 	return HttpResponse('test')
 
 @ensure_csrf_cookie	
@@ -446,8 +445,6 @@ def NewSubmited(request):
 			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain)
-
-			print(answer)
 			
 			cur.execute('''insert into chalanges
 			(question, answer, hints, author, title, tags, explain, rating, latex)
@@ -476,41 +473,40 @@ def NewSubmited(request):
 			
 			tags = tags.split(',')
 			
-			title = request.POST.get('title', '').replace(r'','')		
-			titleLatex = request.session.get('latexList', [])
-
-			a = (re.sub(r'\$\$(.+?)\$\$', reg_latex, title))
-			a = re.split(r'(\$\$___latex\$\$)', a)
+			title 	 = request.POST.get('title', '')
+			exercise = request.POST.get('exercise', '')
+			answer 	 = request.POST.get('answer', '')
+			hints 	 = request.POST.get('hints', '')
+			explain  = request.POST.get('explain', '')
 			
-			try:
-				a.remove('')
-			except:
-				pass
-			
-			index = 0
-			for i in range(len(a)):
-				if(a[i] == reg_latex):
-					# convert to html
-					a[i] = "<img class='latex' src='/static/users/%s/svg/%s.svg'/>"%(str(request.user.id),titleLatex[index][1])
-					index += 1
-			
-			title = '<p>%s</p>'%''.join(a)
-			
+			title 	 = re.sub(reg_latex_search, reg_latex, title)
+			exercise = re.sub(reg_latex_search, reg_latex, exercise)
+			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
+			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
+			explain	 = re.sub(reg_latex_search, reg_latex, explain)
+	
 			inData = [
-				request.user.id									 ,
-				request.POST.get('exercise', '') ,
-				request.POST.get('answer', '') 	 ,
-				request.POST.get('hints', '') 	 ,
-				request.user.username						 ,
-				timestamp 											 ,
-				title														 ,
-				[]															 ,
-				tags														 ,
-				request.POST.get('explain', '')  ,
-				'ignored'												 ,
+				0, 
+				exercise, 
+				answer, 
+				hints, 
+				request.user.username, 
+				timestamp,
+				title, 
+				[], 
+				tags, 
+				explain, 
+				'svg',
 			]
 			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
-			
+
+			file_json = os.path.join(dir_users, str(request.user.id), '.json')
+			with open(file_json, 'r') as f:
+				identifiers = json.loads(f.read())
+	
+			outData['chalange']['list_latex'] = identifiers
+			outData['chalange']['authid'] = str(request.user.id)
+	
 			return render(request, 'chalange.html', context={'value': outData})
 	
 	# this should never happen

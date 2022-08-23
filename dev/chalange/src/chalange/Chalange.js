@@ -74,10 +74,11 @@ function Chalange(props){
 			workeround = 'question';
 		}
 		
-		const reg_latex = /(\$\$___latex\$\$)/
+		// TODO - add database of errors and add this to it if cant load latex
+		const reg_latex = /(\$\$___latex\$\$|___ERROR___)/
 		let textList = chalange[workeround].split(reg_latex)
 		textList = textList.filter(i=>i!=='')
-
+		
 		let index = 0;
 		for(let i=0 ; i<textList.length ; i++) {
 			if(textList[i] === '$$___latex$$') {

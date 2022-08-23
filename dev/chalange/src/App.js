@@ -39,7 +39,7 @@ function App() {
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
-	console.log(chalange['list_latex'])
+
   return (
     <>
     

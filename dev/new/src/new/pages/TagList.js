@@ -83,7 +83,7 @@ function TagsList(props){
 		let temp = [...dspAvailableTags];
 		temp.splice(temp.indexOf(str), 1);
 		setDspAvailableTags(temp);
-		props.setState(tags.get());
+		props.state[1](tags.get());
 	}
 	function remTag(str) {
 		tags.rem(str);

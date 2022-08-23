@@ -1,6 +1,8 @@
 import os
 import json
 from time import time
+import subprocess
+
 targets = [
 	'title',
 	'exercise',
@@ -76,16 +78,54 @@ def gen_svg(latex, user, identifier):
 	
 	# TODO - add return false on falure and true on success
 	# dangere zone
-	os.system(command_gen_pdf + identifier+'.tex')
-	os.system('pdfcrop '+identifier+'.pdf '+identifier+'.pdf')
-	os.system('dvisvgm --pdf '+identifier+'.pdf')
-	os.system('rm '+identifier+'.aux')
-	os.system('rm '+identifier+'.log')
-	os.system('rm '+identifier+'.pdf')
-	os.system('rm '+identifier+'.tex')
+	
+	res = 0
+	def run(strList):
+		return subprocess.run(strList).returncode
+	
+	if not res:
+		res = run([
+			'pdflatex',
+			'-interaction',
+			'batchmode', 
+			'-parse-first-line',
+			'-no-shell-escape',
+			'-file-line-error',
+			identifier+'.tex',
+		])
+	if not res:
+		res = run([
+			'pdfcrop',
+			identifier+'.pdf',
+			identifier+'.pdf',
+	])
+	if not res:
+		res = run([
+			'dvisvgm',
+			'--pdf',
+			identifier+'.pdf',
+	])
+	if not res:
+		res = run([
+			'rm',
+			identifier+'.aux',
+			identifier+'.log',
+			identifier+'.pdf',
+			identifier+'.tex',
+	])	
+	# os.system(command_gen_pdf + identifier+'.tex')
+	# os.system('pdfcrop '+identifier+'.pdf '+identifier+'.pdf')
+	# os.system('dvisvgm --pdf '+identifier+'.pdf')
+	#os.system('rm '+identifier+'.aux')
+	#os.system('rm '+identifier+'.log')
+	#os.system('rm '+identifier+'.pdf')
+	#os.system('rm '+identifier+'.tex')
+	
 	# end dangere zone
 	
 	os.chdir(dir_original)
+	
+	return res
 	
 def updateLatexList(latexList, user, target):
 	
@@ -138,8 +178,11 @@ def updateLatexList(latexList, user, target):
 				break
 		
 		if(makeNewIndex):
-			gen_svg(x, user, identifier)
-			l.append([x,identifier])
+			res = gen_svg(x, user, identifier)
+			if not res:
+				l.append([x, identifier])
+			else:
+				l.append(['___ERROR___', identifier])
 				
 	with open(file_json, 'w') as f:
 		data_file[target] = l
