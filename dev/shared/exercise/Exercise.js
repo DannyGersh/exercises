@@ -48,13 +48,12 @@ function Exercise(props){
 				if(!res.status===200) {
 					window.alert('Failed deleting this exercise');
 				}});
-
+				
+				window.location.reload()
 			}
 		} catch {
 			window.alert('Failed deleting this exercise');
 		}
-
-		window.location.reload()
 
 	}
 	
