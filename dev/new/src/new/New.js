@@ -240,9 +240,7 @@ function New(props){
 	
 	return(
 	<>
-	
-		<img src='/static/users/1/svg/16606560148095725.svg'/>
-		
+
 		<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
 			<CSRFToken/>
 			

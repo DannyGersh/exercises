@@ -54,14 +54,12 @@ function User(){
 					key={index}
 					identifier={index}
 					isUser={true}
-					title={item['title']} 
-					paragraph={item['question']} 
 					url={'../../' + item['id']} 
-					likes={item['rating'].length} 
-					tags={item['tags']}
 					chalange={item}
+					userid={window.jsonData['userid']}
+					isOptions={true}
 				/>
-				)
+			)
 		}	
 		</div>
 	</>

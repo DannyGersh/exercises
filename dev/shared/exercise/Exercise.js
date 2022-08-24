@@ -29,7 +29,9 @@ function Exercise(props){
 	function onEdit(evt) {
 		evt.stopPropagation();
 	}
+	
 	function onDelete(evt) {
+		
 		evt.stopPropagation();
 		
 		try{
@@ -51,6 +53,9 @@ function Exercise(props){
 		} catch {
 			window.alert('Failed deleting this exercise');
 		}
+
+		window.location.reload()
+
 	}
 	
   return(
@@ -58,7 +63,7 @@ function Exercise(props){
     <Card url={props.url} style={props.style} className={props.className}>
       
 			<div className='topRight'>
-				<BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>
+				{ props.isOptions && <BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>}
 			</div>
 			{ dspOptions[0] && 
 				<div style={{display:'flex'}}>
@@ -69,7 +74,7 @@ function Exercise(props){
 			
 			<div className='bottomRight'>
 				<BtnRound>
-				{props.likes}<br/>Likes
+				{props.chalange['rating'].length}<br/>Likes
 				</BtnRound>
 			</div>
       
@@ -78,11 +83,10 @@ function Exercise(props){
 			<br/><br/><br/>
       <div className="vscroll bottomLeft">
       { 
-				props.tags.map((i) => 
+				props.chalange['tags'].map((i) => 
 					<Tag key={i} url={'../../../../../../../../../../browse/'+i}>{i}</Tag>
-				) 
+				)
 			}
-
       </div>
 		    
     </Card>
@@ -90,3 +94,9 @@ function Exercise(props){
   )
 }
 export default Exercise;
+
+
+// title={item['title']} 
+// paragraph={item['question']} 
+// likes={item['rating'].length} 
+// tags={item['tags']}
