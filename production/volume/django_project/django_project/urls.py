@@ -92,7 +92,7 @@ def test(request):
 	return HttpResponse('test')
 
 
-def getChalange(outData, id):
+def getChalange(id):
 	
 	cur.execute('''
 	select 
@@ -106,9 +106,9 @@ def getChalange(outData, id):
 		cur.execute("select id from auth_user where username='"+inData[4]+"'")
 		authid = cur.fetchone()[0]
 		
-		outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+		outData = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 		
-		dir_exercise = os.path.join(dir_users, str(authid), outData['chalange']['latex'])
+		dir_exercise = os.path.join(dir_users, str(authid), outData['latex'])
 		file_json = os.path.join(dir_exercise, '.json')
 		if not os.path.exists(dir_exercise):
 			os.makedirs(dir_exercise)
@@ -119,11 +119,11 @@ def getChalange(outData, id):
 		with open(file_json, 'r') as f:
 			identifiers = json.loads(f.read())
 		
-		outData['chalange']['list_latex'] = identifiers
-		outData['chalange']['authid'] = authid
+		outData['list_latex'] = identifiers
+		outData['authid'] = authid
 	
 	else:
-		inData = None
+		outData = None
 		
 	return outData
 	
@@ -142,7 +142,7 @@ def Chalange(request, id):
 	request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'+str(id)
 	
-	outData = getChalange(outData, id)
+	outData['chalange'] = getChalange(id)
 	
 	if outData:
 		return render(request, 'chalange.html', context={'value': outData})
@@ -178,7 +178,7 @@ def Browse(request, sterm=''):
 	else:
 		# after initial redirect, now with correct url
 		cur.execute(
-				'select id,question,answer,hints,author,creationdate,title,rating,tags,explain from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
+				'select id,question,answer,hints,author,creationdate,title,rating,tags,explain,latex from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
 		)
 		inData = cur.fetchall()
 		for i in range(len(inData)):
@@ -277,17 +277,17 @@ def Profile(request, userid):
 			liked = []
 			
 			for i in inData[0]:
-				data = getChalange({}, i)
+				data = getChalange(i)
 				if data:
 					authored.append(data)
 					
 			for i in inData[1]:
-				data = getChalange({}, i)
+				data = getChalange(i)
 				if data:
 					liked.append(data)
 				
 			outData['data'] = [authored, liked, request.user.username]
-				
+
 			return render(request, 'user.html', context={'value': outData})
 	
 	else:

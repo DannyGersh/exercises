@@ -22,21 +22,22 @@ function Exercise(props){
   <>
     <Card url={props.url} style={props.style} className={props.className}>
             
-	  <div className='bottomRight'>
-	    <BtnRound>
-		  {props.likes}<br/>Likes
-	    </BtnRound>
-	  </div>
+			<div className='bottomRight'>
+				<BtnRound>
+				{props.likes}<br/>Likes
+				</BtnRound>
+			</div>
       
       <div id={'title_'+props.identifier.toString()}></div>
 	    <div id={'exercise_'+props.identifier.toString()}></div>
 			<br/><br/><br/>
-      <div style={{'width': 'calc(100% - 3.3rem)'}} className="vscrol">
+      <div className="vscroll bottomLeft">
       { 
 				props.tags.map((i) => 
 					<Tag key={i} url={'../../../../../../../../../../browse/'+i}>{i}</Tag>
 				) 
 			}
+
       </div>
 		    
     </Card>

@@ -31,9 +31,9 @@ function User(){
   
   function selectMenue(selection){
 		if (selection==="Liked") {
-			return liked.map(i=>Object.values(i)[0]);
+			return liked;
 		} else {
-			return authored.map(i=>Object.values(i)[0]);
+			return authored;
 		}
   }
 
@@ -50,9 +50,10 @@ function User(){
 		{
 			selectMenue(menueSelection).map( (item, index) =>
 				<Exercise
-					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
+					style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
 					key={index}
 					identifier={index}
+					isUser={true}
 					title={item['title']} 
 					paragraph={item['question']} 
 					url={'../../' + item['id']} 
