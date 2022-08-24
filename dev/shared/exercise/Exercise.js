@@ -1,9 +1,11 @@
 import Card from '../card/Card'
 import BtnRound from '../../shared/buttons/BtnRound'
 import Tag from '../../shared/tag/Tag'
+import BtnMenue from '../../shared/buttons/BtnMenue'
 import './Exercise.css'
 import {mainText2html} from '../../shared/Functions'
-import {useEffect} from 'react'
+import {useState, useEffect} from 'react'
+import {sendData} from '../../shared/Functions'
 
 function Exercise(props){
   
@@ -18,10 +20,53 @@ function Exercise(props){
 		document.getElementById('exercise_'+props.identifier.toString()).innerHTML = htmlExercise;
 	},[])
 	
+	const dspOptions = useState(false);
+	function onOptions(evt) {
+		evt.stopPropagation();
+		dspOptions[1]( !dspOptions[0] );
+	}
+	
+	function onEdit(evt) {
+		evt.stopPropagation();
+	}
+	function onDelete(evt) {
+		evt.stopPropagation();
+		
+		try{
+			if(window.confirm("Delete this exercise ?")) {
+				const promise = sendData(
+					'http://localhost/delete/', 
+					[
+						props.chalange['id'],
+						props.chalange['latex'],
+					]
+				)
+				
+				promise.then(res => ()=>{
+				if(!res.status===200) {
+					window.alert('Failed deleting this exercise');
+				}});
+
+			}
+		} catch {
+			window.alert('Failed deleting this exercise');
+		}
+	}
+	
   return(
   <>
     <Card url={props.url} style={props.style} className={props.className}>
-            
+      
+			<div className='topRight'>
+				<BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>
+			</div>
+			{ dspOptions[0] && 
+				<div style={{display:'flex'}}>
+					<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
+					<BtnMenue onClick={(evt)=>onDelete(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Delete</BtnMenue>
+				</div>
+			}
+			
 			<div className='bottomRight'>
 				<BtnRound>
 				{props.likes}<br/>Likes

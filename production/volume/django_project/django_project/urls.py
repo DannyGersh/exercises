@@ -37,6 +37,7 @@ from . compileLatex import updateLatexList
 import re
 import os
 from time import time
+from subprocess import run as subprocessRun
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 cur = conn.cursor()
@@ -77,20 +78,47 @@ targets = [
 	'explain'
 ]
 
+dir_static = '/volume/static/users/'
+
 
 dir_users = os.path.join('/','volume','static','users')
 
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
 
+def Delete(request):
+
+	# body - [int (exercise id), str (latex folder name), int (caller)]
+	
+	body = json.loads(request.body.decode("utf-8"))
+
+	cur.execute(
+		"delete from chalanges where id='%s'"%(str(body[0]))
+	)
+	cur.execute('''
+		update auth_user set 
+			authored=(select array_remove(authored,%s) from auth_user),
+			liked=(select array_remove(liked,%s) from auth_user)
+		'''%( str(body[0]), str(body[0]) )
+	)
+	conn.commit()
+		
+	dir_base = os.path.join(dir_users, str(request.user.id))
+	dir_exercise = os.path.join(dir_base, body[1])
+
+	if subprocessRun(  ['rm','-r', dir_exercise]  ):
+		# TODO - do something if not successfull
+		pass
+	
+	return HttpResponse('Delete')
+
 @ensure_csrf_cookie		
-def test(request):
+def UpdateLatex(request):
 
 	latexList =	json.loads(request.body.decode("utf-8"))
 	latexList = updateLatexList(latexList[1], str(request.user.id), latexList[0])
 		
-	return HttpResponse('test')
-
+	return HttpResponse('UpdateLatex')
 
 def getChalange(id):
 	
@@ -202,23 +230,19 @@ def Home(request):
 	request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'
 
-	cur.execute('''
-	select 
-			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
-			from chalanges order by creationdate desc limit 10'''
-	)
+	# TODO - this takes 22 SQL quaries, could be onley 2 !
+	
+	# TODO - make one SQL quary insted of 10
+	cur.execute("select id from chalanges order by creationdate desc limit 10")
 	in_latest = cur.fetchall()	
 	for i in range(len(in_latest)):
-		in_latest[i] = {k:v for (k,v) in zip(SQLDataKeys, in_latest[i]) }
+		in_latest[i] = getChalange(in_latest[i][0])
 	
-	cur.execute('''
-	select 
-			id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain
-			from chalanges order by cardinality(rating) desc limit 10'''
-	)
+	# TODO - make one SQL quary insted of 10
+	cur.execute("select id from chalanges order by cardinality(rating) desc limit 10")
 	in_hotest = cur.fetchall()	
 	for i in range(len(in_hotest)):
-		in_hotest[i] = {k:v for (k,v) in zip(SQLDataKeys, in_hotest[i]) }
+		in_hotest[i] = getChalange(in_hotest[i][0])
 	
 	outData['latest'] = in_latest
 	outData['hotest'] = in_hotest
@@ -534,5 +558,6 @@ urlpatterns = [
 	path('newSubmit/', NewSubmited),
 	path('user/<int:userid>/', Profile),
 	
-	path('test/', test),
+	path('test/', UpdateLatex),
+	path('delete/', Delete),
 ]

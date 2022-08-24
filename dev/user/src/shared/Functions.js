@@ -63,7 +63,7 @@ export {getCookie}
 
 
 function sendData(url, data) {
-	fetch(url, { 
+	return fetch(url, { 
 		method: "POST", 
 		body: JSON.stringify(data),
 		headers: {
@@ -71,7 +71,6 @@ function sendData(url, data) {
 			"X-CSRFToken": getCookie("csrftoken"),
 			},
 	})
-	.then(res => console.log(res));
 }
 export {sendData}
 
@@ -132,3 +131,11 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	return textList.join('');
 }
 export {mainText2html}
+
+
+
+
+
+
+
+

@@ -12,3 +12,4 @@ dev/browse/src/shared/**
 dev/user/src/shared/**
 dev/home/src/shared/**
 
+production/volume/static/users/**

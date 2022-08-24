@@ -3,6 +3,11 @@ import json
 from time import time
 import subprocess
 
+latex_a = '\\documentclass{article}\n\\usepackage{amsmath}'
+latex_b = '\\begin{document}\n\\begin{LARGE}'
+latex_c = '\\thispagestyle{empty}\n'
+latex_d = '\\end{LARGE}\n\\end{document}\n'
+
 targets = [
 	'title',
 	'exercise',
@@ -10,11 +15,6 @@ targets = [
 	'hints',
 	'explain'
 ]
-
-latex_a = '\\documentclass{article}\n\\usepackage{amsmath}'
-latex_b = '\\begin{document}\n\\begin{LARGE}'
-latex_c = '\\thispagestyle{empty}\n'
-latex_d = '\\end{LARGE}\n\\end{document}\n'
 
 forbiden = (
 	'\\renewcommand', 
