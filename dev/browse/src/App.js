@@ -8,29 +8,77 @@ function App() {
   window.nrw = useWindowResize(); // nrw - narrow window - boolean
   
 	if( process.env.NODE_ENV === 'development'){
-    let chalange1 = {
-			'id': 2, 
-			'question': 'test question', 
-			'answer': 'test answer', 
-			'hints': 'test hints', 
-			'author': 'test author', 
-			'creationdate': '27-7-1996', 
-			'title': 'test title', 
-			'rating': ['b','c'], 
-			'tags': ['math', 'science']
-		};
-		let chalange2 = {
-			'id': 2, 
-			'question': 'test question 2', 
-			'answer': 'test answer 2', 
-			'hints': 'test hints 2', 
-			'author': 'test author 2', 
-			'creationdate': '27-7-1996', 
-			'title': 'test title 2', 
-			'rating': ['b','c'], 
-			'tags': ['math', 'science']
-		};
-		let chalanges = [chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2, chalange1, chalange2]
+    let chalange = {
+			"id": 98,
+			"question": "$$___latex$$ test $$___latex$$",
+			"answer": "$$___latex$$ test $$___latex$$",
+			"hints": "$$___latex$$ test $$___latex$$",
+			"author": "a",
+			"creationdate": "08/23/2022 - 13:00",
+			"title": "$$___latex$$ test $$___latex$$",
+			"rating": [],
+			"tags": [
+	
+				"science"
+			],
+			"explain": "$$___latex$$ test $$___latex$$",
+			"latex": "1661261957510381",
+			"list_latex": {
+				"title": [
+					[
+						"\\(\\frac{1}{2}\\)",
+						"16612618266535265"
+					],
+					[
+						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
+						"16612618294915612"
+					]
+				],
+				"exercise": [
+					[
+						"\\(\\frac{1}{2}\\)",
+						"1661261831666112"
+					],
+					[
+						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
+						"16612618332350814"
+					]
+				],
+				"answer": [
+					[
+						"\\(\\frac{1}{2}\\)",
+						"16612618350956101"
+					],
+					[
+						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
+						"16612618362604136"
+					]
+				],
+				"hints": [
+					[
+						"\\(\\frac{1}{2}\\)",
+						"16612618380124574"
+					],
+					[
+						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
+						"1661261839569922"
+					]
+				],
+				"explain": [
+					[
+						"\\(\\frac{1}{2}\\)",
+						"16612618410875106"
+					],
+					[
+						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
+						"16612618422952714"
+					]
+				]
+			},
+			"authid": 3
+		}
+		
+		let chalanges = [chalange, chalange, chalange, chalange, chalange, chalange, chalange, chalange, chalange, chalange, chalange, chalange]
 		window.jsonData = {
 			'search term': 'math',
 			'chalanges': chalanges,

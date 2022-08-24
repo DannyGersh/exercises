@@ -182,7 +182,7 @@ def Browse(request, sterm=''):
 		)
 		inData = cur.fetchall()
 		for i in range(len(inData)):
-			inData[i] = {k:v for (k,v) in zip(SQLDataKeys, inData[i])}
+			inData[i] = getChalange(inData[i][0])
 			
 		outData['chalanges'] = inData
 		

@@ -124,7 +124,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 				textList[i] = '<img src="'+tempPath+'" />'
 			}
 			catch{
-				throw new Error('probably index out of range ... ( list_latex[target][index][?] ) ');
+				console.log('WARNING: probably index out of range ... ( list_latex[target][index][?] ) ');
 			}
 			index++;
 		}
