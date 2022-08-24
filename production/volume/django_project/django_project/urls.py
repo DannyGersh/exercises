@@ -19,11 +19,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from django.views.decorators.csrf import ensure_csrf_cookie
-#from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.clickjacking import xframe_options_exempt
-#from django.views.decorators.csrf import requires_csrf_token
-#from django.template.context_processors import csrf
-#from django.middleware.csrf import get_token
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -78,13 +74,11 @@ targets = [
 	'explain'
 ]
 
-dir_static = '/volume/static/users/'
-
-
 dir_users = os.path.join('/','volume','static','users')
 
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
+
 
 def Delete(request):
 
@@ -131,12 +125,12 @@ def getChalange(id):
 	
 	if inData:
 		# TODO - authid should be set in the chalanges table, for avoiding this second sql call.
-		cur.execute("select id from auth_user where username='"+inData[4]+"'")
-		authid = cur.fetchone()[0]
+		# cur.execute("select id from auth_user where username='%s'"%(inData[4]))
+		# authid = cur.fetchone()[0]
 		
 		outData = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 		
-		dir_exercise = os.path.join(dir_users, str(authid), outData['latex'])
+		dir_exercise = os.path.join(dir_users, outData['author'], outData['latex'])
 		file_json = os.path.join(dir_exercise, '.json')
 		if not os.path.exists(dir_exercise):
 			os.makedirs(dir_exercise)
@@ -148,7 +142,6 @@ def getChalange(id):
 			identifiers = json.loads(f.read())
 		
 		outData['list_latex'] = identifiers
-		outData['authid'] = authid
 	
 	else:
 		outData = None
@@ -425,6 +418,27 @@ def New(request):
 		cur.execute('select name from tags')
 		outData['tags'] = [i[0] for i in cur.fetchall()] 
 		
+		if request.method == "POST":
+			# user clicked edit
+			
+			outData['isEdit'] = True
+			id_exercise = request.POST.get('id_exercise', -1)
+			
+			if id_exercise == -1:
+				return HttpResponse('Could not get specified exercise')
+			
+			outData['chalange'] = getChalange(id_exercise)
+			dir_exercise = os.path.join(dir_users, outData['chalange']['author'])
+			file_json = os.path.join(dir_exercise, '.json')
+			
+			#cur.execute(
+			#	'select id from auth_user where name=%s'%()
+			#)
+			with open(file_json, 'r') as f:
+				dataFromFile = json.loads(f.read())
+			
+			print(dataFromFile)
+
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:
@@ -472,21 +486,17 @@ def NewSubmited(request):
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain)
 			
-			cur.execute('''insert into chalanges
-			(question, answer, hints, author, title, tags, explain, rating, latex)
-			values( ''' + 
-				"\'"  + exercise							+ "\', " + 
-				"\'"  + answer 								+ "\', " + 
-				"\'"  + hints 								+ "\', " + 
-				"\'"  + request.user.username	+ "\', " + 
-				"\'"  + title									+ "\', " + 
-				"\'{" + tags 									+ "}\'," +
-				"\'"  + explain 							+ "\'," +
-				"\'{}\',"	 					+	
-				"\'" + now + "\'" 	+
-			')'
+			cur.execute('''
+				insert into chalanges
+				(question, answer, hints, author, title, tags, explain, rating, latex)
+				values('%s', '%s', '%s', '%s', '%s', '{%s}', '%s', '%s', '%s')
+			'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now)
 			)
-			cur.execute("update auth_user set authored[cardinality(authored)] = (select id from chalanges where latex='"+now+"')::integer where id = "+str(request.user.id))
+			cur.execute('''
+				update auth_user 
+					set authored[cardinality(authored)] = (select id from chalanges where latex='%s')::integer 
+					where id = '%s'
+			'''%(now, request.user.id) )
 			conn.commit()
 			
 			os.chdir(dir_original)

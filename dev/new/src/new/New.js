@@ -48,12 +48,8 @@ window.rmTimer = function(timerID) {
 
 				
 function New(props){
-	
-	
-	const titleRef = [useRef([]), useRef('')]
-	// titleRef[0].current - list of latex expressions in title
-	// titleRef[1] - refrence to title text
 
+	// refrences to unputs - structure: [ref_to_latex_list, ref_to_input_title]
 	const temp_titleRef 		= [useRef([]), useRef(''), targets[0] ];
 	const temp_exerciseRef 	= [useRef([]), useRef(''), targets[1] ];
 	const temp_answerRef 		= [useRef([]), useRef(''), targets[2] ];
@@ -174,7 +170,7 @@ function New(props){
 		allso it loads local storage.
 	*/
 		
-	// initiate titleRef[0] with default title text
+	// initiate refs with default title text
 	useEffect(()=>{
 		init_ref(ref_exercise[0])
 		init_ref(ref_exercise[1])

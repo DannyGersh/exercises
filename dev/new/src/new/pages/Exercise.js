@@ -1,4 +1,5 @@
 import './Shared.css'
+import {useEffect} from 'react'
 
 function Exercise(props){
 		
@@ -22,6 +23,14 @@ function Exercise(props){
 		props.state[2][1](text.target.value); // updates in New.js
 	}
 
+	useEffect(()=>{
+		if(window.jsonData['isEdit']) {
+			document.getElementById('title').value = window.jsonData['chalange']['title'];
+		} else {
+			document.getElementById('title').value = localStorage.getItem('exercise')
+		}
+	},[])
+
 	return(
 	<div className='Exercise'>
 		
@@ -42,7 +51,6 @@ function Exercise(props){
 		<textarea 
 			ref={props.ref_exercise[1][1]}
 			onChange={(v)=>onExerciseChange(v)}
-			defaultValue={localStorage.getItem('exercise')}
 			rows='6' 
 			className='ExerciseTextArea' 
 			required

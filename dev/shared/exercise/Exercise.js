@@ -6,6 +6,7 @@ import './Exercise.css'
 import {mainText2html} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
 import {sendData} from '../../shared/Functions'
+import CSRFToken from '../../shared/csrftoken'
 
 function Exercise(props){
   
@@ -66,7 +67,13 @@ function Exercise(props){
 			</div>
 			{ dspOptions[0] && 
 				<div style={{display:'flex'}}>
-					<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
+					
+					<form name='Edit' action={'/new/'} method='POST'>
+						<CSRFToken/>
+						<input type="hidden" name="id_exercise" value={	props.chalange['id'] } />
+						<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
+					</form>
+
 					<BtnMenue onClick={(evt)=>onDelete(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Delete</BtnMenue>
 				</div>
 			}
@@ -94,8 +101,3 @@ function Exercise(props){
 }
 export default Exercise;
 
-
-// title={item['title']} 
-// paragraph={item['question']} 
-// likes={item['rating'].length} 
-// tags={item['tags']}

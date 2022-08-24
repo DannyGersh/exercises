@@ -118,7 +118,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 			
 			try {
 				const tempLatex = formFile_latex[target][index][1]; // TODO - workeround here, needs fixin 
-				const tempId = chalange['authid'];
+				const tempId = chalange['author'];
 				const tempPath = ['/static/users', tempId, identifier_exercise, tempLatex+'.svg'].join('/')
 				textList[i] = '<img src="'+tempPath+'" />'
 			}
