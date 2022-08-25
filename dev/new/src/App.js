@@ -7,21 +7,23 @@ import {useState, useEffect} from 'react'
 function App() {
 
   let narrowWindow = useWindowResize();
-  
-	if( process.env.NODE_ENV === 'development'){
+  window.is_debug = (process.env.NODE_ENV === 'development');
+	
+	if( window.is_debug ){
 		window.jsonData = {
 			'chalange':
 			{
 				"id": 111,
 				"question": "wow $$___latex$$",
 				"answer": "wow $$___latex$$",
-				"hints": "",
+				"hints": "poop",
 				"author": 3,
 				"creationdate": "08/24/2022 - 09:20",
 				"title": "wow $$___latex$$",
 				"rating": [],
 				"tags": [
-						"science"
+						"math",
+						"tag1",
 				],
 				"explain": "",
 				"latex": "16613328765176556",

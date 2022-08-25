@@ -24,11 +24,14 @@ function Exercise(props){
 	}
 
 	useEffect(()=>{
-		if(window.jsonData['isEdit']) {
-			document.getElementById('title').value = window.jsonData['chalange']['title'];
-		} else {
-			document.getElementById('title').value = localStorage.getItem('exercise')
+		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
+			localStorage.setItem('title', window.jsonData['chalange']['title']);
+			localStorage.setItem('exercise', window.jsonData['chalange']['exercise']);
+			localStorage.setItem('answer', window.jsonData['chalange']['answer']);
 		}
+		document.getElementById('title').value = localStorage.getItem('title');
+		document.getElementById('exercise').value = localStorage.getItem('exercise');
+		document.getElementById('answer').value = localStorage.getItem('answer');
 	},[])
 
 	return(
@@ -49,6 +52,7 @@ function Exercise(props){
 		
 		<label>Exercise bodie *</label>
 		<textarea 
+			id='exercise'
 			ref={props.ref_exercise[1][1]}
 			onChange={(v)=>onExerciseChange(v)}
 			rows='6' 
@@ -58,6 +62,7 @@ function Exercise(props){
 		
 		<label>answer *</label>
 		<textarea
+			id='answer'
 			ref={props.ref_exercise[2][1]}
 			onChange={(v)=>onAnswerChange(v)}
 			defaultValue={localStorage.getItem('answer')}

@@ -79,6 +79,17 @@ dir_users = os.path.join('/','volume','static','users')
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
 
+def AddTag(request):
+
+	body = json.loads(request.body.decode("utf-8"))
+	
+	cur.execute('''
+		insert into tags(name) values('%s')
+		'''%( str(body) )
+	)
+	conn.commit()
+	
+	return HttpResponse(200)
 
 def Delete(request):
 
@@ -407,7 +418,7 @@ def Like(request):
 				return(HttpResponse('this should never happen'))
 
 @ensure_csrf_cookie		
-def New(request):
+def New(request, isSourceNav=False):
 	
 	if request.user.is_authenticated:
 		
@@ -418,27 +429,94 @@ def New(request):
 		cur.execute('select name from tags')
 		outData['tags'] = [i[0] for i in cur.fetchall()] 
 		
+		outData['chalange'] = {}
+		outData['chalange']['id'] = 'dummy_id'
+		
 		if request.method == "POST":
-			# user clicked edit
+			# user clicked edit - onley way to get here except reload
 			
 			outData['isEdit'] = True
-			id_exercise = request.POST.get('id_exercise', -1)
 			
+			id_exercise = request.POST.get('id_exercise', -1)
 			if id_exercise == -1:
-				return HttpResponse('Could not get specified exercise')
+					return HttpResponse('Could not get specified exercise')
 			
 			outData['chalange'] = getChalange(id_exercise)
-			dir_exercise = os.path.join(dir_users, outData['chalange']['author'])
-			file_json = os.path.join(dir_exercise, '.json')
-			
-			#cur.execute(
-			#	'select id from auth_user where name=%s'%()
-			#)
-			with open(file_json, 'r') as f:
-				dataFromFile = json.loads(f.read())
-			
-			print(dataFromFile)
+			if not outData['chalange']:
+				outData['chalange'] = {}
+				
+			if request.session.get('EditInProgress','') != id_exercise:
+				
+				outData['EditInProgress'] = False
+				request.session['EditInProgress'] = id_exercise
 
+				# outData['chalange'] = getChalange(id_exercise)
+				
+				# get latex from .json to file in $$___latex$$ slots
+				dir_exercise = os.path.join(dir_users, outData['chalange']['author'], outData['chalange']['latex'])
+				file_json = os.path.join(dir_exercise, '.json')
+				
+				with open(file_json, 'r') as f:
+					dataFromFile = json.loads(f.read())
+				
+				# PERROR
+				def validate(target):
+					
+					# TODO - fix this workeround
+					TODOtarget = target
+					if target == 'exercise':
+						TODOtarget = 'question'
+					
+					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(TODOtarget,''))
+					b = [i[0] for i in dataFromFile.get(target,'')]
+					
+					return len(a) == len(b)
+				
+				for i in targets:
+					if not validate(i):
+						print(i, 'Exercise Corupted for some reasone ...')
+						return HttpResponse('Exercise Corupted for some reasone ...')
+	
+				# END_PERROR
+	
+				def reverseLatex(target):
+					
+					# TODO - fix this workeround
+					targetCalange = target
+					if target == 'exercise':
+						targetCalange = 'question'
+	
+					res = re.split('(\$\$___latex\$\$)', outData['chalange'][targetCalange])
+					if '' in res:
+						res.remove('')
+					resFromFile = [i[0] for i in dataFromFile[target]]
+					
+					index = 0
+					for i in range(len(res)):
+						if res[i] == '$$___latex$$':
+							res[i] = '$$'+resFromFile[index]+'$$'
+							index += 1
+					
+					return ''.join(res)
+	
+				outData['chalange']['title'] = reverseLatex('title')
+				outData['chalange']['exercise'] = reverseLatex('exercise')
+				outData['chalange']['answer'] = reverseLatex('answer')
+				outData['chalange']['hints'] = reverseLatex('hints')
+				outData['chalange']['explain'] = reverseLatex('explain')
+
+			else:
+				outData['EditInProgress'] = True
+				outData['chalange']['id'] = id_exercise
+				#outData['chalange']['latex'] = 'delete_me'
+		
+		else:
+			# user clicked New in navbar - onley way to get here except reload
+
+			request.session['EditInProgress'] = False
+			outData['EditInProgress'] = False
+			outData['isEdit'] = False
+			
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:
@@ -451,15 +529,19 @@ def NewSubmited(request):
 	outData = {} # data for js. will be converted to secure json.
 	
 	if request.method == "POST":
+		oldLatex = request.POST.get('oldLatex', '')
 		
 		tags = request.POST.get('tags', '')
 		if tags == []: tags = ''
 		if tags == '[]': tags = ''
 		tags = tags.replace('[', '')
 		tags = tags.replace(']', '')
-				
+		
+		# TODO - fix weird 'true'
 		if(request.POST.get('issubmit')=='true'):
 
+			request.session['EditInProgress'] = 'none'
+			
 			dir_original = os.getcwd()
 			dir_current_user = os.path.join(dir_users, str(request.user.id))
 			dir_current_svg = os.path.join(dir_current_user, 'svg')
@@ -486,19 +568,39 @@ def NewSubmited(request):
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain)
 			
-			cur.execute('''
-				insert into chalanges
-				(question, answer, hints, author, title, tags, explain, rating, latex)
-				values('%s', '%s', '%s', '%s', '%s', '{%s}', '%s', '%s', '%s')
-			'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now)
-			)
-			cur.execute('''
-				update auth_user 
-					set authored[cardinality(authored)] = (select id from chalanges where latex='%s')::integer 
-					where id = '%s'
-			'''%(now, request.user.id) )
-			conn.commit()
+			# TODO - fix weird 'false' thing
+			if request.POST.get('isEdit', '') == 'false':
+				cur.execute('''
+					insert into chalanges
+					(question, answer, hints, author, title, tags, explain, rating, latex)
+					values('%s', '%s', '%s', '%s', '%s', '{%s}', '%s', '%s', '%s')
+				'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now)
+				)
+				cur.execute('''
+					update auth_user 
+						set authored[cardinality(authored)] = (select id from chalanges where latex='%s')::integer 
+						where id = '%s'
+				'''%(now, request.user.id) )
+				conn.commit()
+				
+			else:
+				exerciseId = request.POST.get('exerciseId', '')
+				if(exerciseId == ''):
+					return HttpResponse('Failed submiting exercise')
+				
+				cur.execute('''
+					update chalanges set 
+						question='%s', answer='%s',
+						hints='%s', title='%s', 
+						tags='{%s}', explain='%s', latex='%s'
+					where id='%s'
+				'''%(exercise, answer, hints, title, tags, explain, now, exerciseId)
+				)
+				conn.commit()
 			
+				dir_oldLatex = os.path.join(dir_current_user, oldLatex)
+				os.system('rm -r %s'%dir_oldLatex)	
+				
 			os.chdir(dir_original)
 			
 			return redirect("../../../../user/" + str(request.user.id))
@@ -541,7 +643,7 @@ def NewSubmited(request):
 				identifiers = json.loads(f.read())
 	
 			outData['chalange']['list_latex'] = identifiers
-			outData['chalange']['authid'] = str(request.user.id)
+			outData['chalange']['author'] = str(request.user.id)
 	
 			return render(request, 'chalange.html', context={'value': outData})
 	
@@ -570,4 +672,5 @@ urlpatterns = [
 	
 	path('test/', UpdateLatex),
 	path('delete/', Delete),
+	path('addtag/', AddTag),
 ]

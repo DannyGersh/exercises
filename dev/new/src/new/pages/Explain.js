@@ -1,3 +1,4 @@
+import {useEffect} from 'react'
 
 function Explain(props){
 		
@@ -10,11 +11,26 @@ function Explain(props){
 		props.state[1](text.target.value); // updates in New.js
 	}
 	
+	useEffect(()=>{
+		if(window.jsonData['isEdit']) {
+			document.getElementById('explain').value = window.jsonData['chalange']['explain'];
+		} else {
+			document.getElementById('explain').value = localStorage.getItem('explain');
+		}
+	},[])
+	useEffect(()=>{
+		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
+			localStorage.setItem('explain', window.jsonData['chalange']['explain']);
+		}
+		document.getElementById('explain').value = localStorage.getItem('explain');
+	},[])
+
 	return(
 		<div className='Exercise'>
 			<label for="AnswereTextArea">Explanation bodie</label>
 			
 			<textarea
+				id='explain'
 				ref={props.ref_explain[1]}
 				onChange={(v)=>onExplainChange(v)}
 				defaultValue={localStorage.getItem('Explanation')}

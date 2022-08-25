@@ -1,4 +1,4 @@
-
+import {useEffect} from 'react'
 
 function Hints(props){
 		
@@ -11,11 +11,20 @@ function Hints(props){
 		props.state[1](text.target.value); // updates in New.js
 	}
 	
+	useEffect(()=>{
+		if(window.jsonData['isEdit']) {
+			document.getElementById('hints').value = window.jsonData['chalange']['hints'];
+		} else {
+			document.getElementById('hints').value = localStorage.getItem('hints');
+		}
+	},[])
+	
 	return(
 		<div className='Exercise'>
 		<label for="HintsTextArea">Hints bodie</label>
 		
 		<textarea 
+			id='hints'
 			ref={props.ref_hints[1]}
 			onChange={(v)=>onHintsChange(v)} 
 			defaultValue={localStorage.getItem('hints')} 
