@@ -43,7 +43,7 @@ db_version = cur.fetchone()
 # chalanges database columns
 SQLDataKeys = [
 	'id',           # serial primary key not null 
-	'question',     # varchar(4000) not null
+	'exercise',     # varchar(4000) not null
 	'answer',       # varchar(4000) not null
 	'hints',        # varchar(4000)
 	'author',       # varchar(100)
@@ -129,7 +129,7 @@ def getChalange(id):
 	
 	cur.execute('''
 	select 
-		id, question, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
+		id, exercise, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
 		from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()	
@@ -210,7 +210,7 @@ def Browse(request, sterm=''):
 	else:
 		# after initial redirect, now with correct url
 		cur.execute(
-				'select id,question,answer,hints,author,creationdate,title,rating,tags,explain,latex from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
+				'select id,exercise,answer,hints,author,creationdate,title,rating,tags,explain,latex from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
 		)
 		inData = cur.fetchall()
 		for i in range(len(inData)):
@@ -381,16 +381,17 @@ def SignUp(request):
 		elif password != verPassword:
 			return redirect(currentPage)
 			
-		try:
-			user = User.objects.create_user(
-				uname, '', password
-			)
+		user = User.objects.create_user(
+			uname, '', password
+		)
+		if not user:
+			return redirect(currentPage)
+		else:
+			login(request, user)
 			request.session['isAuth'] = True
 			request.session['signInFailure'] = False
-			return redirect(currentPage)
-		
-		except:
-			return redirect(currentPage)
+			
+		return redirect(currentPage)
 
 	# this should never happen
 	frame = getframeinfo(currentframe())
@@ -465,7 +466,7 @@ def New(request, isSourceNav=False):
 					# TODO - fix this workeround
 					TODOtarget = target
 					if target == 'exercise':
-						TODOtarget = 'question'
+						TODOtarget = 'exercise'
 					
 					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(TODOtarget,''))
 					b = [i[0] for i in dataFromFile.get(target,'')]
@@ -484,7 +485,7 @@ def New(request, isSourceNav=False):
 					# TODO - fix this workeround
 					targetCalange = target
 					if target == 'exercise':
-						targetCalange = 'question'
+						targetCalange = 'exercise'
 	
 					res = re.split('(\$\$___latex\$\$)', outData['chalange'][targetCalange])
 					if '' in res:
@@ -572,7 +573,7 @@ def NewSubmited(request):
 			if request.POST.get('isEdit', '') == 'false':
 				cur.execute('''
 					insert into chalanges
-					(question, answer, hints, author, title, tags, explain, rating, latex)
+					(exercise, answer, hints, author, title, tags, explain, rating, latex)
 					values('%s', '%s', '%s', '%s', '%s', '{%s}', '%s', '%s', '%s')
 				'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now)
 				)
@@ -590,7 +591,7 @@ def NewSubmited(request):
 				
 				cur.execute('''
 					update chalanges set 
-						question='%s', answer='%s',
+						exercise='%s', answer='%s',
 						hints='%s', title='%s', 
 						tags='{%s}', explain='%s', latex='%s'
 					where id='%s'
