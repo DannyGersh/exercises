@@ -102,14 +102,14 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 		in the database at table chalanges.
 		e.g. chalanges allso needs renaming.
 	*/
-	let workeround = target;
-	if(target==='exercise') {
-		workeround = 'question';
-	}
+	//let workeround = target;
+	//if(target==='exercise') {
+	//	workeround = 'question';
+	//}
 	
 	// TODO - add database of errors and add this to it if cant load latex
 	const reg_latex = /(\$\$___latex\$\$|___ERROR___)/
-	let textList = chalange[workeround].split(reg_latex)
+	let textList = chalange[target].split(reg_latex)
 	textList = textList.filter(i=>i!=='')
 	
 	let index = 0;

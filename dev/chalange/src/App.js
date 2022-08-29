@@ -11,7 +11,7 @@ function App() {
 	if( process.env.NODE_ENV === 'development'){
     let chalange = {
 			'id': 2, 
-			'question': 'test $$___latex$$ question', 
+			'exercise': 'test $$___latex$$ exercise', 
 			'answer': 'test $$___latex$$ answer', 
 			'hints': 'test $$___latex$$ hints', 
 			'author': 'test author', 

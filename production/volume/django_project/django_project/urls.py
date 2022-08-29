@@ -462,12 +462,7 @@ def New(request, isSourceNav=False):
 				
 				# PERROR
 				def validate(target):
-					
-					# TODO - fix this workeround
-					TODOtarget = target
-					if target == 'exercise':
-						TODOtarget = 'exercise'
-					
+
 					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(TODOtarget,''))
 					b = [i[0] for i in dataFromFile.get(target,'')]
 					
@@ -481,12 +476,7 @@ def New(request, isSourceNav=False):
 				# END_PERROR
 	
 				def reverseLatex(target):
-					
-					# TODO - fix this workeround
-					targetCalange = target
-					if target == 'exercise':
-						targetCalange = 'exercise'
-	
+
 					res = re.split('(\$\$___latex\$\$)', outData['chalange'][targetCalange])
 					if '' in res:
 						res.remove('')
