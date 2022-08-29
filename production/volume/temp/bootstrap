@@ -28,6 +28,9 @@ psql -U postgres -a -f updateTableAuthUser.sql
 
 gunicorn -c /volume/conf/gunicorn_config.py django_project.wsgi &
 
+service restart nginx
+service restart postgresql
+
 lsof -i :8000
 
 cd /volume/temp
