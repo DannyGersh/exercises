@@ -49,7 +49,28 @@ window.rmTimer = function(timerID) {
 				
 function New(props){
 
-	// refrences to unputs - structure: [ref_to_latex_list, ref_to_input_title, target]
+	const temp_title 		= localStorage.getItem('title')				
+	const temp_exercise = localStorage.getItem('exercise')		
+	const temp_answer   = localStorage.getItem('answer')			
+	const temp_hints    = localStorage.getItem('hints')				
+	const temp_explain  = localStorage.getItem('Explanation')	
+	const temp_tags     = localStorage.getItem('tags')				
+		
+	// state - they're all strings, coresponding to form inputs, 
+	// except tags which is a list of strings                     
+	const title		 = useState(temp_title)
+	const exercise = useState(temp_exercise)
+	const answer 	 = useState(temp_answer)
+	const hints		 = useState(temp_hints)
+	const explain  = useState(temp_explain)
+	const tags		 = useState(temp_tags)
+	const bmt 		 = useState('Exercise'); // current bottom menue tab
+	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
+
+	// references to inputs - structure: [ref_to_latex_list, ref_to_input_title, target]
+	// latex_list - list of evaluated latex strings 
+	// ref_to_input_title - string representing the current input
+	// target - corresponding targets from list
 	const temp_titleRef 		= [useRef([]), useRef(''), targets[0] ];
 	const temp_exerciseRef 	= [useRef([]), useRef(''), targets[1] ];
 	const temp_answerRef 		= [useRef([]), useRef(''), targets[2] ];
@@ -59,7 +80,7 @@ function New(props){
 	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef];
 	const ref_hints 		= temp_hintsRef;
 	const ref_explain 	= temp_explainRef;
-	
+
 	/* NOTE - evalRefChange
 		POST latex if detected change 
 		POST structure(json):
@@ -81,10 +102,10 @@ function New(props){
 				
 				// DEBUG
 				if(!targets.includes(ref[2])) {
-					throw new Error('ref[2] not in targets');
+					console.log('ref[2] not in targets');
 				}
 				
-				ref[0].current = temp; // IMPORTENT - stops perpetual nonsence
+				ref[0].current = temp; // IMPORTENT - renew ref[0].current
 				
 				if(!window.is_debug) {
 					sendData('http://localhost/test/', [ ref[2] , ref[0].current ]);
@@ -95,13 +116,13 @@ function New(props){
 		}
 		
 	}
-	function init_ref(ref) {
+	function init_ref(ref, str) {
 		
 		let temp = []
 		try {
 			temp = ref[1].current.value.match(/(\$\$.+?\$\$)/g);
 		} catch {
-			// pass
+			temp = str.match(/(\$\$.+?\$\$)/g);
 		}
 		
 		if(temp) {
@@ -110,33 +131,23 @@ function New(props){
 		
 		ref[0].current = temp;
 	}
-		
-	// state - they're all strings, coresponding to form inputs, 
-	// except tags which is a list of strings
-	const title		 = useState('');
-	const exercise = useState('');
-	const answer 	 = useState('');
-	const hints		 = useState('');
-	const explain  = useState('');
-	const tags		 = useState('');
-	// TODO - change bmt to be like the rest
-	const [bmt, setBmt] = useState('Exercise'); // current bottom menue tab
-	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
-		
+
 	// when bottomMenue tab is clicked
 	function bottomMenueHandle(e){
 		
-		//if(bmt==='Exercise') {
+		// update latex immediately on bmt change
+		// only for current bmt, for avoiding null ref
+		if(bmt[0]==='Exercise') {
 			evalRefChange(ref_exercise[0])
 			evalRefChange(ref_exercise[1])
 			evalRefChange(ref_exercise[2])
-		//} else if(bmt==='Hints') {
+		} else if(bmt[0]==='Hints') {
 			evalRefChange(ref_hints)
-		//} else if(bmt==='Explain') {
+		} else if(bmt[0]==='Explain') {
 			evalRefChange(ref_explain)
-		//}
+		}
 			
-		setBmt(e.target.innerHTML);
+		bmt[1](e.target.innerHTML);
 	}
 	
 	// submit buttons
@@ -152,6 +163,7 @@ function New(props){
 	}
 	function onPrevie() { 
 	
+		evalRefChange(ref_exercise[0]	)
 		evalRefChange(ref_exercise[1]	)
 		evalRefChange(ref_exercise[2] )
 		evalRefChange(ref_hints		 		)
@@ -160,7 +172,33 @@ function New(props){
 		issubmit[1](false); 
 	}
 		
-	/* NOTE
+	// updating latex periodically
+	useEffect(()=>{
+	
+		// for avoiding multiple timers
+		window.rmTimer(window.id);
+		
+		// update refs every 2 sec
+		// if statments are necessary not to update with null ref
+		window.id = window.setTimer(()=>{
+			if(bmt[0]=='Exercise') {
+				evalRefChange(ref_exercise[0]);
+				evalRefChange(ref_exercise[1]);
+				evalRefChange(ref_exercise[2]);
+			}
+			if(bmt[0]=='Hints') {
+				
+				evalRefChange(ref_hints);
+			}
+			if(bmt[0]=='Explanation') {
+				evalRefChange(ref_explain);
+			}
+			
+		}, 2000);
+		
+	},[bmt[0]])
+	
+	/* NOTE - submit & preview
 		when the user clicks one of the two submit buttons
 		the page is rerendered so that the form
 		while update its action and target to the 
@@ -169,37 +207,6 @@ function New(props){
 		and performs the form submition.
 		allso it loads local storage.
 	*/
-	useEffect(()=>{
-		
-		// initiate refs with default title text
-		init_ref(ref_exercise[0])
-		init_ref(ref_exercise[1])
-		init_ref(ref_exercise[2])
-		init_ref(ref_hints)
-		init_ref(ref_explain)
-		
-		// send back latex
-		sendData('http://localhost/test/', [ ref_exercise[0][2] , ref_exercise[0][0].current ]);
-		sendData('http://localhost/test/', [ ref_exercise[1][2] , ref_exercise[1][0].current ]);
-		sendData('http://localhost/test/', [ ref_exercise[2][2] , ref_exercise[2][0].current ]);
-		sendData('http://localhost/test/', [ ref_hints[2] , ref_hints[0].current ]);
-		sendData('http://localhost/test/', [ ref_explain[2] , ref_explain[0].current ]);
-
-		// for avoiding multiple timers
-		window.rmTimer(window.id);
-		
-		// update refs every 2 sec
-		window.id = window.setTimer(()=>{
-			// TODO - optimise
-			evalRefChange(ref_exercise[0]);
-			evalRefChange(ref_exercise[1]);
-			evalRefChange(ref_exercise[2]);
-			evalRefChange(ref_hints);
-			evalRefChange(ref_explain);
-		}, 2000);
-		
-	},[])
-	
 	useEffect(()=>{
 				
 		title[1](localStorage.getItem('title'));		
@@ -220,9 +227,44 @@ function New(props){
 					localStorage.removeItem('hints');
 					localStorage.removeItem('answer');
 					localStorage.removeItem('tags');
-				} else {
+				} else {	
+					/* 
+						NOTE - get (hopefully) current inputs,
+						default to empty string
+						
+						must use local storage for the ref's aren't defined
+						
+						the '2' is because they are allready defined,
+						but I rather not use the already defined
+						for avoiding reacdt weirdness
+					*/
+					let temp_title2 = localStorage.getItem('title')
+					let temp_exercise2 = localStorage.getItem('exercise')
+					let temp_answer2 = localStorage.getItem('answer')
+					let temp_hints2 = localStorage.getItem('hints')
+					let temp_explain2 = localStorage.getItem('Explanation')
+					if(!temp_title2) { temp_title2 = '' }
+					if(!temp_exercise2) { temp_exercise2 = '' }
+					if(!temp_answer2) { temp_answer2 = '' }
+					if(!temp_hints2) { temp_hints2 = '' }
+					if(!temp_explain2) { temp_explain2 = '' }
+					
+					// evalRefChange onley excepts ref's
+					ref_exercise[0][1] = temp_title2
+					ref_exercise[1][1] = temp_exercise2
+					ref_exercise[2][1] = temp_answer2
+					ref_hints      [1] = temp_hints2
+					ref_explain	   [1] = temp_explain2
+					
+					// evaluate latex
+					evalRefChange(ref_exercise[0])
+					evalRefChange(ref_exercise[1])
+					evalRefChange(ref_exercise[2])
+					evalRefChange(ref_hints)
+					evalRefChange(ref_explain)
+					
 					// must reload or previe button wont function
-					window.location.reload();
+					window.location.reload()
 				}
 			} else {
 				let str = 'You are missing:\n';
@@ -236,7 +278,7 @@ function New(props){
 
 	},[issubmit[0]])
 	// NOTE
-	
+
 	return(
 	<>
 
@@ -257,18 +299,18 @@ function New(props){
 			<input type="hidden" name="oldLatex" value={ window.jsonData['chalange']['latex'] }	/>
 
 			<div className='bottomMenue'>
-				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Exercise' 		&& 'green'}`}>Exercise</BtnMenue>
-				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Hints' 	  		&& 'green'}`}>Hints</BtnMenue>
-				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Explanation'	&& 'green'}`}>Explanation</BtnMenue>
-				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt==='Tags' 				&& 'green'}`}>Tags</BtnMenue>
+				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Exercise' 		&& 'green'}`}>Exercise</BtnMenue>
+				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints' 	  		&& 'green'}`}>Hints</BtnMenue>
+				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Explanation'	&& 'green'}`}>Explanation</BtnMenue>
+				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Tags' 				&& 'green'}`}>Tags</BtnMenue>
 				<BtnMenue type='button' onClick={onPrevie } className='btnSubmit'>Preview</BtnMenue>
 				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>Submit</BtnMenue>
 			</div>
 	
-			{ bmt === 'Exercise' 		&& <Exercise ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
-			{ bmt === 'Hints' 			&& <Hints ref_hints={ref_hints} state={hints}/> }
-			{ bmt === 'Explanation' && <Explain ref_explain={ref_explain} state={explain}/> }
-			{ bmt === 'Tags' 				&& <TagList state={tags}/> }
+			{ bmt[0] === 'Exercise' 		&& <Exercise ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
+			{ bmt[0] === 'Hints' 				&& <Hints ref_hints={ref_hints} state={hints}/> }
+			{ bmt[0] === 'Explanation' 	&& <Explain ref_explain={ref_explain} state={explain}/> }
+			{ bmt[0] === 'Tags' 				&& <TagList state={tags}/> }
 		</form>
 		
 	</>

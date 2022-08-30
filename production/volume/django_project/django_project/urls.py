@@ -36,6 +36,7 @@ from time import time
 from subprocess import run as subprocessRun
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
+conn.set_session(autocommit=True)
 cur = conn.cursor()
 cur.execute('SELECT version();')
 db_version = cur.fetchone()
@@ -122,7 +123,7 @@ def UpdateLatex(request):
 
 	latexList =	json.loads(request.body.decode("utf-8"))
 	latexList = updateLatexList(latexList[1], str(request.user.id), latexList[0])
-		
+	
 	return HttpResponse('UpdateLatex')
 
 def getChalange(id):
@@ -141,7 +142,7 @@ def getChalange(id):
 		
 		outData = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 		
-		dir_exercise = os.path.join(dir_users, outData['author'], outData['latex'])
+		dir_exercise = os.path.join(dir_users, str(outData['author']), outData['latex'])
 		file_json = os.path.join(dir_exercise, '.json')
 		if not os.path.exists(dir_exercise):
 			os.makedirs(dir_exercise)
@@ -444,6 +445,7 @@ def New(request, isSourceNav=False):
 			
 			outData['chalange'] = getChalange(id_exercise)
 			if not outData['chalange']:
+				# TODO - understand why empty dict 
 				outData['chalange'] = {}
 				
 			if request.session.get('EditInProgress','') != id_exercise:
@@ -454,7 +456,7 @@ def New(request, isSourceNav=False):
 				# outData['chalange'] = getChalange(id_exercise)
 				
 				# get latex from .json to file in $$___latex$$ slots
-				dir_exercise = os.path.join(dir_users, outData['chalange']['author'], outData['chalange']['latex'])
+				dir_exercise = os.path.join(dir_users, str(outData['chalange']['author']), outData['chalange']['latex'])
 				file_json = os.path.join(dir_exercise, '.json')
 				
 				with open(file_json, 'r') as f:
@@ -463,7 +465,7 @@ def New(request, isSourceNav=False):
 				# PERROR
 				def validate(target):
 
-					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(TODOtarget,''))
+					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(target,''))
 					b = [i[0] for i in dataFromFile.get(target,'')]
 					
 					return len(a) == len(b)
@@ -477,7 +479,7 @@ def New(request, isSourceNav=False):
 	
 				def reverseLatex(target):
 
-					res = re.split('(\$\$___latex\$\$)', outData['chalange'][targetCalange])
+					res = re.split('(\$\$___latex\$\$)', outData['chalange'][target])
 					if '' in res:
 						res.remove('')
 					resFromFile = [i[0] for i in dataFromFile[target]]

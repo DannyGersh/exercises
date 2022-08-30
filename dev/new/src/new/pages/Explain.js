@@ -12,17 +12,11 @@ function Explain(props){
 	}
 	
 	useEffect(()=>{
-		if(window.jsonData['isEdit']) {
+		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
 			document.getElementById('explain').value = window.jsonData['chalange']['explain'];
 		} else {
-			document.getElementById('explain').value = localStorage.getItem('explain');
+			document.getElementById('explain').value = localStorage.getItem('Explanation');
 		}
-	},[])
-	useEffect(()=>{
-		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
-			localStorage.setItem('explain', window.jsonData['chalange']['explain']);
-		}
-		document.getElementById('explain').value = localStorage.getItem('explain');
 	},[])
 
 	return(

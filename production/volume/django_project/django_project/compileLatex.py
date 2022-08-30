@@ -152,7 +152,7 @@ def updateLatexList(latexList, user, target):
 	with open(file_json, 'r') as f:
 		data_file = json.loads(f.read())
 		data_target = data_file[target]
-	
+
 	# PERROR - test if json information is proper, else default to empty list
 	# TODO - add database of errors and add this error if acures
 	if len(data_target) != 0:

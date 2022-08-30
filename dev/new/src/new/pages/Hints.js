@@ -12,7 +12,7 @@ function Hints(props){
 	}
 	
 	useEffect(()=>{
-		if(window.jsonData['isEdit']) {
+		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
 			document.getElementById('hints').value = window.jsonData['chalange']['hints'];
 		} else {
 			document.getElementById('hints').value = localStorage.getItem('hints');
