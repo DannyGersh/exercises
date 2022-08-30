@@ -447,21 +447,40 @@ def New(request, isSourceNav=False):
 			if not outData['chalange']:
 				# TODO - understand why empty dict 
 				outData['chalange'] = {}
+			
+			
+			
+			# get latex from .json to file in $$___latex$$ slots
+			dir_exercise = os.path.join(dir_users, str(outData['chalange']['author']), outData['chalange']['latex'])
+			file_json = os.path.join(dir_exercise, '.json')
+			
+			with open(file_json, 'r') as f:
+					dataFromFile = json.loads(f.read())
+					
+			def reverseLatex(target):
+
+				res = re.split('(\$\$___latex\$\$)', outData['chalange'][target])
+				if '' in res:
+					res.remove('')
+				resFromFile = [i[0] for i in dataFromFile[target]]
+				
+				index = 0
+				for i in range(len(res)):
+					if res[i] == '$$___latex$$':
+						res[i] = '$$'+resFromFile[index]+'$$'
+						index += 1
+
+				return ''.join(res)
+				
+
 				
 			if request.session.get('EditInProgress','') != id_exercise:
+				
+				# edit is in progress
 				
 				outData['EditInProgress'] = False
 				request.session['EditInProgress'] = id_exercise
 
-				# outData['chalange'] = getChalange(id_exercise)
-				
-				# get latex from .json to file in $$___latex$$ slots
-				dir_exercise = os.path.join(dir_users, str(outData['chalange']['author']), outData['chalange']['latex'])
-				file_json = os.path.join(dir_exercise, '.json')
-				
-				with open(file_json, 'r') as f:
-					dataFromFile = json.loads(f.read())
-				
 				# PERROR
 				def validate(target):
 
@@ -476,22 +495,7 @@ def New(request, isSourceNav=False):
 						return HttpResponse('Exercise Corupted for some reasone ...')
 	
 				# END_PERROR
-	
-				def reverseLatex(target):
 
-					res = re.split('(\$\$___latex\$\$)', outData['chalange'][target])
-					if '' in res:
-						res.remove('')
-					resFromFile = [i[0] for i in dataFromFile[target]]
-					
-					index = 0
-					for i in range(len(res)):
-						if res[i] == '$$___latex$$':
-							res[i] = '$$'+resFromFile[index]+'$$'
-							index += 1
-					
-					return ''.join(res)
-	
 				outData['chalange']['title'] = reverseLatex('title')
 				outData['chalange']['exercise'] = reverseLatex('exercise')
 				outData['chalange']['answer'] = reverseLatex('answer')
@@ -501,7 +505,13 @@ def New(request, isSourceNav=False):
 			else:
 				outData['EditInProgress'] = True
 				outData['chalange']['id'] = id_exercise
-				#outData['chalange']['latex'] = 'delete_me'
+				
+				outData['chalange']['title'] = reverseLatex('title')
+				outData['chalange']['exercise'] = reverseLatex('exercise')
+				outData['chalange']['answer'] = reverseLatex('answer')
+				outData['chalange']['hints'] = reverseLatex('hints')
+				outData['chalange']['explain'] = reverseLatex('explain')
+
 		
 		else:
 			# user clicked New in navbar - onley way to get here except reload
@@ -632,8 +642,12 @@ def NewSubmited(request):
 			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
 
 			file_json = os.path.join(dir_users, str(request.user.id), '.json')
-			with open(file_json, 'r') as f:
-				identifiers = json.loads(f.read())
+			
+			if not os.path.exists(file_json):
+				identifiers = {"title": [], "exercise": [], "answer": [], "hints": [], "explain": []}
+			else:	
+				with open(file_json, 'r') as f:
+					identifiers = json.loads(f.read())
 	
 			outData['chalange']['list_latex'] = identifiers
 			outData['chalange']['author'] = str(request.user.id)

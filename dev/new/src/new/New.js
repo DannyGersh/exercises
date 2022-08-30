@@ -49,13 +49,28 @@ window.rmTimer = function(timerID) {
 				
 function New(props){
 
-	const temp_title 		= localStorage.getItem('title')				
-	const temp_exercise = localStorage.getItem('exercise')		
-	const temp_answer   = localStorage.getItem('answer')			
-	const temp_hints    = localStorage.getItem('hints')				
-	const temp_explain  = localStorage.getItem('Explanation')	
-	const temp_tags     = localStorage.getItem('tags')				
-		
+	let temp_title 		= ''
+	let temp_exercise = ''
+	let temp_answer   = ''
+	let temp_hints    = ''
+	let temp_explain  = ''
+	let temp_tags     = ''
+	
+	if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
+		localStorage.setItem('title',				window.jsonData['chalange']['title']   )
+		localStorage.setItem('exercise',		window.jsonData['chalange']['exercise'])
+		localStorage.setItem('answer',			window.jsonData['chalange']['answer']  )
+		localStorage.setItem('hints',				window.jsonData['chalange']['hints']   )
+		localStorage.setItem('Explanation',	window.jsonData['chalange']['explain'] )
+		localStorage.setItem('tags',				window.jsonData['chalange']['tags']    )
+	}
+	temp_title 		= localStorage.getItem('title')				
+	temp_exercise = localStorage.getItem('exercise')		
+	temp_answer   = localStorage.getItem('answer')			
+	temp_hints    = localStorage.getItem('hints')				
+	temp_explain  = localStorage.getItem('Explanation')	
+	temp_tags     = localStorage.getItem('tags')	
+	
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
 	const title		 = useState(temp_title)
@@ -300,11 +315,11 @@ function New(props){
 
 			<div className='bottomMenue'>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Exercise' 		&& 'green'}`}>Exercise</BtnMenue>
-				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints' 	  		&& 'green'}`}>Hints</BtnMenue>
+				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints' 	  	&& 'green'}`}>Hints</BtnMenue>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Explanation'	&& 'green'}`}>Explanation</BtnMenue>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Tags' 				&& 'green'}`}>Tags</BtnMenue>
-				<BtnMenue type='button' onClick={onPrevie } className='btnSubmit'>Preview</BtnMenue>
-				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>Submit</BtnMenue>
+				<BtnMenue type='button' onClick={onPrevie} className='btnSubmit'>Preview</BtnMenue>
+				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>{window.jsonData['isEdit'] ? 'Update': 'Submit'}</BtnMenue>
 			</div>
 	
 			{ bmt[0] === 'Exercise' 		&& <Exercise ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
