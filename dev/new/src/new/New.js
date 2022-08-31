@@ -62,7 +62,7 @@ function New(props){
 		localStorage.setItem('answer',			window.jsonData['chalange']['answer']  )
 		localStorage.setItem('hints',				window.jsonData['chalange']['hints']   )
 		localStorage.setItem('Explanation',	window.jsonData['chalange']['explain'] )
-		localStorage.setItem('tags',				window.jsonData['chalange']['tags']    )
+		localStorage.setItem('tags',				JSON.stringify(window.jsonData['chalange']['tags'])    )
 	}
 	temp_title 		= localStorage.getItem('title')				
 	temp_exercise = localStorage.getItem('exercise')		
@@ -70,7 +70,7 @@ function New(props){
 	temp_hints    = localStorage.getItem('hints')				
 	temp_explain  = localStorage.getItem('Explanation')	
 	temp_tags     = localStorage.getItem('tags')	
-	
+	console.log(temp_tags)
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
 	const title		 = useState(temp_title)

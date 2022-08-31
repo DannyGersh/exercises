@@ -27,10 +27,11 @@ function Home(props) {
 					key={index}
 					identifier={index}
 					isUser={true}
-					url={'../../' + item['id']} 
+					url={'/' + item['id']} 
 					chalange={item}
 					userid={window.jsonData['userid']}
 					isOptions={false}
+					forceRenderDummyState={ms}
 				/>
 			)
 		}

@@ -19,7 +19,7 @@ function Exercise(props){
 	useEffect(()=>{
 		document.getElementById('title_'+props.identifier.toString()).innerHTML = htmlTitle;
 		document.getElementById('exercise_'+props.identifier.toString()).innerHTML = htmlExercise;
-	},[])
+	},[props.forceRenderDummyState[0]])
 	
 	const dspOptions = useState(false);
 	function onOptions(evt) {
@@ -90,7 +90,7 @@ function Exercise(props){
       <div className="vscroll bottomLeft">
       { 
 				props.chalange['tags'].map((i) => 
-					<Tag key={i} url={'../../../../../../../../../../browse/'+i}>{i}</Tag>
+					<Tag key={i} url={'/browse/'+i}>{i}</Tag>
 				)
 			}
       </div>

@@ -519,7 +519,6 @@ def New(request, isSourceNav=False):
 				outData['chalange']['answer'] = reverseLatex('answer')
 				outData['chalange']['hints'] = reverseLatex('hints')
 				outData['chalange']['explain'] = reverseLatex('explain')
-
 		
 		else:
 			# user clicked New in navbar - onley way to get here except reload
@@ -527,7 +526,7 @@ def New(request, isSourceNav=False):
 			request.session['EditInProgress'] = False
 			outData['EditInProgress'] = False
 			outData['isEdit'] = False
-			
+		
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:

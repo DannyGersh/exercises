@@ -8,12 +8,13 @@ class Tags { // convenience class for localStorage manipulation
 		
 	get() {
 		
-		let res = ''
+		let res = []
 		try {
 			res = JSON.parse(localStorage.getItem('tags'))
 		} catch {
 			console.log("could not get json")
 		}
+		console.log("GET", res)
 		return res
 		
 	}
@@ -26,6 +27,7 @@ class Tags { // convenience class for localStorage manipulation
 		} catch {
 			console.log("could not get json")
 		}
+		console.log("HAS", res)
 		return res
 		
 	}
@@ -130,7 +132,7 @@ function TagsList(props){
 		tags.rem(str);
 		setDspTags(tags.get());
 		!dspAvailableTags.includes(str) && setDspAvailableTags([...dspAvailableTags, str]);
-		props.setState(tags.get());
+		props.state[1](tags.get());
 	}
 	// NOTE
 	
