@@ -7,11 +7,27 @@ import {sendData} from '../../shared/Functions'
 class Tags { // convenience class for localStorage manipulation
 		
 	get() {
-		return JSON.parse(localStorage.getItem('tags'));
+		
+		let res = ''
+		try {
+			res = JSON.parse(localStorage.getItem('tags'))
+		} catch {
+			console.log("could not get json")
+		}
+		return res
+		
 	}
 	
 	has(str) { 
-		return this.get().includes(str);
+	
+		let res = ''
+		try {
+			res = this.get().includes(str)
+		} catch {
+			console.log("could not get json")
+		}
+		return res
+		
 	}
 	
 	add(str) {

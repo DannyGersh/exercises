@@ -90,7 +90,7 @@ function Exercise(props){
       <div className="vscroll bottomLeft">
       { 
 				props.chalange['tags'].map((i) => 
-					<Tag key={i} url={'../../../../../../../../../../browse/'+i}>{i}</Tag>
+					<Tag key={i} url={'/browse/'+i}>{i}</Tag>
 				)
 			}
       </div>

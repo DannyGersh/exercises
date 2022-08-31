@@ -130,7 +130,11 @@ def getChalange(id):
 	
 	cur.execute('''
 	select 
-		id, exercise, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, tags, explain, latex
+		id, exercise, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, 
+		
+		array(select name from tags where id in (select * from unnest(tags)) ), 
+		
+		explain, latex
 		from chalanges where id=''' + str(id)
 	)
 	inData = cur.fetchone()	
@@ -210,9 +214,13 @@ def Browse(request, sterm=''):
 	
 	else:
 		# after initial redirect, now with correct url
-		cur.execute(
-				'select id,exercise,answer,hints,author,creationdate,title,rating,tags,explain,latex from chalanges where \''+sterm+'\' = any(tags) order by cardinality(rating) desc limit 10;'
-		)
+		cur.execute('''
+			select id,exercise,answer,hints,author,creationdate,title,rating,tags,explain,latex 
+			from chalanges
+			where (select id from tags where name='%s') = any(tags)
+			order by cardinality(rating) 
+			desc limit 10
+		'''%sterm)
 		inData = cur.fetchall()
 		for i in range(len(inData)):
 			inData[i] = getChalange(inData[i][0])
@@ -534,6 +542,7 @@ def NewSubmited(request):
 	if request.method == "POST":
 		oldLatex = request.POST.get('oldLatex', '')
 		
+		# TODO - get rid of these nonsense
 		tags = request.POST.get('tags', '')
 		if tags == []: tags = ''
 		if tags == '[]': tags = ''
@@ -571,13 +580,23 @@ def NewSubmited(request):
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain)
 			
+			# insert into chalanges database
+			# tags must be converted to teir corresponding id's
+			
+			# handle white space
+			tempTags = tags.split(',')
+			tempTags = ['%s%s%s'%("'",i,"'") for i in tempTags]
+			tempTags = ','.join(tempTags)
+			
 			# TODO - fix weird 'false' thing
 			if request.POST.get('isEdit', '') == 'false':
 				cur.execute('''
 					insert into chalanges
 					(exercise, answer, hints, author, title, tags, explain, rating, latex)
-					values('%s', '%s', '%s', '%s', '%s', '{%s}', '%s', '%s', '%s')
-				'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now)
+					values('%s', '%s', '%s', '%s', '%s', 
+					array(select id from tags where name in (select * from unnest(array[%s]))),
+					'%s', '%s', '%s')
+				'''%(exercise, answer, hints, request.user.id, title, tempTags, explain, '{}', now)
 				)
 				cur.execute('''
 					update auth_user 
@@ -591,13 +610,25 @@ def NewSubmited(request):
 				if(exerciseId == ''):
 					return HttpResponse('Failed submiting exercise')
 				
+				# convert tag names to their id's
+				tempTags = tags.split(',')
+				# handle white space
+				tempTags = ['%s%s%s'%("'",i,"'") for i in tempTags]
+				tempTags = ','.join(tempTags)
+				cur.execute('''
+						select * from tags where name in (%s)
+				'''%tempTags)
+				tempInData = cur.fetchall()	
+				tempInData = [str(i[0]) for i in tempInData]
+				tagIds = ','.join(tempInData)
+				
 				cur.execute('''
 					update chalanges set 
 						exercise='%s', answer='%s',
 						hints='%s', title='%s', 
 						tags='{%s}', explain='%s', latex='%s'
 					where id='%s'
-				'''%(exercise, answer, hints, title, tags, explain, now, exerciseId)
+				'''%(exercise, answer, hints, title, tagIds, explain, now, exerciseId)
 				)
 				conn.commit()
 			
