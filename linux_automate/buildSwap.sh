@@ -1,6 +1,6 @@
-
-cd `dirname $0`
-SCRIPTDIR=`pwd`
+DIR_ORIGIN=$PWD
+DIR_SCRIPT="$(dirname $(realpath ${BASH_SOURCE}))"
+cd $DIR_SCRIPT
 cd ../
 
 rm -r $PWD/production/volume/static/pages/browse
@@ -21,5 +21,5 @@ mv $PWD/production/volume/static/pages/user/index.html 		$PWD/production/volume/
 mv $PWD/production/volume/static/pages/new/index.html 		$PWD/production/volume/static/pages/new/new.html
 mv $PWD/production/volume/static/pages/home/index.html 		$PWD/production/volume/static/pages/home/home.html
 
-cd -
+cd $DIR_ORIGIN
 

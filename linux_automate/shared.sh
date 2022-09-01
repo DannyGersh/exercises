@@ -1,9 +1,6 @@
-
-cd `dirname $0`
-SCRIPTDIR=`pwd`
-cd -
-
-cd $SCRIPTDIR
+DIR_ORIGIN=$PWD
+DIR_SCRIPT="$(dirname $(realpath ${BASH_SOURCE}))"
+cd $DIR_SCRIPT
 cd ../
 
 rm -r $PWD/dev/browse/src/shared
@@ -18,4 +15,4 @@ cp -r $PWD/dev/shared $PWD/dev/home/src/shared
 cp -r $PWD/dev/shared $PWD/dev/new/src/shared
 cp -r $PWD/dev/shared $PWD/dev/user/src/shared
 
-cd -
+cd $DIR_ORIGIN

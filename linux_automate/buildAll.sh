@@ -1,18 +1,19 @@
-
-cd `dirname $0`
-SCRIPTDIR=`pwd`
+DIR_ORIGIN=$PWD
+DIR_SCRIPT="$(dirname $(realpath ${BASH_SOURCE}))"
+cd $DIR_SCRIPT
 cd ../
-SCRIPTDIR=$PWD
 
-cd $SCRIPTDIR/dev/browse
+DIR_BASE=$PWD
+
+cd $DIR_BASE/dev/browse
 npm run build &
-cd $SCRIPTDIR/dev/chalange
+cd $DIR_BASE/dev/chalange
 npm run build &
-cd $SCRIPTDIR/dev/new
+cd $DIR_BASE/dev/new
 npm run build &
-cd $SCRIPTDIR/dev/user
+cd $DIR_BASE/dev/user
 npm run build &
-cd $SCRIPTDIR/dev/home
+cd $DIR_BASE/dev/home
 npm run build &
 
-cd -
+cd $DIR_ORIGIN
