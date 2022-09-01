@@ -539,6 +539,7 @@ def NewSubmited(request):
 	outData = {} # data for js. will be converted to secure json.
 	
 	if request.method == "POST":
+		print(request.POST)
 		oldLatex = request.POST.get('oldLatex', '')
 		
 		# TODO - get rid of these nonsense

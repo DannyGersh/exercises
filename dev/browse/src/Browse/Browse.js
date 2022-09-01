@@ -11,7 +11,7 @@ function Browse(){
 	// window.jsonData['search term']
 	
   let items = (window.jsonData['chalanges'])
-	console.log(window.jsonData['chalanges'])
+
   return(
   <>
 	
@@ -32,6 +32,7 @@ function Browse(){
 					likes={item['rating'].length} 
 					tags={item['tags']}
 					chalange={item}
+					forceRenderDummyState={[null,null]}
 				/>
       )
 	  :

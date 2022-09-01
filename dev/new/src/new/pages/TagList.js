@@ -14,7 +14,6 @@ class Tags { // convenience class for localStorage manipulation
 		} catch {
 			console.log("could not get json")
 		}
-		console.log("GET", res)
 		return res
 		
 	}
@@ -27,14 +26,15 @@ class Tags { // convenience class for localStorage manipulation
 		} catch {
 			console.log("could not get json")
 		}
-		console.log("HAS", res)
 		return res
 		
 	}
 	
 	add(str) {
 		if(!this.has(str)) {
+			console.log("ADD FIRST", localStorage.getItem('tags'))
 			localStorage.setItem('tags', JSON.stringify([...this.get(), str]) )
+			console.log("ADD LAST",localStorage.getItem('tags'))
 		}
 	}
 	
@@ -43,9 +43,11 @@ class Tags { // convenience class for localStorage manipulation
 	}
 	
 	rem(str) { 
+		console.log("REM FIRST",localStorage.getItem('tags'))
 		let temp = this.get();
-		temp.splice(temp.indexOf(str), 1);
+		temp = temp.filter(i => i != str);
 		this.set(temp);
+		console.log("REM LAST",localStorage.getItem('tags'))
 	}
 	
 }
@@ -55,17 +57,16 @@ const tags = new Tags();
 function TagsList(props){
 		
 	if(!tags.get()) { tags.set([]); }
+	const dspTags = useState(tags.get()); 
 	const availableTags = useState([...new Set(window.jsonData['tags'])]);
-	
-	const [dspTags, setDspTags] = useState(tags.get()); 
-	const [dspAvailableTags, setDspAvailableTags] = useState(availableTags[0]); 
-	const [dspAddBtn, setDspAddBtn] = useState(false);
+	const dspAvailableTags = useState(availableTags[0]); 
+	const dspAddBtn = useState(false);
 	const isNewTag = useState(false)
 	
 	useEffect(()=>{
 		let temp = availableTags[0];
-		temp = temp.filter(i => !dspTags.includes(i));
-		setDspAvailableTags(temp);
+		temp = temp.filter(i => !dspTags[0].includes(i));
+		dspAvailableTags[1](temp);
 	},[])
 	
 	// NOTE - size and position id="available" acording to id='chosen'
@@ -82,7 +83,7 @@ function TagsList(props){
 		window.addEventListener("resize", resizeAvailable);
 		window.addEventListener("navDropDown", resizeAvailable);
   },[])
-	useEffect(resizeAvailable , [dspTags, dspAvailableTags])
+	useEffect(resizeAvailable , [dspTags[0], dspAvailableTags[0]])
 	}
 	// NOTE
 
@@ -112,7 +113,7 @@ function TagsList(props){
 	function filterAvailable(str){
 		let temp = [...availableTags[0]]; // deep copy required
 		temp = temp.filter(i=> RegExp('^'+str).test(i));
-		setDspAvailableTags(temp);
+		dspAvailableTags[1](temp);
 
 		temp.length ? isNewTag[1](false): isNewTag[1](true);
 	}
@@ -122,16 +123,16 @@ function TagsList(props){
 	}
 	function addTag(str) {
 		tags.add(str);
-		!dspTags.includes(str) && setDspTags([...dspTags, str]);
-		let temp = [...dspAvailableTags];
+		!dspTags[0].includes(str) && dspTags[1]([...dspTags[0], str]);
+		let temp = [...dspAvailableTags[0]];
 		temp.splice(temp.indexOf(str), 1);
-		setDspAvailableTags(temp);
+		dspAvailableTags[1](temp);
 		props.state[1](tags.get());
 	}
 	function remTag(str) {
 		tags.rem(str);
-		setDspTags(tags.get());
-		!dspAvailableTags.includes(str) && setDspAvailableTags([...dspAvailableTags, str]);
+		dspTags[1](tags.get());
+		!dspAvailableTags[0].includes(str) && dspAvailableTags[1]([...dspAvailableTags[0], str]);
 		props.state[1](tags.get());
 	}
 	// NOTE
@@ -148,7 +149,7 @@ function TagsList(props){
 			<div id='chosen' ref={refA}>
 				<p>Your chosen tags:</p>
 				{
-					dspTags.map(i => <Tag className='hoverRed' onClick={(e)=>remTag(e.target.innerHTML)} key={i}>{i}</Tag>)
+					dspTags[0].map(i => <Tag className='hoverRed' onClick={(e)=>remTag(e.target.innerHTML)} key={i}>{i}</Tag>)
 				}
 				<hr/>
 			</div>
@@ -157,7 +158,7 @@ function TagsList(props){
 				<p>Available:</p>
 				<div style={{width: '100%', height:'calc(100% - 3rem)'}} className='hscroll'>
 				{
-					dspAvailableTags.map(i => <Tag className='hoverGreen' onClick={(e)=>addTag(e.target.innerHTML)} key={i}>{i}</Tag>)
+					dspAvailableTags[0].map(i => <Tag className='hoverGreen' onClick={(e)=>addTag(e.target.innerHTML)} key={i}>{i}</Tag>)
 				}
 				</div>
 			</div>

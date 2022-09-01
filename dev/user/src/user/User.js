@@ -9,9 +9,9 @@ function User(){
 	const liked = window.jsonData['data'][1]
 	const userName = window.jsonData['data'][2]
 		
-  let [menueSelection, setMenueSelection] = useState("Authored");
+  const menueSelection = useState("Authored");
   function menueHandle(event, selection){
-		setMenueSelection(selection);
+		menueSelection[1](selection);
   }
   
   const refA = useRef();
@@ -42,13 +42,13 @@ function User(){
 		<h3 style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</h3>
 				
 		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
-			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Authored' && 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
-			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection==='Liked'		 && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
+			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection[0]==='Authored' && 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
+			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection[0]==='Liked'		 && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
 		</div>
 				
 		<div ref={refB} className="hscroll scrollStyle gridContainer">
 		{
-			selectMenue(menueSelection).map( (item, index) =>
+			selectMenue(menueSelection[0]).map( (item, index) =>
 				<Exercise
 					style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
 					key={index}
@@ -58,6 +58,7 @@ function User(){
 					chalange={item}
 					userid={window.jsonData['userid']}
 					isOptions={true}
+					forceRenderDummyState={menueSelection}
 				/>
 			)
 		}	
@@ -67,16 +68,3 @@ function User(){
 }
 export default User;
 
-
-//selectMenue(menueSelection).map( (item, index) =>
-//				<Exercise
-//					style={window.nrw ? {width:'100%'}: {width:'calc(50% - 5rem)'}}
-//					key={index}
-//					title={item['title']} 
-//					paragraph={item['question']} 
-//					url={'../../' + item['id']} 
-//					likes={item['rating'].length} 
-//					tags={item['tags']}
-//					chalange={item}
-//				/>
-//				)

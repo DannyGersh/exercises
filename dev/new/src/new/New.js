@@ -70,7 +70,7 @@ function New(props){
 	temp_hints    = localStorage.getItem('hints')				
 	temp_explain  = localStorage.getItem('Explanation')	
 	temp_tags     = localStorage.getItem('tags')	
-	console.log(temp_tags)
+	
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
 	const title		 = useState(temp_title)
