@@ -561,6 +561,11 @@ def NewSubmited(request):
 			
 			now = str(time()).replace('.','')
 			
+			if not os.path.exists(dir_current_user):
+				os.makedirs(dir_current_user)
+			if not os.path.exists(dir_current_svg):
+				os.makedirs(dir_current_svg)
+				
 			os.chdir(dir_current_user)
 			os.mkdir(now)
 			for i in os.listdir(dir_current_svg):

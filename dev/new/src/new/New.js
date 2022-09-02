@@ -69,7 +69,7 @@ function New(props){
 	temp_answer   = localStorage.getItem('answer')			
 	temp_hints    = localStorage.getItem('hints')				
 	temp_explain  = localStorage.getItem('Explanation')	
-	temp_tags     = localStorage.getItem('tags')	
+	temp_tags     = JSON.parse(localStorage.getItem('tags'))	
 	
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
@@ -229,7 +229,7 @@ function New(props){
 		answer[1](localStorage.getItem('answer'));
 		hints[1](localStorage.getItem('hints'));
 		explain[1](localStorage.getItem('Explanation'));
-		tags[1](localStorage.getItem('tags'));
+		tags[1](JSON.parse(localStorage.getItem('tags')));
 
 		if(issubmit[0] !== 'none') {
 		

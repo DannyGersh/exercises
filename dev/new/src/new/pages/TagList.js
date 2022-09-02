@@ -7,7 +7,7 @@ import {sendData} from '../../shared/Functions'
 class Tags { // convenience class for localStorage manipulation
 		
 	get() {
-		console.log("GET")
+		
 		let res = []
 		try {
 			res = JSON.parse(localStorage.getItem('tags'))
@@ -19,23 +19,22 @@ class Tags { // convenience class for localStorage manipulation
 	}
 	
 	has(str) { 
-		console.log("HAS")
+	
 		let res = ''
 		try {
 			res = this.get().includes(str)
 		} catch {
-			console.log("could not execute 'tags.has()' function")
+			console.log("could not get json")
 		}
 		return res
 		
 	}
 	
 	add(str) {
-		console.log("ADD")
 		if(!this.has(str)) {
-			//console.log("ADD FIRST", localStorage.getItem('tags'))
+			console.log("ADD FIRST", localStorage.getItem('tags'))
 			localStorage.setItem('tags', JSON.stringify([...this.get(), str]) )
-			//console.log("ADD LAST",localStorage.getItem('tags'))
+			console.log("ADD LAST",localStorage.getItem('tags'))
 		}
 	}
 	
@@ -43,13 +42,12 @@ class Tags { // convenience class for localStorage manipulation
 		localStorage.setItem('tags', JSON.stringify(newTagList));
 	}
 	
-	rem(str) {
-		console.log("REM")
-		//console.log("REM FIRST",localStorage.getItem('tags'))
+	rem(str) { 
+		console.log("REM FIRST",localStorage.getItem('tags'))
 		let temp = this.get();
 		temp = temp.filter(i => i != str);
 		this.set(temp);
-		//console.log("REM LAST",localStorage.getItem('tags'))
+		console.log("REM LAST",localStorage.getItem('tags'))
 	}
 	
 }
@@ -59,7 +57,6 @@ const tags = new Tags();
 function TagsList(props){
 		
 	if(!tags.get()) { tags.set([]); }
-	const dspTags = useState(tags.get()); 
 	const availableTags = useState([...new Set(window.jsonData['tags'])]);
 	const dspAvailableTags = useState(availableTags[0]); 
 	const dspAddBtn = useState(false);
@@ -67,7 +64,7 @@ function TagsList(props){
 	
 	useEffect(()=>{
 		let temp = availableTags[0];
-		temp = temp.filter(i => !dspTags[0].includes(i));
+		temp = temp.filter(i => !props.state[0].includes(i));
 		dspAvailableTags[1](temp);
 	},[])
 	
@@ -85,7 +82,7 @@ function TagsList(props){
 		window.addEventListener("resize", resizeAvailable);
 		window.addEventListener("navDropDown", resizeAvailable);
   },[])
-	useEffect(resizeAvailable , [dspTags[0], dspAvailableTags[0]])
+	useEffect(resizeAvailable , [props.state[0], dspAvailableTags[0]])
 	}
 	// NOTE
 
@@ -125,17 +122,14 @@ function TagsList(props){
 	}
 	function addTag(str) {
 		tags.add(str);
-		!dspTags[0].includes(str) && dspTags[1]([...dspTags[0], str]);
-		let temp = [...dspAvailableTags[0]];
-		temp.splice(temp.indexOf(str), 1);
+		!props.state[0].includes(str) && props.state[1]([...props.state[0], str]);
+		const temp = dspAvailableTags[0].filter(i => i != str);
 		dspAvailableTags[1](temp);
-		props.state[1](tags.get());
 	}
 	function remTag(str) {
 		tags.rem(str);
-		dspTags[1](tags.get());
+		props.state[1](props.state[0].filter(i => i != str));
 		!dspAvailableTags[0].includes(str) && dspAvailableTags[1]([...dspAvailableTags[0], str]);
-		props.state[1](tags.get());
 	}
 	// NOTE
 	
@@ -151,7 +145,7 @@ function TagsList(props){
 			<div id='chosen' ref={refA}>
 				<p>Your chosen tags:</p>
 				{
-					dspTags[0].map(i => <Tag className='hoverRed' onClick={(e)=>remTag(e.target.innerHTML)} key={i}>{i}</Tag>)
+					props.state[0].map(i => <Tag className='hoverRed' onClick={(e)=>remTag(e.target.innerHTML)} key={i}>{i}</Tag>)
 				}
 				<hr/>
 			</div>
