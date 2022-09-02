@@ -130,12 +130,21 @@ def getChalange(id):
 	
 	cur.execute('''
 	select 
-		id, exercise, answer, hints, author, to_char(creationdate, 'MM/DD/YYYY - HH24:MI'), title, rating, 
+		a.id, a.exercise, a.answer, a.hints, 
 		
-		array(select name from tags where id in (select * from unnest(tags)) ), 
+		b.username, 
 		
-		explain, latex
-		from chalanges where id=''' + str(id)
+		to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
+		
+		array(select name from tags where id in (select * from unnest(a.tags)) ), 
+		
+		a.explain, a.latex
+		
+		from chalanges as a
+		inner join auth_user as b
+		on a.author = b.id
+		
+		where a.id=''' + str(id)
 	)
 	inData = cur.fetchone()	
 	
