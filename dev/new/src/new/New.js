@@ -233,7 +233,7 @@ function New(props){
 
 		if(issubmit[0] !== 'none') {
 		
-			if( title[0] && exercise[0] && answer[0] ) {
+			if( title[0] && answer[0] ) {
 				document.mainForm.submit();
 				if(issubmit[0]) {
 					localStorage.removeItem('title');
@@ -284,7 +284,6 @@ function New(props){
 			} else {
 				let str = 'You are missing:\n';
 				if(!title[0]) { str += '* title (in the exercise tab)\n' }
-				if(!exercise[0]) { str += '* exercise bodie\n' }
 				if(!answer[0]) { str += '* answer\n' }
 				window.alert(str)
 			}

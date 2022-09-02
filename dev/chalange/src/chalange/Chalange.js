@@ -16,7 +16,7 @@ function Chalange(props){
 	// PERROR
 	let errorStr = 'cant find the following: \n';
 	let isError = false;
-	if(!chalange['title'] || !chalange['exercise'] || !chalange['answer'] || !chalange['rating']) {
+	if(!chalange['title'] || !chalange['answer'] || !chalange['rating']) {
 		
 		isError = true;
 		
@@ -27,7 +27,6 @@ function Chalange(props){
 			}
 		}
 		castumErr('title');
-		castumErr('exercise');
 		castumErr('answer');
 		castumErr('rating');
 		castumErr('author');
