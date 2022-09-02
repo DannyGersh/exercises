@@ -179,7 +179,7 @@ function Chalange(props){
         <div className='additionalArrow'></div>
         <div className='additionalMenue'>
           
-          Created by <a href='/test/'>{chalange['author']}</a> <br/> {chalange['creationdate']}  <br/>
+          Created by {chalange['author']} <br/> {chalange['creationdate']}  <br/>
           { props.narrowWindow &&
             chalange['tags'].map(i => <Tag url={'../browse/'+i} key={i}>{i}</Tag>)
           }
