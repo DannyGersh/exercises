@@ -223,18 +223,42 @@ def Browse(request, sterm=''):
 	
 	else:
 		# after initial redirect, now with correct url
+		
 		cur.execute('''
-			select id,exercise,answer,hints,author,creationdate,title,rating,tags,explain,latex 
+			select id, title, rating from chalanges
+			where title like '%{}%'
+			order by cardinality(rating) 
+			desc limit 10
+		'''.format(sterm))
+		inData_title = cur.fetchall()
+		
+		cur.execute('''
+			select id, exercise, rating from chalanges
+			where exercise like '%{}%'
+			order by cardinality(rating) 
+			desc limit 10
+		'''.format(sterm))
+		inData_exercise = cur.fetchall()
+			
+		cur.execute('''
+			select id,rating,tags 
 			from chalanges
 			where (select id from tags where name='%s') = any(tags)
 			order by cardinality(rating) 
 			desc limit 10
 		'''%sterm)
-		inData = cur.fetchall()
-		for i in range(len(inData)):
-			inData[i] = getChalange(inData[i][0])
+		inData_tags = cur.fetchall()
+		
+		fin = []
+		inData = inData_title + inData_tags + inData_exercise
+		for i in inData:
+			if i[0] not in [x[0] for x in fin]:
+				fin.append(i)
+		
+		for i in range(len(fin)):
+			fin[i] = getChalange(fin[i][0])
 			
-		outData['chalanges'] = inData
+		outData['chalanges'] = fin
 		
 		return render(request, 'browse.html', context={'value': outData})
 
