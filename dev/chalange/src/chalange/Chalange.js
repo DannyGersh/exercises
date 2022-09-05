@@ -118,6 +118,7 @@ function Chalange(props){
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
 	
+		<div className='hscroll' style={{height:'calc(100vh - 6rem)'}}>
 		{ ! dspExplain ?
 		<>
 			<div id='title'></div>
@@ -130,10 +131,14 @@ function Chalange(props){
 				<hr/>
 				<p id='hints'></p>
 				</> ) }
-		</>:
-			<p id='explain'></p>
+		</>
+		:
+		<>
+			<p id='explain' style={{whiteSpace: 'break-spaces'}}></p>
+		</>
 		}  
-	
+		</div>
+		
     <div className='bottomRight'>
     
       <iframe title='dummyframe' name="dummyframe" id="dummyframe" style={{"display": "none"}}></iframe>
@@ -179,7 +184,7 @@ function Chalange(props){
         <div className='additionalArrow'></div>
         <div className='additionalMenue'>
           
-          Created by {chalange['author']} <br/> {chalange['creationdate']}  <br/>
+          Created by {chalange['authorName']} <br/> {chalange['creationdate']}  <br/>
           { props.narrowWindow &&
             chalange['tags'].map(i => <Tag url={'../browse/'+i} key={i}>{i}</Tag>)
           }

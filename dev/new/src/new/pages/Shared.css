@@ -2,8 +2,9 @@
 	padding: 1rem;
 }
 .ExerciseTextArea{
-	resize: none;
 	width: 100%;
+	height: 50vh;
+	resize: none;
 }
 .ExerciseInput{
 	display: inline;

@@ -32,9 +32,7 @@ class Tags { // convenience class for localStorage manipulation
 	
 	add(str) {
 		if(!this.has(str)) {
-			console.log("ADD FIRST", localStorage.getItem('tags'))
 			localStorage.setItem('tags', JSON.stringify([...this.get(), str]) )
-			console.log("ADD LAST",localStorage.getItem('tags'))
 		}
 	}
 	
@@ -43,11 +41,9 @@ class Tags { // convenience class for localStorage manipulation
 	}
 	
 	rem(str) { 
-		console.log("REM FIRST",localStorage.getItem('tags'))
 		let temp = this.get();
 		temp = temp.filter(i => i != str);
 		this.set(temp);
-		console.log("REM LAST",localStorage.getItem('tags'))
 	}
 	
 }
@@ -94,7 +90,7 @@ function TagsList(props){
 			if(!availableTags[0].includes(tag)) {
 				if(window.confirm(addmsg)) {
 					sendData(
-						'http://localhost/addtag/', tag
+						'http://63.250.61.251/addtag/', tag
 					).then(
 						()=>{window.alert('tag submited successfully'); window.location.reload();},
 						()=>{window.alert('tag submited failed')}

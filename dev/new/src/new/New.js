@@ -121,9 +121,9 @@ function New(props){
 				}
 				
 				ref[0].current = temp; // IMPORTENT - renew ref[0].current
-				
+
 				if(!window.is_debug) {
-					sendData('http://localhost/test/', [ ref[2] , ref[0].current ]);
+					sendData(!window.isdebug ? 'http://63.250.61.251/test/': 'http://localhost/test/', [ ref[2] , ref[0].current ]);
 				} else {
 					// console.log([ ref[2] , ref[0].current ])
 				}

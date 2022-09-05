@@ -2,7 +2,11 @@ import {useState} from 'react'
 
 
 window.is_debug = (process.env.NODE_ENV === 'development')
+window.isdebug = true
 
+// window.is_debug == true - for npm start development
+// window.isdebug == false - for final production stage
+				
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
@@ -65,6 +69,7 @@ export {getCookie}
 function sendData(url, data) {
 	return fetch(url, { 
 		method: "POST", 
+		credentials: 'same-origin',
 		body: JSON.stringify(data),
 		headers: {
 			'Content-Type': 'application/json', 
@@ -105,7 +110,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 				const tempLatex = formFile_latex[target][index][1]; // TODO - workeround here, needs fixin 
 				const tempId = chalange['author'];
 				const tempPath = ['/static/users', tempId, identifier_exercise, tempLatex+'.svg'].join('/')
-				textList[i] = '<img src="'+tempPath+'" />'
+				textList[i] = '<img style="overflow-x: scroll;" src="'+tempPath+'" />'
 			}
 			catch{
 				console.log('WARNING: probably index out of range ... ( list_latex[target][index][?] ) ');

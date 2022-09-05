@@ -1,4 +1,0 @@
-#!/bin/bash
-service nginx restart
-service postgresql restart
-kill -HUP 8587

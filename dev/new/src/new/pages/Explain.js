@@ -28,7 +28,6 @@ function Explain(props){
 				ref={props.ref_explain[1]}
 				onChange={(v)=>onExplainChange(v)}
 				defaultValue={localStorage.getItem('Explanation')}
-				rows='4' 
 				className='ExerciseTextArea' 
 			/>
 			

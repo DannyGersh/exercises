@@ -38,7 +38,7 @@ function Exercise(props){
 		try{
 			if(window.confirm("Delete this exercise ?")) {
 				const promise = sendData(
-					'http://localhost/delete/', 
+					!window.isdebug ? 'http://63.250.61.251/delete/': 'http://localhost/delete/', 
 					[
 						props.chalange['id'],
 						props.chalange['latex'],

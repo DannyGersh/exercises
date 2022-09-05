@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-sf!$kucoop&2_wnx0$f_$4-$^a%hw1d6lb7y(sk&j3=p06cn%w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['91.226.72.17', 'localhost']
+ALLOWED_HOSTS = ['63.250.61.251', 'localhost']
 
 # Application definition
 
@@ -134,7 +134,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/volume/static/'
 CSRF_TRUSTED_ORIGINS = [
-	'http://91.226.72.17', 
+	'http://63.250.61.251', 
 	'http://localhost',
 ]
 #CSRF_HEADER_NAME = 'X-CSRFToken'

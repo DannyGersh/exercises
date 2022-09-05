@@ -132,13 +132,13 @@ def getChalange(id):
 	select 
 		a.id, a.exercise, a.answer, a.hints, 
 		
-		b.username, 
+		a.author, 
 		
 		to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
 		
 		array(select name from tags where id in (select * from unnest(a.tags)) ), 
 		
-		a.explain, a.latex
+		a.explain, a.latex, b.username
 		
 		from chalanges as a
 		inner join auth_user as b
@@ -154,6 +154,7 @@ def getChalange(id):
 		# authid = cur.fetchone()[0]
 		
 		outData = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+		outData['authorName'] = inData[-1]
 		
 		dir_exercise = os.path.join(dir_users, str(outData['author']), outData['latex'])
 		file_json = os.path.join(dir_exercise, '.json')
@@ -572,7 +573,7 @@ def NewSubmited(request):
 	outData = {} # data for js. will be converted to secure json.
 	
 	if request.method == "POST":
-		print(request.POST)
+
 		oldLatex = request.POST.get('oldLatex', '')
 		
 		# TODO - get rid of these nonsense
