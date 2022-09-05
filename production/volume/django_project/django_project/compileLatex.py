@@ -67,9 +67,7 @@ def gen_svg(latex, user, identifier):
 			
 	dir_base = os.path.join(dir_static, user)
 	os.chdir(dir_base)
-	
-	print("POOOOOP", dir_base)
-	
+		
 	if not os.path.exists('svg'):
 		os.mkdir('svg')
 	

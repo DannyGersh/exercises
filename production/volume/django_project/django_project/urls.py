@@ -477,7 +477,8 @@ def New(request, isSourceNav=False):
 				outData['chalange'] = {}
 			
 			# get latex from .json to file in $$___latex$$ slots
-			dir_exercise = os.path.join(dir_users, str(outData['chalange']['author']), outData['chalange']['latex'])
+			dir_user = os.path.join(dir_users, str(outData['chalange']['author']))
+			dir_exercise = os.path.join(dir_user, outData['chalange']['latex'])
 			file_json = os.path.join(dir_exercise, '.json')
 			
 			with open(file_json, 'r') as f:
@@ -506,8 +507,22 @@ def New(request, isSourceNav=False):
 				
 				outData['EditInProgress'] = False
 				request.session['EditInProgress'] = id_exercise
-
+				
+				for i in os.listdir(dir_exercise):
+					res = subprocessRun([
+						'cp', '-r', 
+						os.path.join(dir_exercise, i), 
+						os.path.join(dir_user, 'svg', i),
+					])
+				
+				res = subprocessRun([
+					'cp', '-r', 
+					os.path.join(dir_exercise, '.json'), 
+					os.path.join(dir_user, '.json'),
+				])
+				
 				# PERROR
+				
 				def validate(target):
 
 					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(target,''))
@@ -519,24 +534,18 @@ def New(request, isSourceNav=False):
 					if not validate(i):
 						print(i, 'Exercise Corupted for some reasone ...')
 						return HttpResponse('Exercise Corupted for some reasone ...')
-	
-				# END_PERROR
 
-				outData['chalange']['title'] = reverseLatex('title')
-				outData['chalange']['exercise'] = reverseLatex('exercise')
-				outData['chalange']['answer'] = reverseLatex('answer')
-				outData['chalange']['hints'] = reverseLatex('hints')
-				outData['chalange']['explain'] = reverseLatex('explain')
+				# END_PERROR
 
 			else:
 				outData['EditInProgress'] = True
 				outData['chalange']['id'] = id_exercise
 				
-				outData['chalange']['title'] = reverseLatex('title')
-				outData['chalange']['exercise'] = reverseLatex('exercise')
-				outData['chalange']['answer'] = reverseLatex('answer')
-				outData['chalange']['hints'] = reverseLatex('hints')
-				outData['chalange']['explain'] = reverseLatex('explain')
+			outData['chalange']['title'] = reverseLatex('title')
+			outData['chalange']['exercise'] = reverseLatex('exercise')
+			outData['chalange']['answer'] = reverseLatex('answer')
+			outData['chalange']['hints'] = reverseLatex('hints')
+			outData['chalange']['explain'] = reverseLatex('explain')
 		
 		else:
 			# user clicked New in navbar - onley way to get here except reload

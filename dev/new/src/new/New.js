@@ -230,7 +230,7 @@ function New(props){
 		hints[1](localStorage.getItem('hints'));
 		explain[1](localStorage.getItem('Explanation'));
 		tags[1](JSON.parse(localStorage.getItem('tags')));
-
+		
 		if(issubmit[0] !== 'none') {
 		
 			if( title[0] && answer[0] ) {
