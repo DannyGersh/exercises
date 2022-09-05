@@ -68,6 +68,8 @@ def gen_svg(latex, user, identifier):
 	dir_base = os.path.join(dir_static, user)
 	os.chdir(dir_base)
 	
+	print("POOOOOP", dir_base)
+	
 	if not os.path.exists('svg'):
 		os.mkdir('svg')
 	
@@ -75,8 +77,7 @@ def gen_svg(latex, user, identifier):
 	
 	with open(identifier+'.tex', 'w') as f:
 		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
-	
-	# TODO - add return false on falure and true on success
+		
 	# dangere zone
 	
 	res = 0
@@ -113,13 +114,6 @@ def gen_svg(latex, user, identifier):
 			identifier+'.pdf',
 			identifier+'.tex',
 	])	
-	# os.system(command_gen_pdf + identifier+'.tex')
-	# os.system('pdfcrop '+identifier+'.pdf '+identifier+'.pdf')
-	# os.system('dvisvgm --pdf '+identifier+'.pdf')
-	#os.system('rm '+identifier+'.aux')
-	#os.system('rm '+identifier+'.log')
-	#os.system('rm '+identifier+'.pdf')
-	#os.system('rm '+identifier+'.tex')
 	
 	# end dangere zone
 	

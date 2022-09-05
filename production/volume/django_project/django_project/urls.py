@@ -1,18 +1,4 @@
-"""django_project URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
@@ -38,7 +24,7 @@ from subprocess import run as subprocessRun
 conn = psycopg2.connect("dbname=exercises user=postgres")
 conn.set_session(autocommit=True)
 cur = conn.cursor()
-cur.execute('SELECT version();')
+cur.execute('SELECT version()')
 db_version = cur.fetchone()
 
 # chalanges database columns
@@ -474,7 +460,7 @@ def New(request, isSourceNav=False):
 		outData['tags'] = [i[0] for i in cur.fetchall()] 
 		
 		outData['chalange'] = {}
-		outData['chalange']['id'] = 'dummy_id'
+		outData['chalange']['id'] = 'dummy_id' # id required for new chalange
 		
 		if request.method == "POST":
 			# user clicked edit - onley way to get here except reload
@@ -489,8 +475,6 @@ def New(request, isSourceNav=False):
 			if not outData['chalange']:
 				# TODO - understand why empty dict 
 				outData['chalange'] = {}
-			
-			
 			
 			# get latex from .json to file in $$___latex$$ slots
 			dir_exercise = os.path.join(dir_users, str(outData['chalange']['author']), outData['chalange']['latex'])
