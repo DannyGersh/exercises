@@ -4,6 +4,9 @@ import {useState} from 'react'
 window.is_debug = (process.env.NODE_ENV === 'development')
 window.isdebug = true
 
+// window.is_debug == true - for npm start development
+// window.isdebug == false - for final production stage
+				
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
 }

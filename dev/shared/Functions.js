@@ -2,7 +2,7 @@ import {useState} from 'react'
 
 
 window.is_debug = (process.env.NODE_ENV === 'development')
-window.isdebug = true
+window.isdebug = false
 
 // window.is_debug == true - for npm start development
 // window.isdebug == false - for final production stage
