@@ -24,26 +24,7 @@ export {remToPx};
 	
 	
 function useWindowResize(){
-	//let WidthHeightRatio = 1.1;
-  //const [narrowWindow, setNarrowWindow] = useState(
-  //    (window.innerWidth / window.innerHeight < WidthHeightRatio)
-  //    ? true : false
-  //);
-  //
-  //function windowResizeHandler(){
-  //  const w = window.innerWidth;
-  //	const h = window.innerHeight;
-	//
-  //  if( w / h < WidthHeightRatio ){
-  //		setNarrowWindow(true);
-  //	} else {
-  //		setNarrowWindow(false);
-  //	}
-  //}
-	//
-  //window.addEventListener('resize', windowResizeHandler);
-  //return narrowWindow;
-	
+
 	const maxWidthInRem = 30;
 	const [narrowWindow, setNarrowWindow] = useState(
       ( px2rem(window.innerWidth) < maxWidthInRem )
