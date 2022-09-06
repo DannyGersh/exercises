@@ -12,7 +12,7 @@ function Home(props) {
 	const ms = useState(false) // Menue Selection - true: latest, false: hotest
 
 	return(
-	<>
+	<>		
 		<center>
 		<h1>~ Exercises ~</h1>
 		<p>The website for uploading and solving exercises in any field</p>

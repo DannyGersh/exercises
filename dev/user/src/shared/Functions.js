@@ -11,34 +11,61 @@ export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
 
-function useWindowResize(){
-	let WidthHeightRatio = 1.1;
-  const [narrowWindow, setNarrowWindow] = useState(
-      (window.innerWidth / window.innerHeight < WidthHeightRatio)
-      ? true : false
-  );
-  
-  function windowResizeHandler(){
-    const w = window.innerWidth;
-  	const h = window.innerHeight;
 
-    if( w / h < WidthHeightRatio ){
-  		setNarrowWindow(true);
-  	} else {
-  		setNarrowWindow(false);
-  	}
-  }
-
-  window.addEventListener('resize', windowResizeHandler);
-  return narrowWindow;
+function px2rem(px) {
+	return 0.0625 * px;
 }
-export default useWindowResize;
+export {px2rem};
 
 function remToPx(rem) {    
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 export {remToPx};
 	
+	
+function useWindowResize(){
+	//let WidthHeightRatio = 1.1;
+  //const [narrowWindow, setNarrowWindow] = useState(
+  //    (window.innerWidth / window.innerHeight < WidthHeightRatio)
+  //    ? true : false
+  //);
+  //
+  //function windowResizeHandler(){
+  //  const w = window.innerWidth;
+  //	const h = window.innerHeight;
+	//
+  //  if( w / h < WidthHeightRatio ){
+  //		setNarrowWindow(true);
+  //	} else {
+  //		setNarrowWindow(false);
+  //	}
+  //}
+	//
+  //window.addEventListener('resize', windowResizeHandler);
+  //return narrowWindow;
+	
+	const maxWidthInRem = 30;
+	const [narrowWindow, setNarrowWindow] = useState(
+      ( px2rem(window.innerWidth) < maxWidthInRem )
+      ? true : false
+  );
+	
+	function windowResizeHandler(){
+    const w = px2rem(window.innerWidth);
+
+    if( w  < maxWidthInRem ){
+  		setNarrowWindow(true);
+  	} else {
+  		setNarrowWindow(false);
+  	}
+  }
+	
+	window.addEventListener('resize', windowResizeHandler);
+  return narrowWindow;
+}
+export default useWindowResize;
+
+
 
 
 // getCookie
