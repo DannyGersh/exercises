@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-sf!$kucoop&2_wnx0$f_$4-$^a%hw1d6lb7y(sk&j3=p06cn%w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['63.250.61.251', 'localhost']
 
@@ -134,7 +134,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/volume/static/'
 CSRF_TRUSTED_ORIGINS = [
-	'http://63.250.61.251', 
+	'http://www.ididthisforu.com', 
 	'http://localhost',
 ]
 #CSRF_HEADER_NAME = 'X-CSRFToken'

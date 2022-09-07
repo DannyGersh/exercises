@@ -38,7 +38,7 @@ function Exercise(props){
 		try{
 			if(window.confirm("Delete this exercise ?")) {
 				const promise = sendData(
-					!window.isdebug ? 'http://63.250.61.251/delete/': 'http://localhost/delete/', 
+					'delete', 
 					[
 						props.chalange['id'],
 						props.chalange['latex'],
@@ -60,7 +60,7 @@ function Exercise(props){
 	
   return(
   <>
-    <Card url={props.url} style={props.style} className={props.className}>
+	<Card url={props.url} style={props.style} className={props.className} narrowWindow={props.narrowWindow}>
       
 			<div className='topRight'>
 				{ props.isOptions && <BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>}
@@ -84,8 +84,8 @@ function Exercise(props){
 				</BtnRound>
 			</div>
       
-      <div id={'title_'+props.identifier.toString()}></div>
-	    <div id={'exercise_'+props.identifier.toString()}></div>
+      <div style={{overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
+	    <div style={{overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
 			<br/><br/><br/>
       <div className="vscroll bottomLeft">
       { 

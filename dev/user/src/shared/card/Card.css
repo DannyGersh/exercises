@@ -8,6 +8,7 @@
 	border: none;
 	text-align: left;
 	max-height: 15rem;
+	overflow: hidden;
 }
 .card:hover{
 	/*background-color: #ffd5b8;*/
@@ -15,4 +16,12 @@
 }
 .card:active{
 	background-color: #fbceb1;
+}
+
+
+.narrowWindow{
+	width: calc(50% - 5rem);
+}
+.wideWindow{
+	width: calc(100% - 5rem);
 }

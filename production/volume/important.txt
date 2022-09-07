@@ -1,5 +1,0 @@
-
-remember to:
-
-replace urls in 
-gunicorn and django_project (nginx)

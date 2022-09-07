@@ -1,11 +1,11 @@
 import {useState} from 'react'
 
+// window.is_debug == true - for "npm start" react development
+// window.isdebug == false - for final production stage - site upload
 
 window.is_debug = (process.env.NODE_ENV === 'development')
 window.isdebug = false
 
-// window.is_debug == true - for npm start development
-// window.isdebug == false - for final production stage
 				
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
@@ -24,26 +24,7 @@ export {remToPx};
 	
 	
 function useWindowResize(){
-	//let WidthHeightRatio = 1.1;
-  //const [narrowWindow, setNarrowWindow] = useState(
-  //    (window.innerWidth / window.innerHeight < WidthHeightRatio)
-  //    ? true : false
-  //);
-  //
-  //function windowResizeHandler(){
-  //  const w = window.innerWidth;
-  //	const h = window.innerHeight;
-	//
-  //  if( w / h < WidthHeightRatio ){
-  //		setNarrowWindow(true);
-  //	} else {
-  //		setNarrowWindow(false);
-  //	}
-  //}
-	//
-  //window.addEventListener('resize', windowResizeHandler);
-  //return narrowWindow;
-	
+
 	const maxWidthInRem = 30;
 	const [narrowWindow, setNarrowWindow] = useState(
       ( px2rem(window.innerWidth) < maxWidthInRem )
@@ -64,8 +45,6 @@ function useWindowResize(){
   return narrowWindow;
 }
 export default useWindowResize;
-
-
 
 
 // getCookie
@@ -92,9 +71,23 @@ function getCookie(name) {
 }
 export {getCookie}
 
-
-function sendData(url, data) {
-	return fetch(url, { 
+//'http://www.ididthisforu.com/test/': 'http://localhost/test/'
+async function sendData(url, data) {
+	
+	if(url[0] === '/') {
+		url = url.slice(1,url.length)
+	}
+	if(url[url.length-1] !== '/') {
+		url += '/'
+	}
+	
+	if(window.isdebug) {
+		url = 'http://localhost/' + url
+	} else {
+		url = 'http://www.ididthisforu.com/' + url
+	}
+	
+	return await fetch(url, { 
 		method: "POST", 
 		credentials: 'same-origin',
 		body: JSON.stringify(data),
@@ -137,7 +130,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 				const tempLatex = formFile_latex[target][index][1]; // TODO - workeround here, needs fixin 
 				const tempId = chalange['author'];
 				const tempPath = ['/static/users', tempId, identifier_exercise, tempLatex+'.svg'].join('/')
-				textList[i] = '<img style="overflow-x: scroll;" src="'+tempPath+'" />'
+				textList[i] = '<img style="max-width: calc(100% - .3rem)" src="'+tempPath+'" />'
 			}
 			catch{
 				console.log('WARNING: probably index out of range ... ( list_latex[target][index][?] ) ');

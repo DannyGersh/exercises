@@ -121,7 +121,7 @@ function Chalange(props){
 		<div className='hscroll' style={{height:'calc(100vh - 6rem)'}}>
 		{ ! dspExplain ?
 		<>
-			<div id='title'></div>
+			<div id='title' style={{whiteSpace: 'break-spaces'}}></div>
 			<p id='exercise'></p>
 			{ dspAnswer && ( <>
 				<hr />

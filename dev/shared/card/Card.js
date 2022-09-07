@@ -10,7 +10,7 @@ function Card(props){
 	return(
 	<>
 		<div 
-			className={`card ${props.className && props.className}`}
+			className={`card ${props.className && props.className} ${props.narrowWindow ? 'narrowWindow': 'wideWindow'}`}
 			style={props.style}
 			onClick={redirect}>
 		{ props.children }

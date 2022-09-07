@@ -83,14 +83,13 @@ def Delete(request):
 	# body - [int (exercise id), str (latex folder name), int (caller)]
 	
 	body = json.loads(request.body.decode("utf-8"))
-
 	cur.execute(
 		"delete from chalanges where id='%s'"%(str(body[0]))
 	)
 	cur.execute('''
 		update auth_user set 
-			authored=(select array_remove(authored,%s) from auth_user),
-			liked=(select array_remove(liked,%s) from auth_user)
+			authored=array_remove(authored,%s),
+			liked=array_remove(liked,%s)
 		'''%( str(body[0]), str(body[0]) )
 	)
 	conn.commit()
@@ -101,7 +100,7 @@ def Delete(request):
 	if subprocessRun(  ['rm','-r', dir_exercise]  ):
 		# TODO - do something if not successfull
 		pass
-	
+
 	return HttpResponse('Delete')
 
 @ensure_csrf_cookie		
@@ -177,7 +176,7 @@ def Chalange(request, id):
 	
 	outData['chalange'] = getChalange(id)
 	
-	if outData:
+	if outData['chalange']:
 		return render(request, 'chalange.html', context={'value': outData})
 	else:
 		return HttpResponse("could not find this exercise")
@@ -532,7 +531,7 @@ def New(request, isSourceNav=False):
 				
 				for i in targets:
 					if not validate(i):
-						print(i, 'Exercise Corupted for some reasone ...')
+						print('Exercise Corupted for some reasone ... target: %s\n'%i, outData['chalange'])
 						return HttpResponse('Exercise Corupted for some reasone ...')
 
 				# END_PERROR

@@ -23,7 +23,7 @@ function Home(props) {
 		<div className='gridContainer'>
 		{ (ms[0] ? latest: hotest).map( (item,index) =>
 				<Exercise
-					style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
+					narrowWindow={!window.nrw}
 					key={index}
 					identifier={index}
 					isUser={true}
