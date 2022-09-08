@@ -54,7 +54,8 @@ function App() {
 			'tags': ['math', 'tag1', 'tag2'],
 			'isAuth': true,
 			'userid': 1,
-			'isEdit': true
+			'isEdit': false,
+			'EditInProgress': false
 			}
 	}
 	const tags = window.jsonData['tags'];

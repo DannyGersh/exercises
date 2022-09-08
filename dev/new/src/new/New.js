@@ -55,6 +55,7 @@ function New(props){
 	let temp_hints    = ''
 	let temp_explain  = ''
 	let temp_tags     = ''
+	let temp_bmt			= ''
 	
 	if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
 		localStorage.setItem('title',				window.jsonData['chalange']['title']   )
@@ -62,7 +63,8 @@ function New(props){
 		localStorage.setItem('answer',			window.jsonData['chalange']['answer']  )
 		localStorage.setItem('hints',				window.jsonData['chalange']['hints']   )
 		localStorage.setItem('Explanation',	window.jsonData['chalange']['explain'] )
-		localStorage.setItem('tags',				JSON.stringify(window.jsonData['chalange']['tags'])    )
+		localStorage.setItem('tags',				JSON.stringify( window.jsonData['chalange']['tags']) )
+		localStorage.setItem('bmt', 'Exercise')
 	}
 	temp_title 		= localStorage.getItem('title')				
 	temp_exercise = localStorage.getItem('exercise')		
@@ -70,7 +72,7 @@ function New(props){
 	temp_hints    = localStorage.getItem('hints')				
 	temp_explain  = localStorage.getItem('Explanation')	
 	temp_tags     = JSON.parse(localStorage.getItem('tags'))	
-	
+	temp_bmt			= localStorage.getItem('bmt')
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
 	const title		 = useState(temp_title)
@@ -79,7 +81,7 @@ function New(props){
 	const hints		 = useState(temp_hints)
 	const explain  = useState(temp_explain)
 	const tags		 = useState(temp_tags)
-	const bmt 		 = useState('Exercise'); // current bottom menue tab
+	const bmt 		 = useState(temp_bmt); // current bottom menue tab
 	const issubmit = useState('none') // 'none' - default, true - Submit, false - Previe 
 
 	// references to inputs - structure: [ref_to_latex_list, ref_to_input_title, target]
@@ -211,6 +213,9 @@ function New(props){
 			
 		}, 2000);
 		
+		// aditionally set bmt in local storage
+		localStorage.setItem('bmt', bmt[0])
+		
 	},[bmt[0]])
 	
 	/* NOTE - submit & preview
@@ -223,7 +228,9 @@ function New(props){
 		allso it loads local storage.
 	*/
 	useEffect(()=>{
-				
+		
+		localStorage.setItem('bmt', 'Exercise')
+		
 		title[1](localStorage.getItem('title'));		
 		exercise[1](localStorage.getItem('exercise'));
 		answer[1](localStorage.getItem('answer'));

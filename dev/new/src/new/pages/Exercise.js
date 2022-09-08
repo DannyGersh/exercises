@@ -13,6 +13,7 @@ function Exercise(props){
 	function onTitleChange(text){
 		localStorage.setItem('title', text.target.value);
 		props.state[0][1](text.target.value); // updates in New.js
+		console.log(props.state[0][0])
 	}
 	function onExerciseChange(text){
 		localStorage.setItem('exercise', text.target.value);
