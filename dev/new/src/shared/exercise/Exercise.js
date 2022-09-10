@@ -83,10 +83,14 @@ function Exercise(props){
 				{props.chalange['rating'].length}<br/>Likes
 				</BtnRound>
 			</div>
-      
-      <div style={{overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
-	    <div style={{overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
-			<br/><br/><br/>
+
+			<div style={{maxHeight: '10rem', overflow:'hidden'}}>
+				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
+				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
+			</div>
+			
+			<div style={{height:'3rem'}}/>
+			
       <div className="vscroll bottomLeft">
       { 
 				props.chalange['tags'].map((i) => 

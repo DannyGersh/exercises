@@ -11,87 +11,37 @@ function App() {
   window.nrw = useWindowResize(); // nrw - narrow window - boolean
 	
 	if( process.env.NODE_ENV === 'development'){
-    
-		let chalange = {
-			"id": 98,
-			"question": "$$___latex$$ exercise $$___latex$$",
-			"answer": "$$___latex$$ answer $$___latex$$",
-			"hints": "$$___latex$$ hints $$___latex$$",
-			"author": "a",
-			"creationdate": "08/23/2022 - 13:00",
-			"title": "$$___latex$$ title $$___latex$$",
-			"rating": [],
-			"tags": [
-	
-				"science"
-			],
-			"explain": "$$___latex$$ explain $$___latex$$",
-			"latex": "1661261957510381",
-			"list_latex": {
-				"title": [
-					[
-						"\\(\\frac{1}{2}\\)",
-						"16612618266535265"
-					],
-					[
-						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-						"16612618294915612"
-					]
-				],
-				"exercise": [
-					[
-						"\\(\\frac{1}{2}\\)",
-						"1661261831666112"
-					],
-					[
-						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-						"16612618332350814"
-					]
-				],
-				"answer": [
-					[
-						"\\(\\frac{1}{2}\\)",
-						"16612618350956101"
-					],
-					[
-						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-						"16612618362604136"
-					]
-				],
-				"hints": [
-					[
-						"\\(\\frac{1}{2}\\)",
-						"16612618380124574"
-					],
-					[
-						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-						"1661261839569922"
-					]
-				],
-				"explain": [
-					[
-						"\\(\\frac{1}{2}\\)",
-						"16612618410875106"
-					],
-					[
-						"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-						"16612618422952714"
-					]
-				]
-			},
-			"authid": 3
-		}
 		
-		let latest = [chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange]
-		let hotest = [chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange,chalange]
 		window.jsonData = {
-			'latest': latest,
-			'hotest': hotest,
-			'signInFailure': false,
-			'isSignUp': false,
-			'isAuth': false,
-			'userid': 1
-			}
+    "signInFailure": false,
+    "isSignUp": false,
+    "isAuth": null,
+    "userid": null,
+    "latest": [],
+    "hotest": [
+        {
+            "id": 1,
+            "exercise": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\naaaaaaaaaaa\n",
+            "answer": "a",
+            "hints": "a",
+            "author": 1,
+            "creationdate": "09/10/2022 - 10:47",
+            "title": "aaaaaaaaaaa\n",
+            "rating": [],
+            "tags": [],
+            "explain": "a",
+            "latex": "166280682532676",
+            "authorName": "a",
+            "list_latex": {
+                "title": [],
+                "exercise": [],
+                "answer": [],
+                "hints": [],
+                "explain": []
+            }
+        }
+			]
+		}
 			
 	}
 	const chalanges = window.jsonData['chalanges']

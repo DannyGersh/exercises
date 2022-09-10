@@ -90,7 +90,7 @@ function TagsList(props){
 			if(!availableTags[0].includes(tag)) {
 				if(window.confirm(addmsg)) {
 					sendData(
-						'http://63.250.61.251/addtag/', tag
+						'addtag', tag
 					).then(
 						()=>{window.alert('tag submited successfully'); window.location.reload();},
 						()=>{window.alert('tag submited failed')}
