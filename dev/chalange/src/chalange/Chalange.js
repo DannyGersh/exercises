@@ -122,19 +122,19 @@ function Chalange(props){
 		{ ! dspExplain ?
 		<>
 			<div id='title' style={{whiteSpace: 'break-spaces'}}></div>
-			<p id='exercise'></p>
+			<div id='exercise' style={{whiteSpace: 'break-spaces'}}></div>
 			{ dspAnswer && ( <>
 				<hr />
-				<p id='answer'></p>
+				<div id='answer' style={{whiteSpace: 'break-spaces'}}></div>
 				</> ) }
 			{ dspHints && ( <>
 				<hr/>
-				<p id='hints'></p>
+				<div id='hints' style={{whiteSpace: 'break-spaces'}}></div>
 				</> ) }
 		</>
 		:
 		<>
-			<p id='explain' style={{whiteSpace: 'break-spaces'}}></p>
+			<div id='explain' style={{whiteSpace: 'break-spaces'}}></div>
 		</>
 		}  
 		</div>
