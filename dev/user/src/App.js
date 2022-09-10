@@ -13,81 +13,40 @@ function App() {
 	
   if( process.env.NODE_ENV === 'development'){
 		
-		window.jsonData = {
-			'data': [
-				[
-					{
-						"id": 98,
-						"question": "$$___latex$$ test $$___latex$$",
-						"answer": "$$___latex$$ test $$___latex$$",
-						"hints": "$$___latex$$ test $$___latex$$",
-						"author": "a",
-						"creationdate": "08/23/2022 - 13:00",
-						"title": "$$___latex$$ test $$___latex$$",
-						"rating": [],
-						"tags": [
-
-							"science"
-						],
-						"explain": "$$___latex$$ test $$___latex$$",
-						"latex": "1661261957510381",
-						"list_latex": {
-							"title": [
-								[
-									"\\(\\frac{1}{2}\\)",
-									"16612618266535265"
-								],
-								[
-									"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-									"16612618294915612"
-								]
-							],
-							"exercise": [
-								[
-									"\\(\\frac{1}{2}\\)",
-									"1661261831666112"
-								],
-								[
-									"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-									"16612618332350814"
-								]
-							],
-							"answer": [
-								[
-									"\\(\\frac{1}{2}\\)",
-									"16612618350956101"
-								],
-								[
-									"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-									"16612618362604136"
-								]
-							],
-							"hints": [
-								[
-									"\\(\\frac{1}{2}\\)",
-									"16612618380124574"
-								],
-								[
-									"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-									"1661261839569922"
-								]
-							],
-							"explain": [
-								[
-									"\\(\\frac{1}{2}\\)",
-									"16612618410875106"
-								],
-								[
-									"\\(\\sqrt{\\frac{1}{\\frac{3}{4}}}\\)",
-									"16612618422952714"
-								]
-							]
-						},
-						"authid": 3
-					}
-				], [], "a"
-			]
-		}
+		window.jsonData = 
+{
+    "signInFailure": false,
+    "isSignUp": false,
+    "isAuth": true,
+    "userid": 1,
+    "data": [
+        [
+            {
+                "id": 1,
+                "exercise": "a",
+                "answer": "a",
+                "hints": "a",
+                "author": 1,
+                "creationdate": "09/10/2022 - 10:47",
+                "title": "a",
+                "rating": [],
+                "tags": [],
+                "explain": "a",
+                "latex": "",
+                "authorName": "a",
+                "list_latex": {
+                    "title": [],
+                    "exercise": [],
+                    "answer": [],
+                    "hints": [],
+                    "explain": []
+                }
+            }
+        ],
+        [],
+        "a"
+    ]
+}
 	
 	}
 	const signInFailure = window.jsonData['signInFailure']

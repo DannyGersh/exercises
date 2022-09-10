@@ -84,7 +84,7 @@ function Exercise(props){
 				</BtnRound>
 			</div>
 
-			<div style={{maxHeight: '10rem', overflow:'hidden'}}>
+			<div style={{maxHeight: '12rem', overflow:'hidden'}}>
 				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
 				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
 			</div>
