@@ -40,6 +40,7 @@ SQLDataKeys = [
 	'tags',         # varchar(100)[] not null default '{}'
 	'explain',      # varchar(4000)
 	'latex',				# varchar(30)[] not null default '{}'
+	'latexp',				# varchar(400)
 ]
 # auth_user database extra columns
 auth_user_extra = [
@@ -129,7 +130,7 @@ def getChalange(id):
 		
 		array(select name from tags where id in (select * from unnest(a.tags)) ), 
 		
-		a.explain, a.latex, b.username
+		a.explain, a.latex, a.latexp, b.username
 		
 		from chalanges as a
 		inner join auth_user as b
@@ -471,12 +472,13 @@ def New(request, isSourceNav=False):
 			# user clicked edit - onley way to get here except reload
 			
 			outData['isEdit'] = True
-			
+
 			id_exercise = request.POST.get('id_exercise', -1)
 			if id_exercise == -1:
 					return HttpResponse('Could not get specified exercise')
 			
 			outData['chalange'] = getChalange(id_exercise)
+						
 			if not outData['chalange']:
 				# TODO - understand why empty dict 
 				outData['chalange'] = {}
@@ -551,7 +553,7 @@ def New(request, isSourceNav=False):
 			outData['chalange']['answer'] = reverseLatex('answer')
 			outData['chalange']['hints'] = reverseLatex('hints')
 			outData['chalange']['explain'] = reverseLatex('explain')
-		
+
 		else:
 			# user clicked New in navbar - onley way to get here except reload
 
@@ -617,6 +619,8 @@ def NewSubmited(request):
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints, flags = re.M | re.S)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain, flags = re.M | re.S)
 			
+			latexp = request.POST.get('latexp', '')
+			
 			# insert into chalanges database
 			# tags must be converted to teir corresponding id's
 			
@@ -629,11 +633,11 @@ def NewSubmited(request):
 			if request.POST.get('isEdit', '') == 'false':
 				cur.execute('''
 					insert into chalanges
-					(exercise, answer, hints, author, title, tags, explain, rating, latex)
+					(exercise, answer, hints, author, title, tags, explain, rating, latex, latexp)
 					values('%s', '%s', '%s', '%s', '%s', 
 					array(select id from tags where name in (select * from unnest(array[%s]))),
-					'%s', '%s', '%s')
-				'''%(exercise, answer, hints, request.user.id, title, tempTags, explain, '{}', now)
+					'%s', '%s', '%s', %s)
+				'''%(exercise, answer, hints, request.user.id, title, tempTags, explain, '{}', now, latexp)
 				)
 				cur.execute('''
 					update auth_user 
@@ -663,9 +667,10 @@ def NewSubmited(request):
 					update chalanges set 
 						exercise='%s', answer='%s',
 						hints='%s', title='%s', 
-						tags='{%s}', explain='%s', latex='%s'
+						tags='{%s}', explain='%s', 
+						latex='%s', latexp='%s'
 					where id='%s'
-				'''%(exercise, answer, hints, title, tagIds, explain, now, exerciseId)
+				'''%(exercise, answer, hints, title, tagIds, explain, now, latexp, exerciseId)
 				)
 				conn.commit()
 			

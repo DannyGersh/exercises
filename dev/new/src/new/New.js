@@ -94,7 +94,7 @@ function New(props){
 	const temp_hintsRef 		= [useRef([]), useRef(''), targets[3] ];
 	const temp_explainRef 	= [useRef([]), useRef(''), targets[4] ];
 	
-	const ref_latexp = useRef('')
+	const ref_latexp = useRef(localStorage.getItem('latexp'))
 	
 	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef];
 	const ref_hints 		= temp_hintsRef;
