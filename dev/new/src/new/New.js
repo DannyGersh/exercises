@@ -94,6 +94,8 @@ function New(props){
 	const temp_hintsRef 		= [useRef([]), useRef(''), targets[3] ];
 	const temp_explainRef 	= [useRef([]), useRef(''), targets[4] ];
 	
+	const ref_latexp = useRef('')
+	
 	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef];
 	const ref_hints 		= temp_hintsRef;
 	const ref_explain 	= temp_explainRef;
@@ -110,7 +112,7 @@ function New(props){
 		// get latex list
 
 		if(ref[1].current) {
-			let temp = ref[1].current.value.match(/(\$\$.+?\$\$)/g);
+			let temp = ref[1].current.value.match(/(\$\$.+?\$\$)/gms);
 			if(!temp) temp=[];
 			// remove $$
 			temp = temp.map(i=>i.substring(2,i.length-2));
@@ -125,7 +127,7 @@ function New(props){
 				ref[0].current = temp; // IMPORTENT - renew ref[0].current
 
 				if(!window.is_debug) {
-					sendData('test', [ ref[2] , ref[0].current ])
+					sendData('test', [ ref[2] , ref[0].current, localStorage.getItem('latexp') ])
 				} else {
 					// console.log([ ref[2] , ref[0].current ])
 				}
@@ -137,9 +139,9 @@ function New(props){
 		
 		let temp = []
 		try {
-			temp = ref[1].current.value.match(/(\$\$.+?\$\$)/g);
+			temp = ref[1].current.value.match(/(\$\$.+?\$\$)/gms);
 		} catch {
-			temp = str.match(/(\$\$.+?\$\$)/g);
+			temp = str.match(/(\$\$.+?\$\$)/gms);
 		}
 		
 		if(temp) {
@@ -191,7 +193,9 @@ function New(props){
 		
 	// updating latex periodically
 	useEffect(()=>{
-	
+		
+		console.log("POOP", ref_latexp.current)
+		
 		// for avoiding multiple timers
 		window.rmTimer(window.id);
 		
@@ -228,7 +232,7 @@ function New(props){
 		allso it loads local storage.
 	*/
 	useEffect(()=>{
-		
+
 		localStorage.setItem('bmt', 'Exercise')
 		
 		title[1](localStorage.getItem('title'));		
@@ -306,7 +310,8 @@ function New(props){
 		<form name='mainForm' action={'/newSubmit/'} issubmit={issubmit[0]} method='POST' target={issubmit[0] ? "_self": "_blank"}>
 			<CSRFToken/>
 			
-			<input type="hidden" name="title" 		 value={	title[0]	}	/>
+			<input type="hidden" name="latexp" 		 value={ localStorage.getItem('latexp') }	/>
+			<input type="hidden" name="title" 		 value={ title[0]	}			/>
 			<input type="hidden" name="exercise" 	 value={ exercise[0] }	/>
 			<input type="hidden" name="answer" 		 value={ answer[0] }		/>
 			<input type="hidden" name="hints" 		 value={ hints[0]	}			/>
@@ -328,7 +333,7 @@ function New(props){
 				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>{window.jsonData['isEdit'] ? 'Update': 'Submit'}</BtnMenue>
 			</div>
 	
-			{ bmt[0] === 'Exercise' 		&& <Exercise ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
+			{ bmt[0] === 'Exercise' 		&& <Exercise ref_latexp={ref_latexp} ref_exercise={ref_exercise} state={[title, exercise, answer]}/> }
 			{ bmt[0] === 'Hints' 				&& <Hints ref_hints={ref_hints} state={hints}/> }
 			{ bmt[0] === 'Explanation' 	&& <Explain ref_explain={ref_explain} state={explain}/> }
 			{ bmt[0] === 'Tags' 				&& <TagList state={tags}/> }

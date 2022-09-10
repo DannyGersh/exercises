@@ -3,8 +3,8 @@ import json
 from time import time
 import subprocess
 
-latex_a = '\\documentclass{article}\n\\usepackage{amsmath}'
-latex_b = '\\begin{document}\n\\begin{LARGE}'
+latex_a = '\\documentclass{article}\n'
+latex_b = '\\begin{document}\n\\begin{LARGE}\n'
 latex_c = '\\thispagestyle{empty}\n'
 latex_d = '\\end{LARGE}\n\\end{document}\n'
 
@@ -50,11 +50,12 @@ forbiden = (
 command_gen_pdf = 'pdflatex -interaction batchmode -parse-first-line -no-shell-escape -file-line-error '
 dir_static = r'/volume/static/users/'
 
-def gen_svg(latex, user, identifier):
+def gen_svg(latex, user, identifier, pacages):
 
 	# lates - string of latex expression
 	# user - string of user id
 	# identifier - string of file name, unique
+	# pacages - string, presumably in the form: \\usepacage{pacage1}\n\\usepcagage{pacage2}\n ...
 	
 	dir_original = os.getcwd()
 	os.chdir( os.path.join(dir_static, str(user)) )
@@ -74,7 +75,8 @@ def gen_svg(latex, user, identifier):
 	os.chdir('svg')
 	
 	with open(identifier+'.tex', 'w') as f:
-		f.write(latex_a+latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
+		# print(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
+		f.write(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 		
 	# dangere zone
 	
@@ -119,8 +121,8 @@ def gen_svg(latex, user, identifier):
 	
 	return res
 	
-def updateLatexList(latexList, user, target):
-	
+def updateLatexList(latexList, user, target, pacages):
+		
 	dir_original = os.getcwd()
 	
 	dir_base = os.path.join(dir_static, user)
@@ -156,6 +158,9 @@ def updateLatexList(latexList, user, target):
 				f.write( json.dumps({i:[] for i in targets}) )
 	# END_PERROR
 	
+	temp = [i.strip() for i in pacages.split(',')]
+	res_pacages = '\n' + '\n'.join(temp) + '\n'
+	
 	# latex list to be updated
 	l = []
 	
@@ -170,7 +175,7 @@ def updateLatexList(latexList, user, target):
 				break
 		
 		if(makeNewIndex):
-			res = gen_svg(x, user, identifier)
+			res = gen_svg(x, user, identifier, res_pacages)
 			if not res:
 				l.append([x, identifier])
 			else:

@@ -3,27 +3,31 @@ import {useEffect} from 'react'
 
 function Exercise(props){
 		
-	if(!localStorage.getItem('title')){
+	if(!localStorage.getItem('title')) {
 		localStorage.setItem('title', '');
 	}
-	if(!localStorage.getItem('exercise')){
+	if(!localStorage.getItem('exercise')) {
 		localStorage.setItem('exercise', '');
 	}
 	
-	function onTitleChange(text){
-		localStorage.setItem('title', text.target.value);
-		props.state[0][1](text.target.value); // updates in New.js
-		console.log(props.state[0][0])
+	function onLatexpChange(text) {
+		localStorage.setItem('latexp', text.target.value)
+		props.ref_latexp.current = text.target.value
 	}
-	function onExerciseChange(text){
-		localStorage.setItem('exercise', text.target.value);
-		props.state[1][1](text.target.value); // updates in New.js
+	
+	function onTitleChange(text) {
+		localStorage.setItem('title', text.target.value)
+		props.state[0][1](text.target.value) // updates in New.js
 	}
-	function onAnswerChange(text){
-		localStorage.setItem('answer', text.target.value);
-		props.state[2][1](text.target.value); // updates in New.js
+	function onExerciseChange(text) {
+		localStorage.setItem('exercise', text.target.value)
+		props.state[1][1](text.target.value) // updates in New.js
 	}
-
+	function onAnswerChange(text) {
+		localStorage.setItem('answer', text.target.value)
+		props.state[2][1](text.target.value) // updates in New.js
+	}
+	
 	useEffect(()=>{
 		if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
 			localStorage.setItem('title', window.jsonData['chalange']['title']);
@@ -38,20 +42,30 @@ function Exercise(props){
 	return(
 	<div className='Exercise'>
 		
-		<label>title *</label>
-		
+		<label>latex pacages</label>
 		<input
-			id = 'title'
+			id='latexp'
+			onChange={(v)=>onLatexpChange(v)}
+			defaultValue={localStorage.getItem('latexp')}
+			style={{width:'100%'}}
+			type="text" 
+		/>
+		
+		<br/><br/>
+		
+		<label>title *</label>
+		<input
+			id='title'
 			ref={props.ref_exercise[0][1]}
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
-			className='ExerciseInput' 
+			style={{width:'100%'}}
 			type="text" 
 		/>
 
 		<br/><br/>
 		
-		<label>Exercise bodie *</label>
+		<label>Exercise bodie</label>
 		<textarea 
 			id='exercise'
 			ref={props.ref_exercise[1][1]}

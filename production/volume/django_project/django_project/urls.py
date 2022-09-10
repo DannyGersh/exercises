@@ -83,6 +83,7 @@ def Delete(request):
 	# body - [int (exercise id), str (latex folder name), int (caller)]
 	
 	body = json.loads(request.body.decode("utf-8"))
+	
 	cur.execute(
 		"delete from chalanges where id='%s'"%(str(body[0]))
 	)
@@ -96,7 +97,7 @@ def Delete(request):
 		
 	dir_base = os.path.join(dir_users, str(request.user.id))
 	dir_exercise = os.path.join(dir_base, body[1])
-
+	
 	if subprocessRun(  ['rm','-r', dir_exercise]  ):
 		# TODO - do something if not successfull
 		pass
@@ -106,8 +107,13 @@ def Delete(request):
 @ensure_csrf_cookie		
 def UpdateLatex(request):
 
-	latexList =	json.loads(request.body.decode("utf-8"))
-	latexList = updateLatexList(latexList[1], str(request.user.id), latexList[0])
+	inData =	json.loads(request.body.decode("utf-8"))
+	
+	target = inData[0]
+	latexList = inData[1]
+	pacages = inData[2]
+	
+	res = updateLatexList(latexList, str(request.user.id), target, pacages)
 	
 	return HttpResponse('UpdateLatex')
 
@@ -524,7 +530,7 @@ def New(request, isSourceNav=False):
 				
 				def validate(target):
 
-					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(target,''))
+					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(target,''), flags = re.M | re.S)
 					b = [i[0] for i in dataFromFile.get(target,'')]
 					
 					return len(a) == len(b)
@@ -605,11 +611,11 @@ def NewSubmited(request):
 			hints 	 = request.POST.get('hints', '')
 			explain  = request.POST.get('explain', '')
 			
-			title 	 = re.sub(reg_latex_search, reg_latex, title)
-			exercise = re.sub(reg_latex_search, reg_latex, exercise)
-			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
-			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
-			explain	 = re.sub(reg_latex_search, reg_latex, explain)
+			title 	 = re.sub(reg_latex_search, reg_latex, title, flags = re.M | re.S)
+			exercise = re.sub(reg_latex_search, reg_latex, exercise, flags = re.M | re.S)
+			answer 	 = re.sub(reg_latex_search, reg_latex, answer, flags = re.M | re.S)
+			hints 	 = re.sub(reg_latex_search, reg_latex, hints, flags = re.M | re.S)
+			explain	 = re.sub(reg_latex_search, reg_latex, explain, flags = re.M | re.S)
 			
 			# insert into chalanges database
 			# tags must be converted to teir corresponding id's
@@ -682,11 +688,11 @@ def NewSubmited(request):
 			hints 	 = request.POST.get('hints', '')
 			explain  = request.POST.get('explain', '')
 			
-			title 	 = re.sub(reg_latex_search, reg_latex, title)
-			exercise = re.sub(reg_latex_search, reg_latex, exercise)
-			answer 	 = re.sub(reg_latex_search, reg_latex, answer)
-			hints 	 = re.sub(reg_latex_search, reg_latex, hints)
-			explain	 = re.sub(reg_latex_search, reg_latex, explain)
+			title 	 = re.sub(reg_latex_search, reg_latex, title, flags = re.M | re.S)
+			exercise = re.sub(reg_latex_search, reg_latex, exercise, flags = re.M | re.S)
+			answer 	 = re.sub(reg_latex_search, reg_latex, answer, flags = re.M | re.S)
+			hints 	 = re.sub(reg_latex_search, reg_latex, hints, flags = re.M | re.S)
+			explain	 = re.sub(reg_latex_search, reg_latex, explain, flags = re.M | re.S)
 	
 			inData = [
 				0, 
