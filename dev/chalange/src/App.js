@@ -9,30 +9,39 @@ function App() {
   let narrowWindow = useWindowResize();
   
 	if( process.env.NODE_ENV === 'development'){
-    let chalange = {
-			'id': 2, 
-			'exercise': 'test $$___latex$$ exercise', 
-			'answer': 'test $$___latex$$ answer', 
-			'hints': 'test $$___latex$$ hints', 
-			'author': 'test author', 
-			'creationdate': '27-7-1996', 
-			'title': 'test $$___latex$$ title', 
-			'rating': ['b','c'], 
-			'tags': ['math', 'science'],
-			'explain': 'ladida $$___latex$$ ladida',
-			'authid': '1',
-			// latex currently onley works in production
-			'latex': '1660953238601182',
-			'list_latex': {'title': [['A', '16609532299723427']], 'exercise': [['A', '16609532339731061']], 'answer': [['A', '16609532352807']], 'hints': [['A', '16609532352807']], 'explain': [['A', '16609532352807']]}
-		};
-		
-		window.jsonData = {
-			'chalange': chalange,
-			'signInFailure': false,
-			'isSignUp': false,
-			'isAuth': false,
-			'userid': null
-			}
+
+		window.jsonData = 
+{
+    "signInFailure": false,
+    "isSignUp": false,
+    "isAuth": true,
+    "userid": 1,
+    "chalange": {
+        "id": 1,
+        "exercise": "a",
+        "answer": "a",
+        "hints": "a",
+        "author": 1,
+        "creationdate": "09/10/2022 - 10:47",
+        "title": "a",
+        "rating": [],
+        "tags": [
+            "a",
+            "b"
+        ],
+        "explain": "a",
+        "latex": "",
+        "authorName": "a",
+        "list_latex": {
+            "title": [],
+            "exercise": [],
+            "answer": [],
+            "hints": [],
+            "explain": []
+        }
+    }
+}
+
 	}
 	const chalange = window.jsonData['chalange']
 	const signInFailure = window.jsonData['signInFailure']
