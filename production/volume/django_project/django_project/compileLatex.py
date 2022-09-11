@@ -82,7 +82,7 @@ def gen_svg(latex, user, identifier, pacages):
 	
 	res = 0
 	def run(strList):
-		return subprocess.run(strList).returncode
+		return subprocess.run(strList, timeout=2).returncode
 	
 	if not res:
 		res = run([
@@ -161,7 +161,7 @@ def updateLatexList(latexList, user, target, pacages):
 				f.write( json.dumps({i:[] for i in targets}) )
 	# END_PERROR
 	
-	temp = [i.strip() for i in pacages.split(',')]
+	temp = [i.strip() for i in pacages.split(',,')]
 	res_pacages = '\n' + '\n'.join(temp) + '\n'
 	
 	# latex list to be updated

@@ -100,6 +100,11 @@ async function sendData(url, data) {
 export {sendData}
 
 
+function htmlDecode(input) {
+  let doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
+
 function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	
 	/* explanation:
@@ -138,7 +143,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 			index++;
 		}
 	}
-	return textList.join('');
+	return htmlDecode(textList.join(''));
 }
 export {mainText2html}
 
