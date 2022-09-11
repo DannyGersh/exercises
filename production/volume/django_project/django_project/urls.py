@@ -636,7 +636,7 @@ def NewSubmited(request):
 					(exercise, answer, hints, author, title, tags, explain, rating, latex, latexp)
 					values('%s', '%s', '%s', '%s', '%s', 
 					array(select id from tags where name in (select * from unnest(array[%s]))),
-					'%s', '%s', '%s', %s)
+					'%s', '%s', '%s', '%s')
 				'''%(exercise, answer, hints, request.user.id, title, tempTags, explain, '{}', now, latexp)
 				)
 				cur.execute('''

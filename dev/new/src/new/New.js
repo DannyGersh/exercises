@@ -58,6 +58,7 @@ function New(props){
 	let temp_bmt			= ''
 	
 	if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
+		localStorage.setItem('latexp',			window.jsonData['chalange']['latexp']	 )
 		localStorage.setItem('title',				window.jsonData['chalange']['title']   )
 		localStorage.setItem('exercise',		window.jsonData['chalange']['exercise'])
 		localStorage.setItem('answer',			window.jsonData['chalange']['answer']  )
@@ -247,6 +248,7 @@ function New(props){
 			if( title[0] && answer[0] ) {
 				document.mainForm.submit();
 				if(issubmit[0]) {
+					localStorage.removeItem('latexp');
 					localStorage.removeItem('title');
 					localStorage.removeItem('exercise');
 					localStorage.removeItem('Explanation');
