@@ -236,12 +236,35 @@ function New(props){
 
 		localStorage.setItem('bmt', 'Exercise')
 		
-		title[1](localStorage.getItem('title'));		
-		exercise[1](localStorage.getItem('exercise'));
+		temp_title = localStorage.getItem('title')
+		temp_exercise = localStorage.getItem('exercise')
+		temp_answer = localStorage.getItem('answer')
+		temp_hints = localStorage.getItem('hints')
+		temp_explain = localStorage.getItem('Explanation')
+		temp_tags = JSON.parse(localStorage.getItem('tags'))
+
+		// valin - validate input
+		function valin(str) {
+			const q = str ? str.match(/<.*\/.*>/gms): '';
+			return q
+		}
+
+		if(
+			valin(temp_title) ||
+			valin(temp_exercise) ||
+			valin(temp_answer) ||
+			valin(temp_hints) ||
+			valin(temp_explain)
+		) {
+			window.alert("invalid input")
+		} else {
+		
+		title[1](temp_title);		
+		exercise[1](temp_exercise);
 		answer[1](localStorage.getItem('answer'));
-		hints[1](localStorage.getItem('hints'));
-		explain[1](localStorage.getItem('Explanation'));
-		tags[1](JSON.parse(localStorage.getItem('tags')));
+		hints[1](temp_answer);
+		explain[1](temp_hints);
+		tags[1](temp_tags);
 		
 		if(issubmit[0] !== 'none') {
 		
@@ -301,6 +324,8 @@ function New(props){
 				window.alert(str)
 			}
 			
+		}
+
 		}
 
 	},[issubmit[0]])

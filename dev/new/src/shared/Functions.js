@@ -21,7 +21,7 @@ function remToPx(rem) {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 export {remToPx};
-	
+
 	
 function useWindowResize(){
 
@@ -100,10 +100,6 @@ async function sendData(url, data) {
 export {sendData}
 
 
-function htmlDecode(input) {
-  let doc = new DOMParser().parseFromString(input, "text/html");
-  return doc.documentElement.textContent;
-}
 
 function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	
@@ -143,7 +139,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 			index++;
 		}
 	}
-	return htmlDecode(textList.join(''));
+	return textList.join('');
 }
 export {mainText2html}
 
