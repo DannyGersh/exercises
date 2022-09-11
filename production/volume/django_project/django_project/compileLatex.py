@@ -128,6 +128,9 @@ def updateLatexList(latexList, user, target, pacages):
 	dir_base = os.path.join(dir_static, user)
 	dir_svg = os.path.join(dir_base, 'svg')
 	file_json = os.path.join(dir_base, '.json')
+	
+	if not pacages or pacages in ['None', 'none', 'Null', 'null']:
+		pacages = ''
 		
 	# create dir structure if not exists
 	if not os.path.exists(dir_base):

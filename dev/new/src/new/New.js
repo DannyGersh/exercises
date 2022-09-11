@@ -49,6 +49,7 @@ window.rmTimer = function(timerID) {
 				
 function New(props){
 
+	let temp_latexp		= localStorage.getItem('latexp') ? localStorage.getItem('latexp'): ''
 	let temp_title 		= ''
 	let temp_exercise = ''
 	let temp_answer   = ''
@@ -95,7 +96,7 @@ function New(props){
 	const temp_hintsRef 		= [useRef([]), useRef(''), targets[3] ];
 	const temp_explainRef 	= [useRef([]), useRef(''), targets[4] ];
 	
-	const ref_latexp = useRef(localStorage.getItem('latexp'))
+	const ref_latexp = useRef(temp_latexp)
 	
 	const ref_exercise 	= [temp_titleRef, temp_exerciseRef, temp_answerRef];
 	const ref_hints 		= temp_hintsRef;
@@ -128,7 +129,8 @@ function New(props){
 				ref[0].current = temp; // IMPORTENT - renew ref[0].current
 
 				if(!window.is_debug) {
-					sendData('test', [ ref[2] , ref[0].current, localStorage.getItem('latexp') ])
+					let temp_latexp = localStorage.getItem('latexp') ? localStorage.getItem('latexp'): ''
+					sendData('test', [ ref[2] , ref[0].current, temp_latexp ])
 				} else {
 					// console.log([ ref[2] , ref[0].current ])
 				}
@@ -194,9 +196,7 @@ function New(props){
 		
 	// updating latex periodically
 	useEffect(()=>{
-		
-		console.log("POOP", ref_latexp.current)
-		
+				
 		// for avoiding multiple timers
 		window.rmTimer(window.id);
 		

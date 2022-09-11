@@ -82,9 +82,9 @@ def AddTag(request):
 def Delete(request):
 
 	# body - [int (exercise id), str (latex folder name), int (caller)]
-	
+
 	body = json.loads(request.body.decode("utf-8"))
-	
+
 	cur.execute(
 		"delete from chalanges where id='%s'"%(str(body[0]))
 	)
@@ -103,13 +103,30 @@ def Delete(request):
 		# TODO - do something if not successfull
 		pass
 
+	# NOTE - delete all files and folders that are not assosiated with an existing exercise in database
+
+	dir_user = os.path.join(dir_users, str(request.user.id))
+	dir_svg = os.path.join(dir_user, 'svg')
+	file_json = os.path.join(dir_user, '.json')
+		
+	cur.execute('''
+	select latex from chalanges where id in (select unnest(authored) from auth_user where id=%s)
+	'''%str(request.user.id))
+	temp = cur.fetchall()	
+
+	for i in os.listdir(dir_user):
+		if i not in [i[0] for i in temp]:
+			res = subprocessRun(['rm', '-r', os.path.join(dir_user, i)])
+	
+	# END_NOTE
+		
 	return HttpResponse('Delete')
 
 @ensure_csrf_cookie		
 def UpdateLatex(request):
 
 	inData =	json.loads(request.body.decode("utf-8"))
-	
+
 	target = inData[0]
 	latexList = inData[1]
 	pacages = inData[2]
@@ -467,7 +484,7 @@ def New(request, isSourceNav=False):
 		
 		outData['chalange'] = {}
 		outData['chalange']['id'] = 'dummy_id' # id required for new chalange
-		
+
 		if request.method == "POST":
 			# user clicked edit - onley way to get here except reload
 			
@@ -487,7 +504,7 @@ def New(request, isSourceNav=False):
 			dir_user = os.path.join(dir_users, str(outData['chalange']['author']))
 			dir_exercise = os.path.join(dir_user, outData['chalange']['latex'])
 			file_json = os.path.join(dir_exercise, '.json')
-			
+
 			with open(file_json, 'r') as f:
 					dataFromFile = json.loads(f.read())
 					
@@ -505,9 +522,7 @@ def New(request, isSourceNav=False):
 						index += 1
 
 				return ''.join(res)
-				
-
-				
+						
 			if request.session.get('EditInProgress','') != id_exercise:
 				
 				# edit is in progress
@@ -727,6 +742,7 @@ def NewSubmited(request):
 	
 			return render(request, 'chalange.html', context={'value': outData})
 	
+
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
