@@ -34,7 +34,6 @@ function Explain(props){
 			<p >Tips:</p>
 			<ul>
 				<li>go through all the steps of solving your exercise</li>
-				<li>avoid confusing the reader with fancy jargon</li>
 			</ul>
 			<br/><br/><br/>
 		

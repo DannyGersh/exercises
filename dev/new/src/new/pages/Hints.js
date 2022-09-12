@@ -35,7 +35,6 @@ function Hints(props){
 		<p >Tips:</p>
 		<ul>
 			<li>try to help the reader</li>
-			<li>don't give away too much</li>
 		</ul>
 		<br/><br/><br/>
 		

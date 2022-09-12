@@ -82,9 +82,9 @@ async function sendData(url, data) {
 	}
 	
 	if(window.isdebug) {
-		url = 'http://localhost/' + url
+		url = 'https://localhost/' + url
 	} else {
-		url = 'http://www.ididthisforu.com/' + url
+		url = 'https://www.ididthisforu.com/' + url
 	}
 	
 	return await fetch(url, { 

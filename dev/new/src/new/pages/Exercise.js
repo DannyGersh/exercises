@@ -84,15 +84,34 @@ function Exercise(props){
 			rows='6' 
 			className='ExerciseTextArea' 
 		/>
-			
+		
+		<br/><br/>
+
 		<label>Tips:</label>
 		<ul>
 			<li>make the title short and to the point</li>
 			<li>make the exercise focused on the topic you choose</li>
 			<li>be as clear as possible</li>
+			<li>avoid confusing the reader with fancy jargon</li>
 		</ul>
-		<br/><br/><br/>
 		
+		<br/>
+
+		<label>Latex:</label>
+		<ul>
+			<li>the latex installation is "texlive-latex-extra"</li><br/>
+			<li>"latex pacages" is a <u>double comma</u> separated list of latex package directives. example:</li><br/>
+			<ul><li>{"\\usepackage{amsmath},, \\usepackage{some_other_pacage},, \\usepackage[left=2.00cm, right=1.00cm]{geometry}"}</li></ul><br/>
+			<li>try to split your latex into small chunks, for better text wraping:</li><br/>
+			<ul>
+				<li>insted of $$ some very long latex ... $$, go for: $$ some very $$ $$ long latex ... $$</li><br/>
+				<li>this increasess the quality of the exercise</li>
+			</ul><br/>
+
+		</ul>
+
+		<br/><br/>
+
 	</div>
 	)
 }

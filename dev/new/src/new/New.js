@@ -49,14 +49,14 @@ window.rmTimer = function(timerID) {
 				
 function New(props){
 
-	let temp_latexp		= localStorage.getItem('latexp') ? localStorage.getItem('latexp'): ''
-	let temp_title 		= ''
+	let temp_latexp	  = localStorage.getItem('latexp') ? localStorage.getItem('latexp'): ''
+	let temp_title 	  = ''
 	let temp_exercise = ''
 	let temp_answer   = ''
 	let temp_hints    = ''
 	let temp_explain  = ''
 	let temp_tags     = ''
-	let temp_bmt			= ''
+	let temp_bmt	  = ''
 	
 	if(window.jsonData['isEdit'] && !window.jsonData['EditInProgress']) {
 		localStorage.setItem('latexp',			window.jsonData['chalange']['latexp']	 )
@@ -68,13 +68,17 @@ function New(props){
 		localStorage.setItem('tags',				JSON.stringify( window.jsonData['chalange']['tags']) )
 		localStorage.setItem('bmt', 'Exercise')
 	}
-	temp_title 		= localStorage.getItem('title')				
+	
+	temp_tags = JSON.parse(localStorage.getItem('tags'))
+
+	temp_title 	  = localStorage.getItem('title')				
 	temp_exercise = localStorage.getItem('exercise')		
 	temp_answer   = localStorage.getItem('answer')			
 	temp_hints    = localStorage.getItem('hints')				
 	temp_explain  = localStorage.getItem('Explanation')	
-	temp_tags     = JSON.parse(localStorage.getItem('tags'))	
-	temp_bmt			= localStorage.getItem('bmt')
+	temp_tags     = temp_tags ? temp_tags : []
+	temp_bmt	  = localStorage.getItem('bmt') ? localStorage.getItem('bmt'): "Exercise";
+	
 	// state - they're all strings, coresponding to form inputs, 
 	// except tags which is a list of strings                     
 	const title		 = useState(temp_title)
