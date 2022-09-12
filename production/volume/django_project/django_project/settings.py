@@ -134,7 +134,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/volume/static/'
 CSRF_TRUSTED_ORIGINS = [
-	'http://www.ididthisforu.com', 
+	'https://www.ididthisforu.com', 
 	'http://localhost',
 ]
 #CSRF_HEADER_NAME = 'X-CSRFToken'

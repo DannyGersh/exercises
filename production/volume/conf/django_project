@@ -17,4 +17,29 @@ server {
 	}
 }
 
+ 
+#server {
+#        listen 80;
+#        # server_name 63.250.61.251;
+#        server_name ididthisforu.com www.ididthisforu.com;
+#
+#        location / {
+#                # proxy_pass http://63.250.61.251:8000;
+#                proxy_pass http://localhost:8000;
+#        }
+#        location /static/ {
+#                alias /volume/static/;
+#        }
+#
+#        location /.well-known/pki-validation/ {
+#                alias /volume/conf/ssl/;
+#        }
+#}
+
+#location /static/ {
+#                alias /volume/static/;
+#        }
+
+
+
 

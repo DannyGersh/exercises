@@ -47,15 +47,21 @@ function Login(props){
   const ref_cap = createRef(false)
   const ref_terms = createRef(false)
   function submitMainForm() {
-  	if(ref_cap.current==='isHuman' && ref_terms.current) {
-  		document.getElementById("mainForm").submit();
-  	} else {
-  		if(ref_cap.current!=='isHuman'){
-  			window.alert("make sure that you are human.");
+  	
+  	if(ls==='signup') {
+  		if(ref_cap.current==='isHuman' && ref_terms.current) {
+  			document.getElementById("mainForm").submit();
   		} else {
-  			window.alert("please read the terms and conditions.");
+  			if(ref_cap.current!=='isHuman'){
+  				window.alert("make sure that you are human.");
+  			} else {
+  				window.alert("please read the terms and conditions.");
+  			}
   		}
+  	} else {
+  		document.getElementById("mainForm").submit();
   	}
+
   }
 
   return(
@@ -107,7 +113,7 @@ function Login(props){
 				<>
 				<center>
 				<ReCAPTCHA
-    			sitekey="6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5"
+    			sitekey={window.isdebug ? "6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5": "6LcK_fIhAAAAAJvixt45z9kf5DWYPYdDvvzhYfqS"}
     			onChange={()=>ref_cap.current='isHuman'}
     			onExpired={()=>ref_cap.current=false}
   			/>
