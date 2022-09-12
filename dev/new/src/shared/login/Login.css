@@ -1,6 +1,6 @@
 .btnLs{
 	width: 50%;
-	height: 1.031rem;
+	height: 1.05rem;
 	border: solid;
 	border-width: 0.03rem;
 	border-radius: 0.3rem;
@@ -37,12 +37,12 @@
 
 
 .main{
-	width: 12rem;
-	height: 18rem;
+	width: 20rem;
+	height: 24rem;
 	
 	position: fixed;
-	top: calc(50% - 9rem);
-	left: calc(50% - 6rem);
+	top: calc(50% - 12rem);
+	left: calc(50% - 10rem);
 	
 	z-index: 100;
 	background-color: rgba(0, 0, 0, 0.3);

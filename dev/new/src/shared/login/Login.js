@@ -2,7 +2,8 @@ import './Login.css'
 import '../Global.css'
 import BtnRound from '../buttons/BtnRound'
 import CSRFToken from "../csrftoken";
-import {useState, createRef} from 'react'
+import {useState, createRef, useEffect} from 'react'
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Login(props){
   	
@@ -42,11 +43,24 @@ function Login(props){
     setLs(e.target.innerHTML);
     failureHandle();    
   }
-  	
+
+  const ref_cap = createRef(false)
+  const ref_terms = createRef(false)
+  function submitMainForm() {
+  	if(ref_cap.current==='isHuman' && ref_terms.current) {
+  		document.getElementById("mainForm").submit();
+  	} else {
+  		if(ref_cap.current!=='isHuman'){
+  			window.alert("make sure that you are human.");
+  		} else {
+  			window.alert("please read the terms and conditions.");
+  		}
+  	}
+  }
+
   return(
   <div className='main'> 
     
-		
 		<BtnRound onClick={props.sfLogin} className='escape blue'>🞬</BtnRound>
 		
     <div style={{'display':'flex'}}>
@@ -56,7 +70,7 @@ function Login(props){
 	
     <div className={`mainBody ${ ls==='login' && 'mainShort'}`}>
 	
-      <form id='with-captcha' action={ ls==='login' ? '/login/': '/signup/'  } method='POST'>
+      <form id='mainForm' action={ ls==='login' ? '/login/': '/signup/'  } method='POST'>
         
         <CSRFToken/>
         
@@ -65,14 +79,14 @@ function Login(props){
         <input type="hidden" name="validated" value={Lcase && Ucase && Ncase && Scase}/>
 
         <p>Display name:</p>
-        <input onClick={failureHandle} name='uname' type='text'/>
+        <input style={{width:'94%'}} onClick={failureHandle} name='uname' type='text'/>
         <p>Password:</p>
-        <input ref={ref1} onChange={UcaseHandle} onClick={failureHandle} name='password' type='password'/>
+        <input style={{width:'94%'}} ref={ref1} onChange={UcaseHandle} onClick={failureHandle} name='password' type='password'/>
         
         { ls === 'signup' &&
           <>
           <p>Verify password:</p>
-          <input onClick={failureHandle} name='Verify password' type='password'/>
+          <input style={{width:'94%'}} onClick={failureHandle} name='Verify password' type='password'/>
           
 					<div style={{'textAlign': 'left', 'padding-left': '1rem'}}>
 					<p style={{color: `${Lcase ? 'green': 'red'}`}}>{Lcase ? '✓': 'x'} Lower case</p>
@@ -89,8 +103,25 @@ function Login(props){
         </div>
         }
         
-        <button className='btnLs bottom'>{ls==='login'? 'Log in': 'Sign up'}</button>
-				
+        { ls==='signup' &&
+				<>
+				<center>
+				<ReCAPTCHA
+    			sitekey="6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5"
+    			onChange={()=>ref_cap.current='isHuman'}
+    			onExpired={()=>ref_cap.current=false}
+  			/>
+  			</center> 
+  			
+  			<div style={{display:'flex', marginLeft:'0.5rem'}}>
+  				<input onClick={(e)=>ref_terms.current=e.target.checked} type="checkbox" name="terms"/>
+  				<p>I have read and agreed to the <a href={window.isdebug ? "http://localhost/terms/terms.txt": "http://www.ididthisforu.com/terms/terms.txt"}>terms and conditio</a></p>
+  			</div>
+  			</>
+  			}     
+
+        <button type='button' onClick={submitMainForm} className='btnLs bottom'>{ls==='login'? 'Log in': 'Sign up'}</button>
+
       </form>
     
     </div>
