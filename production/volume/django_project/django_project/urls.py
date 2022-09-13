@@ -598,8 +598,11 @@ def NewSubmited(request):
 
 		oldLatex = request.POST.get('oldLatex', '')
 		
-		tags = ["'"+i+"'" for i in json.loads(request.POST.get('tags', ''))]
-		tags = ','.join(tags)
+		try:
+			tags = ["'"+i+"'" for i in json.loads(request.POST.get('tags', ''))]
+			tags = ','.join(tags)
+		except:
+			tags = ''
 
 		# TODO - fix weird 'true'
 
@@ -646,6 +649,8 @@ def NewSubmited(request):
 			# TODO - fix weird 'false' thing
 			if request.POST.get('isEdit', '') == 'false':
 				
+				# user cklicked submit while editing a non existant exercise
+
 				if not tags:
 					tags = "'this is a non existing tag that while never exsist hopefully, prevents sql problems'"
 
@@ -700,7 +705,7 @@ def NewSubmited(request):
 			return redirect("../../../../user/" + str(request.user.id))
 		
 		else:	
-
+			
 			# user clicked preview
 
 			cur.execute('''select to_char(now(), 'MM/DD/YYYY - HH24:MI')''')

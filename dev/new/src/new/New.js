@@ -228,7 +228,10 @@ function New(props){
 				localStorage.removeItem('hints');
 				localStorage.removeItem('answer');
 				localStorage.removeItem('tags');
+				localStorage.removeItem('bmt');
 			}
+
+			// window.location.reload();
 
 		} else {
 
@@ -238,8 +241,19 @@ function New(props){
 			window.alert(str)
 
 		}
+
+		if(isSubmit[0]!=='none'){
+			isSubmit[1]('none')
+		}
 	
 	}, [isSubmit[0]])
+
+	function onSubmit() {
+		isSubmit[1]('submit')
+	}
+	function onPreview() {
+		isSubmit[1]('preview')
+	}
 
 	return(
 	<>
@@ -264,14 +278,14 @@ function New(props){
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints'       && 'green'}`}>Hints</BtnMenue>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Explanation' && 'green'}`}>Explanation</BtnMenue>
 				<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Tags'        && 'green'}`}>Tags</BtnMenue>
-				<BtnMenue type='button' onClick={()=>isSubmit[1]('preview')} className='btnSubmit'>Preview</BtnMenue>
-				<BtnMenue type='button' onClick={()=>isSubmit[1]('submit')} className='btnSubmit'>{window.jsonData['isEdit'] ? 'Update': 'Submit'}</BtnMenue>
+				<BtnMenue type='button' onClick={onPreview} className='btnSubmit'>Preview</BtnMenue>
+				<BtnMenue type='button' onClick={onSubmit} className='btnSubmit'>{window.jsonData['isEdit'] ? 'Update': 'Submit'}</BtnMenue>
 			</div>
 	
 			{ bmt[0] === 'Exercise'     && <Exercise ref_exercise={ref_exercise}/> }
 			{ bmt[0] === 'Hints'        && <Hints ref_hints={ref_hints}/> }
 			{ bmt[0] === 'Explanation' 	&& <Explain ref_explain={ref_explain}/> }
-			{ bmt[0] === 'Tags' && <TagList/> }
+			{ bmt[0] === 'Tags'			&& <TagList/> }
 		</form>
 		
 	</>

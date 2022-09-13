@@ -84,7 +84,6 @@ def AddTag(request):
 def Delete(request):
 
 	# body - [int (exercise id), str (latex folder name), int (caller)]
-
 	body = json.loads(request.body.decode("utf-8"))
 
 	cur.execute(
@@ -599,15 +598,12 @@ def NewSubmited(request):
 
 		oldLatex = request.POST.get('oldLatex', '')
 		
-		# TODO - get rid of these nonsense
-		tags = request.POST.get('tags', '')
-		if tags == []: tags = ''
-		if tags == '[]': tags = ''
-		tags = tags.replace('[', '')
-		tags = tags.replace(']', '')
-		
+		tags = ["'"+i+"'" for i in json.loads(request.POST.get('tags', ''))]
+		tags = ','.join(tags)
+
 		# TODO - fix weird 'true'
-		if(request.POST.get('issubmit')=='true'):
+
+		if(request.POST.get('isSubmit')=='true'):
 
 			request.session['EditInProgress'] = 'none'
 			
@@ -647,21 +643,22 @@ def NewSubmited(request):
 			# insert into chalanges database
 			# tags must be converted to teir corresponding id's
 			
-			# handle white space
-			tempTags = tags.split(',')
-			tempTags = ['%s%s%s'%("'",i,"'") for i in tempTags]
-			tempTags = ','.join(tempTags)
-			
 			# TODO - fix weird 'false' thing
 			if request.POST.get('isEdit', '') == 'false':
+				
+				if not tags:
+					tags = "'this is a non existing tag that while never exsist hopefully, prevents sql problems'"
+
+				# user clicked submit on new exercise
 				cur.execute('''
 					insert into chalanges
 					(exercise, answer, hints, author, title, tags, explain, rating, latex, latexp)
 					values('%s', '%s', '%s', '%s', '%s', 
-					array(select id from tags where name in (select * from unnest(array[%s]))),
+					array(select id from tags where name in (%s)),
 					'%s', '%s', '%s', '%s')
-				'''%(exercise, answer, hints, request.user.id, title, tempTags, explain, '{}', now, latexp)
+				'''%(exercise, answer, hints, request.user.id, title, tags, explain, '{}', now, latexp)
 				)
+
 				cur.execute('''
 					update auth_user 
 						set authored[cardinality(authored)] = (select id from chalanges where latex='%s')::integer 
@@ -669,19 +666,17 @@ def NewSubmited(request):
 				'''%(now, request.user.id) )
 				conn.commit()
 				
-			else:
+			else: 
+
+				# user clicked submit when editing existing exercise
+
 				exerciseId = request.POST.get('exerciseId', '')
 				if(exerciseId == ''):
 					return HttpResponse('Failed submiting exercise')
-				
-				# convert tag names to their id's
-				tempTags = tags.split(',')
-				# handle white space
-				tempTags = ['%s%s%s'%("'",i,"'") for i in tempTags]
-				tempTags = ','.join(tempTags)
+								
 				cur.execute('''
 						select * from tags where name in (%s)
-				'''%tempTags)
+				'''%tags)
 				tempInData = cur.fetchall()	
 				tempInData = [str(i[0]) for i in tempInData]
 				tagIds = ','.join(tempInData)
@@ -704,12 +699,19 @@ def NewSubmited(request):
 			
 			return redirect("../../../../user/" + str(request.user.id))
 		
-		else:			
+		else:	
+
+			# user clicked preview
+
 			cur.execute('''select to_char(now(), 'MM/DD/YYYY - HH24:MI')''')
 			timestamp = cur.fetchone()			
 			
-			tags = tags.split(',')
-			
+			tags = [ i[1:-1] for i in tags.split(',') ]
+			try:
+				tags.remove("")
+			except:
+				pass
+
 			title 	 = request.POST.get('title', '')
 			exercise = request.POST.get('exercise', '')
 			answer 	 = request.POST.get('answer', '')
