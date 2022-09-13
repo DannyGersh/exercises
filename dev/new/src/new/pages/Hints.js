@@ -8,7 +8,7 @@ function Hints(props){
 	
 	function onHintsChange(text){
 		localStorage.setItem('hints', text.target.value);
-		props.state[1](text.target.value); // updates in New.js
+		props.ref_hints[1].current = text.target.value;
 	}
 	
 	useEffect(()=>{
@@ -25,7 +25,6 @@ function Hints(props){
 		
 		<textarea 
 			id='hints'
-			ref={props.ref_hints[1]}
 			onChange={(v)=>onHintsChange(v)} 
 			defaultValue={localStorage.getItem('hints')} 
 			rows='6' 

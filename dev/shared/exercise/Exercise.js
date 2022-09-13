@@ -31,7 +31,7 @@ function Exercise(props){
 		evt.stopPropagation();
 	}
 	
-	function onDelete(evt) {
+	async function onDelete(evt) {
 		
 		evt.stopPropagation();
 		
@@ -50,6 +50,7 @@ function Exercise(props){
 					window.alert('Failed deleting this exercise');
 				}});
 				
+				await new Promise(r => setTimeout(r, 200));
 				window.location.reload()
 			}
 		} catch {

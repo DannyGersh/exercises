@@ -67,6 +67,7 @@ dir_users = os.path.join('/','volume','static','users')
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
 
+@ensure_csrf_cookie
 def AddTag(request):
 
 	body = json.loads(request.body.decode("utf-8"))
@@ -79,6 +80,7 @@ def AddTag(request):
 	
 	return HttpResponse(200)
 
+@ensure_csrf_cookie
 def Delete(request):
 
 	# body - [int (exercise id), str (latex folder name), int (caller)]
@@ -272,6 +274,7 @@ def Browse(request, sterm=''):
 		
 		return render(request, 'browse.html', context={'value': outData})
 
+@ensure_csrf_cookie
 def Home(request):
 		
 	outData = {} # data for js. will be converted to secure json.
@@ -372,7 +375,8 @@ def Profile(request, userid):
 	
 	else:
 			return HttpResponse("trying to peek at other acounts ar ya ?")
-		
+
+@ensure_csrf_cookie		
 def Login(request):
 		
 	if request.method == "POST":
@@ -407,12 +411,14 @@ def Login(request):
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
 	return redirect('./../../../../../../../')
 
+@ensure_csrf_cookie
 def LogOut(request):
 	
 	logout(request)	
 	# this is ok
 	return redirect("./../../../../")
-		
+
+@ensure_csrf_cookie		
 def SignUp(request):
 	
 	if request.method == "POST":
@@ -451,6 +457,7 @@ def SignUp(request):
 	return redirect('./../../../../../../../')
 
 @xframe_options_exempt
+@ensure_csrf_cookie
 def Like(request):
 		
 		if request.method == "POST":
@@ -583,6 +590,7 @@ def New(request, isSourceNav=False):
 		request.session['isNew'] = True
 		return redirect(request.session.get('currentUrl'))
 
+@ensure_csrf_cookie
 def NewSubmited(request):
 
 	outData = {} # data for js. will be converted to secure json.

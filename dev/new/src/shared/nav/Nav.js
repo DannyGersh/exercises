@@ -51,16 +51,16 @@ function Nav(props) {
 		// window.jsonData['isSignUp'] = false;
 	}
 	function homeHandle(){
-		window.location = '../../../../../../../../../';
+		window.location = '/';
 	}
 	function newHandle(){
-		window.location = '../../../../../../../../../new/';
+		window.location = '/new/';
 	}
 	function logOutHandle(){
-		window.location = '../../../../../../../../logout/';
+		window.location = '/logout/';
 	}
 	function profileHandle(){
-		window.location = '../../../../../../../../user/' + String(props.userid);
+		window.location = '/user/' + String(props.userid);
 	}
 	
 	const dspProfileBtn = props.isAuth && !/user\/\d/.test(window.location);

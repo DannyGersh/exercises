@@ -4,7 +4,7 @@ import {useState} from 'react'
 // window.isdebug == false - for final production stage - site upload
 
 window.is_debug = (process.env.NODE_ENV === 'development')
-window.isdebug = false
+window.isdebug = true
 
 				
 export function compArr(arr1, arr2) {
@@ -82,7 +82,7 @@ async function sendData(url, data) {
 	}
 	
 	if(window.isdebug) {
-		url = 'https://localhost/' + url
+		url = 'http://localhost/' + url
 	} else {
 		url = 'https://www.ididthisforu.com/' + url
 	}

@@ -8,7 +8,7 @@ function Explain(props){
 	
 	function onExplainChange(text){
 		localStorage.setItem('Explanation', text.target.value);
-		props.state[1](text.target.value); // updates in New.js
+		props.ref_explain[1].current = text.target.value;
 	}
 	
 	useEffect(()=>{
@@ -25,7 +25,6 @@ function Explain(props){
 			
 			<textarea
 				id='explain'
-				ref={props.ref_explain[1]}
 				onChange={(v)=>onExplainChange(v)}
 				defaultValue={localStorage.getItem('Explanation')}
 				className='ExerciseTextArea' 

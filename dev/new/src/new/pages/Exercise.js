@@ -9,23 +9,25 @@ function Exercise(props){
 	if(!localStorage.getItem('exercise')) {
 		localStorage.setItem('exercise', '');
 	}
+	if(!localStorage.getItem('answer')) {
+		localStorage.setItem('answer', '');
+	}
 	
 	function onLatexpChange(text) {
 		localStorage.setItem('latexp', text.target.value)
-		props.ref_latexp.current = text.target.value
 	}
 	
 	function onTitleChange(text) {
 		localStorage.setItem('title', text.target.value)
-		props.state[0][1](text.target.value) // updates in New.js
+		props.ref_exercise[0][1].current = text.target.value;
 	}
 	function onExerciseChange(text) {
 		localStorage.setItem('exercise', text.target.value)
-		props.state[1][1](text.target.value) // updates in New.js
+		props.ref_exercise[1][1].current = text.target.value;
 	}
 	function onAnswerChange(text) {
 		localStorage.setItem('answer', text.target.value)
-		props.state[2][1](text.target.value) // updates in New.js
+		props.ref_exercise[2][1].current = text.target.value;
 	}
 	
 	useEffect(()=>{
@@ -56,7 +58,6 @@ function Exercise(props){
 		<label>title *</label>
 		<input
 			id='title'
-			ref={props.ref_exercise[0][1]}
 			onChange={(v)=>onTitleChange(v)}
 			defaultValue={localStorage.getItem('title')}
 			style={{width:'100%'}}
@@ -68,7 +69,6 @@ function Exercise(props){
 		<label>Exercise bodie</label>
 		<textarea 
 			id='exercise'
-			ref={props.ref_exercise[1][1]}
 			onChange={(v)=>onExerciseChange(v)}
 			rows='6' 
 			className='ExerciseTextArea' 
@@ -78,7 +78,6 @@ function Exercise(props){
 		<label>answer *</label>
 		<textarea
 			id='answer'
-			ref={props.ref_exercise[2][1]}
 			onChange={(v)=>onAnswerChange(v)}
 			defaultValue={localStorage.getItem('answer')}
 			rows='6' 
