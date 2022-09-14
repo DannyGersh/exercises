@@ -97,13 +97,18 @@ function Exercise(props){
 		<br/>
 
 		<label>Latex:</label>
+		
 		<ul>
+			<li>inserted your latex in the following way:</li><br/>
+			<ul><li> ... some example normal text <font color="green">$$ latex goes here $$</font> some other example normal text ... </li></ul><br/>
+		
+			<li>for easy math editing, use this free <a href='https://latex.codecogs.com/eqneditor/editor.php'>online latex equation editor</a>, microsoft word equation editor, or any other tool that can yield latex.</li><br/>
 			<li>the latex installation is "texlive-latex-extra"</li><br/>
 			<li>"latex pacages" is a <u>double comma</u> separated list of latex package directives. example:</li><br/>
 			<ul><li>{"\\usepackage{amsmath},, \\usepackage{some_other_pacage},, \\usepackage[left=2.00cm, right=1.00cm]{geometry}"}</li></ul><br/>
 			<li>try to split your latex into small chunks, for better text wraping:</li><br/>
 			<ul>
-				<li>insted of $$ some very long latex ... $$, go for: $$ some very $$ $$ long latex ... $$</li><br/>
+				<li>insted of: $$ some very long latex ... $$, go for: $$ some very $$ $$ long latex ... $$</li><br/>
 				<li>this increasess the quality of the exercise</li>
 			</ul><br/>
 
