@@ -192,7 +192,7 @@ function Chalange(props){
           <p onClick={reportHandle} className='report'>report</p>
           
           { dspReport && 
-            <p style={{fontSize: '1rem'}}>Send an email to testEmail@gmail.com with a link to this page and the reason you whant to report this page.</p>
+            <p style={{fontSize: '1rem'}}>Send an email to ididthisforu.contact@gmail.com with a link to this page and the reason you whant to report it.</p>
           }
           
         </div>
