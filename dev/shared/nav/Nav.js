@@ -76,7 +76,8 @@ function Nav(props) {
 					{ !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
           <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>	
-					
+          <BtnMenue onClick={()=>{window.location='/contact/'}}>Contact</BtnMenue>	
+
           {/* search bar */}
           <div className='searchContainer'>
             <form className='nav' action="/browse/" method="post">
@@ -114,6 +115,7 @@ function Nav(props) {
 					{ !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
 					{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
           <BtnMenue onClick={props.isAuth ? logOutHandle: LogInHandle}>{props.isAuth ? 'Log out': 'Log in'}</BtnMenue>
+          <BtnMenue onClick={()=>{window.location='/contact/'}}>Contact</BtnMenue>	
 
           {/* button for expending search bar */}
           <div className='searchContainer'>

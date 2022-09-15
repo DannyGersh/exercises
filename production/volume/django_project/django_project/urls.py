@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 from django.urls import path
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -66,6 +66,18 @@ dir_users = os.path.join('/','volume','static','users')
 
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
+
+def testNameUnique(request):
+	
+	# validate name uniquenes on user sign in
+	uname = json.load(request)
+
+	cur.execute('''
+		select username from auth_user
+	''')
+	inData = [i[0] for i in cur.fetchall()]
+
+	return JsonResponse({"isUnique":uname not in inData})
 
 @ensure_csrf_cookie
 def AddTag(request):
@@ -784,4 +796,6 @@ urlpatterns = [
 	path('test/', UpdateLatex),
 	path('delete/', Delete),
 	path('addtag/', AddTag),
+
+	path('testNameUnique/', testNameUnique),
 ]

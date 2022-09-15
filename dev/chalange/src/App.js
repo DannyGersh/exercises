@@ -14,7 +14,7 @@ function App() {
 {
     "signInFailure": false,
     "isSignUp": false,
-    "isAuth": true,
+    "isAuth": false,
     "userid": 1,
     "chalange": {
         "id": 1,

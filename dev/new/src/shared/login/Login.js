@@ -4,6 +4,7 @@ import BtnRound from '../buttons/BtnRound'
 import CSRFToken from "../csrftoken";
 import {useState, createRef, useEffect} from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
+import {sendData} from '../Functions'
 
 function Login(props){
   	
@@ -22,6 +23,7 @@ function Login(props){
 	const [Ncase, setNcase] = useState(false);
 	const [Scase, setScase] = useState(false);
 	const ref1 = createRef();
+	const ref_uname = createRef('');
 
 	function UcaseHandle() {
 		
@@ -46,11 +48,23 @@ function Login(props){
 
   const ref_cap = createRef(false)
   const ref_terms = createRef(false)
-  function submitMainForm() {
-  	
+  async function submitMainForm() {
+
   	if(ls==='signup') {
   		if(ref_cap.current==='isHuman' && ref_terms.current) {
-  			document.getElementById("mainForm").submit();
+  			
+  			let proceed = true;
+  			await sendData('testNameUnique', ref_uname.current.value)
+					.then((response) => response.json())
+					.then((data) => {
+						if(!data['isUnique']) { 
+							proceed = false;
+							window.alert('display name taken, choose another one');
+						}
+					});
+
+  			proceed && document.getElementById("mainForm").submit();
+
   		} else {
   			if(ref_cap.current!=='isHuman'){
   				window.alert("make sure that you are human.");
@@ -67,7 +81,7 @@ function Login(props){
   return(
   <div className='main'> 
     
-		<BtnRound onClick={props.sfLogin} className='escape blue'>🞬</BtnRound>
+		<BtnRound onClick={props.sfLogin} className='escape blue'>x</BtnRound>
 		
     <div style={{'display':'flex'}}>
       <button className={`btnLs ${ls==='login' && 'noBottom'}`} onClick={lsHandle}>login</button>
@@ -85,7 +99,7 @@ function Login(props){
         <input type="hidden" name="validated" value={Lcase && Ucase && Ncase && Scase}/>
 
         <p>Display name:</p>
-        <input style={{width:'94%'}} onClick={failureHandle} name='uname' type='text'/>
+        <input ref={ref_uname} style={{width:'94%'}} onClick={failureHandle} name='uname' type='text'/>
         <p>Password:</p>
         <input style={{width:'94%'}} ref={ref1} onChange={UcaseHandle} onClick={failureHandle} name='password' type='password'/>
         

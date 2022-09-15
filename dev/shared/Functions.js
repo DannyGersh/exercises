@@ -72,7 +72,7 @@ function getCookie(name) {
 export {getCookie}
 
 //'http://www.ididthisforu.com/test/': 'http://localhost/test/'
-async function sendData(url, data) {
+async function sendData(url, data, methode='POST') {
 	
 	if(url[0] === '/') {
 		url = url.slice(1,url.length)
@@ -87,15 +87,25 @@ async function sendData(url, data) {
 		url = 'https://www.ididthisforu.com/' + url
 	}
 	
-	return await fetch(url, { 
-		method: "POST", 
-		credentials: 'same-origin',
-		body: JSON.stringify(data),
-		headers: {
-			'Content-Type': 'application/json', 
-			"X-CSRFToken": getCookie("csrftoken"),
-			},
-	})
+	if(methode==='POST') {	
+		return await fetch(url, { 
+			method: methode, 
+			credentials: 'same-origin',
+			body: JSON.stringify(data),
+			headers: {
+				'Content-Type': 'application/json', 
+				"X-CSRFToken": getCookie("csrftoken"),
+				},
+		})
+	} else if(methode==='GET') {
+		return await fetch(url, {
+    	headers:{
+     	   'Accept': 'application/json',
+    	    'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+    	},
+		})
+	}
+
 }
 export {sendData}
 

@@ -15,6 +15,11 @@ server {
 		alias /volume/static/;
 		index terms.txt;
 	}
+
+	location /contact/ {
+		alias /volume/static/;
+		index contact.html;
+	}
 }
 
  
