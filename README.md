@@ -10,4 +10,6 @@ this website is meant for people to upload and solved exercises in math, physics
 * latex supported - everything that comes with the "texlive-latex-extra" installation
 * usage of latex packages
 
-the website lives in a docker container (see the [](dockerf file)), from which it serves its contents to the web
+## technical description:
+the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server).
+
