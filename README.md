@@ -16,6 +16,7 @@ the website lives in a docker container (see the [docker file](https://github.co
 
 ![main.svg](https://github.com/DannyGersh/exercises/blob/main/misc/main.svg)
 
+### backend
 the exercises are made up of simple text and svg images that are compiled from latex on the server. everything is stored in PostgreSql except the images which are stored on disk.
 
 the database is backed up daily, the images are stored on the shared folder (volume) so they while not disappear if something happens to the docker container
@@ -24,6 +25,10 @@ for authentication, the project uses the standard auth model provided by django,
 
 see [this folder](https://github.com/DannyGersh/exercises/tree/main/production/volume/temp) that contains the instructions for the creation of the database. in it you'll find the instructions and the structure of the 3 tables used in this project: chalanges, tags and the altered auth_user table. the bootstrap script automatically sets everything up.
 
+the server is responsible for the creation of latex images (svg). when a user is editing an exercise, there is a fetch request being sent to the server containing only the necessary latex to compile, this happens every time the front end js detects there is latex in need of compilation. when the user clicks submit, all the generated images are moved from the temporary directory they are edited in, into their permanent location on disk.
+
+### frontend - react
+every page (except "contact" page) is a completely separate react project created via react-create-app. see [this folder](https://github.com/DannyGersh/exercises/tree/main/production/volume/static/pages) for the pages of the project. every one of them is developed separately using the good old "npm start" methode. they all share the same packages so you dont need to "npm install" multiple tymes.
 
 
 ## get started on localhost
