@@ -34,7 +34,7 @@ every page of the website is a separate react application. when requested a page
 ### frontend - react
 every page (except the "contact" page) is a completely separate react project created via react-create-app. see [this folder](https://github.com/DannyGersh/exercises/tree/main/production/volume/static/pages) for the pages of the project (note that "shared" is not a react app). every one of them is developed separately using the good old "npm start" methode. they all share the same packages so you dont need to "npm install" multiple tymes. 
 
-all that is shared between the pages lives in the "shared" directory inside the pages folder. it is not a react app, rather a folder that is copied to all the react apps via an automated script in [this directory for linux](https://github.com/DannyGersh/exercises/tree/main/linux_automate) via the shared.sh script or the automateBuildSwap.bat script in th root directory of the project.
+all that is shared between the pages lives in the "shared" directory inside the pages folder. it is not a react app, rather a folder that is copied to all the react apps via an automated script in [this directory for linux](https://github.com/DannyGersh/exercises/tree/main/linux_automate) via the shared.sh script or the automateShared.bat script (windows) in th root directory of the project.
 
 ## get started on localhost
 firstly, participating in the ididthisforu project requires you to be accepted as an official developer. for further information send an email to ididthisforu.contact@gmail.com with the title "participate".
