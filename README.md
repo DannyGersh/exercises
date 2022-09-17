@@ -11,12 +11,22 @@ this website is meant for people to upload and solved exercises in math, physics
 * usage of latex packages
 
 ## get started on localhost
-```console
-git clone ---
 
+```console
+git clone https://github.com/DannyGersh/exercises.git
+```
+```console
+cd production
+```
+```console
+docker build -t ididthisforu 
+```
+```console
+docker run -v $PWD/volume:/volume -p 80:80 --name ididthisforu -it ididthisforu /bin/bash
 ```
 
 ## technical description:
+
 the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server).
 
 ![main.svg](https://github.com/DannyGersh/exercises/blob/main/misc/main.svg)
