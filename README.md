@@ -11,7 +11,9 @@ this website is meant for people to upload and solved exercises in math, physics
 * usage of latex packages
 
 ## get started on localhost
+firstly, participating in the ididthisforu project requires you to be accepted as an official developer. for further information send an email to ididthisforu.contact@gmail.com with the title "participate".
 
+for project members:
 ```console
 git clone https://github.com/DannyGersh/exercises.git
 ```
