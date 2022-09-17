@@ -1,4 +1,4 @@
-# codebase for [www.ididthisforu.com](www.ididthisforu.com)
+# codebase for [www.ididthisforu.com](https://www.ididthisforu.com)
 
 this website is meant for people to upload and solved exercises in math, physics, chemistry or any field of study really.
 
