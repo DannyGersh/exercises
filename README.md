@@ -15,6 +15,7 @@ this website is meant for people to upload and solved exercises in math, physics
 ```console
 git clone https://github.com/DannyGersh/exercises.git
 ```
+building and runing the docker image:
 ```console
 cd production
 ```
@@ -23,6 +24,12 @@ docker build -t ididthisforu
 ```
 ```console
 docker run -v $PWD/volume:/volume -p 80:80 --name ididthisforu -it ididthisforu /bin/bash
+```
+```console
+cd /volume/temp
+```
+```console
+./bootstrap
 ```
 
 ## technical description:
