@@ -33,6 +33,7 @@ cd /volume/temp
 ```console
 ./bootstrap
 ```
+now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
 ## technical description:
 
