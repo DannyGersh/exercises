@@ -13,6 +13,7 @@ this website is meant for people to upload and solved exercises in math, physics
 ## technical overvie:
 
 the following graph represents the general project structure:
+
 ![main.svg](https://github.com/DannyGersh/exercises/blob/main/misc/main.svg)
 
 ### backend
