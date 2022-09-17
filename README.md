@@ -12,16 +12,18 @@ this website is meant for people to upload and solved exercises in math, physics
 
 ## technical overvie:
 
-the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server).
-
+the following graph represents the general project structure:
 ![main.svg](https://github.com/DannyGersh/exercises/blob/main/misc/main.svg)
 
 ### backend
+
+the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server) in which everything is stored, including the django, nginx, react files and directories. the only thing the volume directory does not contain is the database, it onley contains daily bacups of it. this makes development easy, and prevents loss of data. also because the container has only permission to access the volume, than the host os remains clean and secure.
+
 requests are handled the following way: nginx -> gunicorn -> django.
 
-the exercises are made up of simple text and svg images that are compiled from latex on the server. everything is stored in PostgreSql except the images which are stored on disk.
+the exercises are made up of simple text and svg images that are compiled from latex on the server. everything (that is exercise related) is stored in PostgreSql except the images which are stored in the volume dir.
 
-the database is backed up daily. the images are stored on the shared folder (volume) so they while not disappear if something happens to the docker container
+in the event of container failure, there is the daily db backup and the images(svg) are in the volume on disk, so restoring to the previous working distribution is easy.
 
 for authentication, the project uses the standard auth model provided by django, except that there are 3 aditional columns added to the auth_user table (the sql table django provides): authored, liked and answered.
 
