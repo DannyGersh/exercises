@@ -49,21 +49,14 @@ git clone https://github.com/DannyGersh/exercises.git
 ```
 building and runing the docker image:
 ```console
-cd exercises/production
-```
-```console
-docker build -t ididthisforu .
-```
-```console
+cd exercises/production && \
+docker build -t ididthisforu . && \
 docker run -v $PWD/volume:/volume -p 80:80 --name ididthisforu -it ididthisforu /bin/bash
 ```
+from inside docker:
 ```console
-echo "DJANGO_SECRET_KEY = 'fake sekret key'" > /volume/django_project/django_project/django_secret_key.py
-```
-```console
-cd /volume/temp
-```
-```console
+echo "DJANGO_SECRET_KEY = 'fake sekret key'" > /volume/django_project/django_project/django_secret_key.py && \
+cd /volume/temp && \
 ./bootstrap
 ```
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
@@ -76,7 +69,7 @@ cd linux_automate && \
 . shared.sh # place the shared dir inside all of the react apps && \
 . buildAll.sh && \
 . buildSwap.sh # swapping the old builds with the new ones && \
- . production.sh # slightly adjust files for production
+. production.sh # slightly adjust files for production
  ```
 to restart the server, from the docker container, search for the process id running on port 8000:
 ```console
