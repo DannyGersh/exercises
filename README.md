@@ -38,6 +38,8 @@ when requested a page, the server sends dynamic content in json format in a secu
 
 for django development, there are no apps. all views are inside the main urls.py file
 
+- ![#f03c15]: make sure "window.isdebug" is set to "true" when developing. this variable is set in [here](https://github.com/DannyGersh/exercises/blob/main/dev/shared/Functions.js).
+
 ### frontend - react
 every page (except the "contact" page) is a completely separate react project created via react-create-app. see [this folder](https://github.com/DannyGersh/exercises/tree/main/production/volume/static/pages) for the pages in production of the project (except "contact" page which lives [here](https://github.com/DannyGersh/exercises/tree/main/production/volume/static)). every one of them is developed separately in the [dev](https://github.com/DannyGersh/exercises/tree/main/dev) folder using the good old "npm start" methode. they all share the same packages so you dont need to "npm install" multiple tymes. when development is finished there are automated scripts to put them in production, that is changing directories and slightly manipulating their content.  
 
