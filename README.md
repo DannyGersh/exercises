@@ -88,7 +88,7 @@ to restart the server search for the process id running on port 8000:
 ```console
 lsof -i :8000
 ```
-and restart the any one of the results via:
+and restart any one of the results via:
 ```console
 kill -HUP <pid>
 ```
