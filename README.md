@@ -72,20 +72,12 @@ for development of the server side, the django "runserver" method isn't used. in
 
 from root dir(not in docker container), type:
 ```console
-cd linux_automate
-```
-```console
-. shared.sh # place the shared dir inside all of the react apps
-```
-```console
-. buildAll.sh
-```
-```console
-. buildSwap.sh # swapping the old builds with the new ones
-```
-```console
+cd linux_automate && \
+. shared.sh # place the shared dir inside all of the react apps && \
+. buildAll.sh && \
+. buildSwap.sh # swapping the old builds with the new ones && \
  . production.sh # slightly adjust files for production
-```
+ ```
 to restart the server, from the docker container, search for the process id running on port 8000:
 ```console
 lsof -i :8000
