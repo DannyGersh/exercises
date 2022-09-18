@@ -82,7 +82,7 @@ cd linux_automate
 . buildSwap.sh # swapping the old builds with the new ones
 ```
 ```console
- production.sh # slightly adjust files for production
+ . production.sh # slightly adjust files for production
 ```
 to restart the server search for the process id running on port 8000:
 ```console
