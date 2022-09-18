@@ -38,16 +38,12 @@ when requested a page, the server sends dynamic content in json format in a secu
 
 for django development, there are no apps. all views are inside the main urls.py file
 
-$\color{red}{IMPORTANT}$: make sure "window.isdebug" is set to "true" when developing. this variable is set in [here](https://github.com/DannyGersh/exercises/blob/main/dev/shared/Functions.js).
-
 ### frontend - react
 every page (except the "contact" page) is a completely separate react project created via react-create-app. see [this folder](https://github.com/DannyGersh/exercises/tree/main/production/volume/static/pages) for the pages in production of the project (except "contact" page which lives [here](https://github.com/DannyGersh/exercises/tree/main/production/volume/static)). every one of them is developed separately in the [dev](https://github.com/DannyGersh/exercises/tree/main/dev) folder using the good old "npm start" methode. they all share the same packages so you dont need to "npm install" multiple tymes. when development is finished there are automated scripts to put them in production, that is changing directories and slightly manipulating their content.  
 
 all that is shared between the pages lives in the [dev](https://github.com/DannyGersh/exercises/tree/main/dev) directory. it is not a react app, rather a folder that is copied to all the react apps via an automated script in [this directory for linux](https://github.com/DannyGersh/exercises/tree/main/linux_automate) via the "shared.sh" script or the "automateShared.bat" script (windows) in th root directory of the project.
 
 in the "new" page (for editing exercises), the js is responsible for scanning the text input of the user for latex changes. when detected, a fetch request is sent to the server for further processing.
-
-$\color{red}{IMPORTANT}$: make sure "window.isdebug" is set to "true" when developing. this variable is set in [here](https://github.com/DannyGersh/exercises/blob/main/dev/shared/Functions.js).
 
 ## get started on localhost
 ```console
@@ -68,6 +64,8 @@ cd /volume/temp && \
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
 for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state (on linux, for windows, use the corresponding batch scripts).
+
+$\color{red}{IMPORTANT}$: make sure "window.isdebug" is set to "true" when developing. this variable is set in [here](https://github.com/DannyGersh/exercises/blob/main/dev/shared/Functions.js).
 
 install [react pacages](https://github.com/DannyGersh/exercises/blob/main/README.md#react-development), then from root dir(not in docker container), type:
 ```console
@@ -93,6 +91,8 @@ gunicorn -c gunicorn_config.py django_project.wsgi &
 ```
 
 ### react development:
+$\color{red}{IMPORTANT}$: make sure "window.isdebug" is set to "true" when developing. this variable is set in [here](https://github.com/DannyGersh/exercises/blob/main/dev/shared/Functions.js).
+
 from root directory of the project (not inside the Docker container) type:
 ```console
 cd dev && \
