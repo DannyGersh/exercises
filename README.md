@@ -89,9 +89,7 @@ gunicorn -c gunicorn_config.py django_project.wsgi &
 ### react development:
 from root directory of the project (not inside the Docker container) type:
 ```console
-cd dev
-```
-```console
+cd dev && \
 npm install
 ```
 now you are ready to develop the react projects, using "npm start" for each page separately.
