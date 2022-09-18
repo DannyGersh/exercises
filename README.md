@@ -73,12 +73,12 @@ cd /volume/temp
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
 ### installing npm pacages:
-from root directory of the project (inside the Docker container) type:
+from root directory of the project (not inside the Docker container) type:
 ```console
-cd /volume/dev
+cd dev
 ```
 ```console
 npm install
 ```
-now you are ready to develop the react projects, with the good old npm start, at any one of the /volume/dev/ directorie
+now you are ready to develop the react projects, using "npm start" for each page separately.
 
