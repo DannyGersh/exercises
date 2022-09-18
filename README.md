@@ -41,6 +41,8 @@ all that is shared between the pages lives in the "shared" directory inside the 
 
 in the "new" page (for editing exercises), the js is responsible for scanning the text input of the user for latex changes. when detected, a fetch request is sent to the server for further processing.
 
+when requested a page, the server sends dynamic content in json format.
+
 ## get started on localhost
 firstly, participating in the ididthisforu project requires you to be accepted as an official developer. for further information send an email to ididthisforu.contact@gmail.com with the title "participate".
 
