@@ -36,7 +36,7 @@ the server is responsible for the creation of latex images (svg) from raw latex 
 the latex compilation process is as follows:
 raw text -> pdf -> svg -> cropped svg. 
 this ensures the user while have access to all latex capabilities and the most accurate results.
-although it is a slightly slow process, it is handled in the background so when the user clicks submit, everything is ready.
+although it is a slightly slow process, it is handled in the background so when the user clicks submit, everything is ready. there are banned latex keywords and a time limit for compilation as a security measure, for avoiding un proper latex.
 
 every page of the website is a separate react application. when requested a page, the server sends the index.html of the compiled react app. this file contains all of the static contents of the page. each "index.html" file is named after the page it represent. the dynamic content is passed in json format via the django api (not directly, as a mesure of defence from Cross-Site Scripting).
 
@@ -47,7 +47,7 @@ all that is shared between the pages lives in the [shared](https://github.com/Da
 
 in the "new" page (for editing exercises), the js is responsible for scanning the text input of the user for latex changes. when detected, a fetch request is sent to the server for further processing.
 
-when an exercise is requested, the js inserts the svg images as <img> tags in their proper locations inside the textual data of the exercise which is displayed as paragraphs(<p>) and you get a paragraph containing images of compiled latex.
+when an exercise is requested, the js inserts the svg images as image tags in their proper locations inside the textual data of the exercise which is displayed as paragraphs. the result is a paragraph containing images of compiled latex.
 
 ## get started on localhost
 ```console
