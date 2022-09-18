@@ -46,8 +46,8 @@ function Login(props){
     failureHandle();    
   }
 
-  const ref_cap = createRef(false)
-  const ref_terms = createRef(false)
+  const ref_cap = createRef(window.isdebug ? 'isHuman' : false)
+  const ref_terms = createRef(window.isdebug ? true : false)
   async function submitMainForm() {
 
   	if(ls==='signup') {
