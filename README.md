@@ -18,7 +18,7 @@ the following graph represents the general project structure:
 
 ### backend
 
-the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server) in which everything is stored, including the django, nginx, react files and directories. the only thing the volume directory does not contain is the database, it onley contains daily bacups of it. this makes development easy, and prevents loss of data. also because the container has only permission to access the volume, than the host os remains clean and secure.
+the website lives in a docker container (see the [docker file](https://github.com/DannyGersh/exercises/blob/main/production/Dockerfile)), from which it serves it's contents to the web. this container shares a volume directory with the host os(ubuntu server) in which everything is stored, including the django, nginx, react files and directories. the only thing the volume directory does not contain is the database, it onley contains daily bacups of it.
 
 requests are handled the following way: nginx -> gunicorn -> django.
 
