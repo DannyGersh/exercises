@@ -54,7 +54,7 @@ building and runing the docker image:
 cd production
 ```
 ```console
-docker build -t ididthisforu 
+docker build -t ididthisforu .
 ```
 ```console
 docker run -v $PWD/volume:/volume -p 80:80 --name ididthisforu -it ididthisforu /bin/bash
