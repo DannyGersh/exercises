@@ -99,7 +99,7 @@ if for some reason gunicorn is not running, type:
 . /volume/venv/bin/activate # make sure virtualenv activated
 ```
 ```console
-cd /volume/conf
+cd /volume/conf && \
 gunicorn -c gunicorn_config.py django_project.wsgi &
 ```
 
