@@ -75,6 +75,8 @@ cd linux_automate && \
 . buildSwap.sh # swapping the old builds with the new ones && \
 . production.sh # slightly adjust files for production
  ```
+ on a new clone of the repo, run the previous command twice.
+ 
 to restart the server, from the docker container, search for the process id running on port 8000:
 ```console
 lsof -i :8000
