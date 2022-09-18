@@ -62,6 +62,9 @@ docker build -t ididthisforu .
 docker run -v $PWD/volume:/volume -p 80:80 --name ididthisforu -it ididthisforu /bin/bash
 ```
 ```console
+echo "DJANGO_SECRET_KEY = 'fake sekret key'" > /volume/django_project/django_project/django_secret_key.py
+```
+```console
 cd /volume/temp
 ```
 ```console
