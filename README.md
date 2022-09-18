@@ -72,7 +72,7 @@ cd /volume/temp
 ```
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
-### installing npm pacages:
+### react development:
 from root directory of the project (not inside the Docker container) type:
 ```console
 cd dev
