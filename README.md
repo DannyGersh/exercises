@@ -68,7 +68,7 @@ cd /volume/temp
 ```
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
-for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state.
+for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state (on linux, for windows, use the corresponding batch scripts).
 
 from root dir(not in docker container), type:
 ```console
