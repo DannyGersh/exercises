@@ -6,6 +6,7 @@ venv/**
 **/node_modules/**
 **/build/**
 **/*.eslintcache
+**/django_secret_key.py
 
 dev/chalange/src/shared/**
 dev/browse/src/shared/**
