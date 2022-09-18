@@ -92,5 +92,5 @@ from root directory of the project (not inside the Docker container) type:
 cd dev && \
 npm install
 ```
-now you are ready to develop the react projects, using "npm start" for each page separately.
+now you are ready to develop the react projects, using "npm start" separately from each page directory.
 
