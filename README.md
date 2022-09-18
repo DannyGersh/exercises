@@ -94,6 +94,14 @@ and restart any one of the results via:
 ```console
 kill -HUP <pid>
 ```
+if for some reason gunicorn is not running, type:
+```console
+. /volume/venv/bin/activate # make sure virtualenv activated
+```
+```console
+cd /volume/conf
+gunicorn -c gunicorn_config.py django_project.wsgi &
+```
 
 ### react development:
 from root directory of the project (not inside the Docker container) type:
