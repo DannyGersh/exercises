@@ -65,8 +65,7 @@ now the docker container is up and running, you can check if everything is worki
 
 for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state (on linux, for windows, use the corresponding batch scripts).
 
-install [react pacages](https://github.com/DannyGersh/exercises/blob/main/README.md#react-development).
-from root dir(not in docker container), type:
+install [react pacages](https://github.com/DannyGersh/exercises/blob/main/README.md#react-development), then from root dir(not in docker container), type:
 ```console
 cd linux_automate && \
 . shared.sh # place the shared dir inside all of the react apps && \
