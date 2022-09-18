@@ -68,7 +68,9 @@ cd /volume/temp
 ```
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
-for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server via gunicorn. here is an example of compiling all the react apps and restarting the server to its most current state; from root dir, type:
+for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state.
+
+from root dir(not in docker container), type:
 ```console
 cd linux_automate
 ```
@@ -84,7 +86,7 @@ cd linux_automate
 ```console
  . production.sh # slightly adjust files for production
 ```
-to restart the server search for the process id running on port 8000:
+to restart the server, from the docker container, search for the process id running on port 8000:
 ```console
 lsof -i :8000
 ```
