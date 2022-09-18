@@ -53,7 +53,7 @@ git clone https://github.com/DannyGersh/exercises.git
 ```
 building and runing the docker image:
 ```console
-cd production
+cd exercises/production
 ```
 ```console
 docker build -t ididthisforu .
