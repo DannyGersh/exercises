@@ -8,11 +8,13 @@ rm -r $PWD/dev/chalange/src/shared
 rm -r $PWD/dev/home/src/shared
 rm -r $PWD/dev/new/src/shared
 rm -r $PWD/dev/user/src/shared
+rm -r $PWD/dev/login/src/shared
 
 cp -r $PWD/dev/shared $PWD/dev/browse/src/shared
 cp -r $PWD/dev/shared $PWD/dev/chalange/src/shared
 cp -r $PWD/dev/shared $PWD/dev/home/src/shared
 cp -r $PWD/dev/shared $PWD/dev/new/src/shared
 cp -r $PWD/dev/shared $PWD/dev/user/src/shared
+cp -r $PWD/dev/shared $PWD/dev/login/src/shared
 
 cd $DIR_ORIGIN

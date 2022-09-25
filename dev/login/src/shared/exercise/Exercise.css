@@ -1,0 +1,19 @@
+.bottomLeft{
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	margin: 0.6rem;
+	width: calc(100% - 5rem);
+}
+.bottomRight{
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	margin: 0.3rem;
+}
+.topRight{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 0.6rem;
+}

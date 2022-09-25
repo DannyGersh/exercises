@@ -93,7 +93,7 @@ def AddTag(request):
 	return HttpResponse(200)
 
 @ensure_csrf_cookie
-def Delete(request):
+def DeleteChalange(request):
 
 	# body - [int (exercise id), str (latex folder name), int (caller)]
 	body = json.loads(request.body.decode("utf-8"))
@@ -211,15 +211,15 @@ def Chalange(request, id):
 	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.user.is_authenticated
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../'+str(id)
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
+	request.session['currentUrl'] = '/'+str(id)
 	
 	outData['chalange'] = getChalange(id)
 	
@@ -233,14 +233,14 @@ def Browse(request, sterm=''):
 	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../browse/'+sterm
 
 	outData["search term"] = sterm		
@@ -297,18 +297,12 @@ def Browse(request, sterm=''):
 
 @ensure_csrf_cookie
 def Home(request):
-		
+	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../'
+	request.session['currentUrl'] = '/'
 
 	# TODO - this takes 22 SQL quaries, could be onley 2 !
 	
@@ -334,14 +328,14 @@ def Profile(request, userid):
 
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
 
 	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
@@ -397,6 +391,7 @@ def Profile(request, userid):
 	else:
 			return HttpResponse("trying to peek at other acounts ar ya ?")
 
+'''
 @ensure_csrf_cookie		
 def Login(request):
 		
@@ -423,22 +418,80 @@ def Login(request):
 		if request.session.get('isNew') and request.user.is_authenticated:
 			request.session['isNew'] = False
 			request.session['signInFailure'] = False
-			return redirect('../../../../../../new')
+			return redirect('/new')
 		
 		return redirect(currentPage)
 
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('./../../../../../../../')
+	return redirect('/')
+'''
+@ensure_csrf_cookie
+def Login(request):
+	outData = {
+		'isNew': False,
+		'isAuth': request.user.is_authenticated,
+      	'isLogIn': True,
+      	'currentUrl': request.session['currentUrl'],
+		'userid': str(request.user.id),
+	}
+	return render(request, 'login.html', context={'value': outData} )
+
+def SignUp(request):
+	outData = {
+		'isNew': False,
+		'isAuth': request.user.is_authenticated,
+      	'isLogIn': False,
+      	'currentUrl': request.session['currentUrl'],
+		'userid': str(request.user.id),
+	}
+	return render(request, 'login.html', context={'value': outData} )
+
+def submitLogIn(request):
+	
+	if request.method == 'POST':
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentUrl = request.session.get('currentUrl', '/')
+		
+		user = authenticate(username=uname, password=password)
+		if user is not None:
+			login(request, user)
+			request.session['isAuth'] = True
+			return redirect(currentUrl)
+		else:
+			return HttpResponse('could not login')	
+
+	return redirect(currentUrl)
+
+def submitSignUp(request):
+	
+	if request.method == 'POST':
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentUrl = request.session.get('currentUrl', '/')
+		
+		user = User.objects.create_user(
+			uname, '', password
+		)
+		if not user:
+			return HttpResponse('could not create user')
+		else:
+			login(request, user)
+			request.session['isAuth'] = True
+		
+	return redirect(currentUrl)
 
 @ensure_csrf_cookie
 def LogOut(request):
 	
 	logout(request)	
 	# this is ok
-	return redirect("./../../../../")
+	return redirect("/")
 
+# TODO - delete this comment when auth is stable
+'''
 @ensure_csrf_cookie		
 def SignUp(request):
 	
@@ -475,28 +528,30 @@ def SignUp(request):
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('./../../../../../../../')
+	return redirect('/')
+'''
 
 @xframe_options_exempt
 @ensure_csrf_cookie
 def Like(request):
 		
-		if request.method == "POST":
-				id = request.POST['chalangeId']
+	if request.method == "POST":
+		id = request.POST['chalangeId']
 
-				if request.POST['like'] in ('true', True, 1):
-					cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-					cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+		if request.POST['like'] in ('true', True, 1):
+			cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+			cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
 
-				else:
-					cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-					cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
-
-				conn.commit()
-				
-				return(HttpResponse('all good'))
 		else:
-				return(HttpResponse('this should never happen'))
+			cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+			cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+
+		conn.commit()
+				
+		return(HttpResponse('all good'))
+		
+	else:
+		return(HttpResponse('this should never happen'))
 
 @ensure_csrf_cookie		
 def New(request, isSourceNav=False):
@@ -638,9 +693,14 @@ def New(request, isSourceNav=False):
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:
-		request.session['signInFailure'] = True
-		request.session['isNew'] = True
-		return redirect(request.session.get('currentUrl'))
+		# user is not authenticated
+		outData = {
+			'isNew': True,
+			'isAuth': False,
+      		'isLogIn': True,
+			'userid': str(request.user.id),
+		}
+		return render(request, 'login.html', context={'value': outData} )
 
 @ensure_csrf_cookie
 def NewSubmited(request):
@@ -840,15 +900,17 @@ urlpatterns = [
 	path('browse/<str:sterm>/', Browse),
 	
 	path('like/', Like),
-	path('login/', Login),
 	path('browse/', Browse),
+	path('login/', Login),
 	path('logout/', LogOut),
 	path('signup/', SignUp),
+	path('submitLogIn/', submitLogIn),
+	path('submitSignUp/', submitSignUp),
 	path('newSubmit/', NewSubmited),
 	path('user/<int:userid>/', Profile),
 	
 	path('test/', UpdateLatex),
-	path('delete/', Delete),
+	path('delete/', DeleteChalange),
 	path('addtag/', AddTag),
 
 	path('testNameUnique/', testNameUnique),

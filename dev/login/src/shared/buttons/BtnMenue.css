@@ -1,0 +1,17 @@
+.btnMenue{
+	vertical-align: middle;
+	padding: 0.3rem;
+	margin: 0.1rem;
+	background-color: var(--champagne);
+	border-radius: 0.3rem;
+	border-color: #e7feff;
+	border-width: 0.1rem;
+	border-style: solid;
+	white-space: nowrap;
+}
+.btnMenue:hover{
+	background-color: var(--champagne_hover);
+}
+.btnMenue:active{
+	background-color: var(--champagne_active);
+}

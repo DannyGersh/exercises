@@ -45,10 +45,7 @@ function Nav(props) {
 	// dspLogin - true if login menue should be displayed
 	const [dspLogin, setDspLogin] = useState(window.jsonData['signInFailure']);
   function LogInHandle(){
-		setDspLogin(!dspLogin);
-		// when user clicks, he gets default login menue 
-		// window.jsonData['signInFailure'] = false;
-		// window.jsonData['isSignUp'] = false;
+		window.location = '/login/'
 	}
 	function homeHandle(){
 		window.location = '/';
@@ -60,7 +57,8 @@ function Nav(props) {
 		window.location = '/logout/';
 	}
 	function profileHandle(){
-		window.location = '/user/' + String(props.userid);
+		let temp = '/user/' + String(props.userid);
+		window.jsonData['isAuth'] ? window.location = temp : window.location = '/login/';
 	}
 	
 	const dspProfileBtn = props.isAuth && !/user\/\d/.test(window.location);

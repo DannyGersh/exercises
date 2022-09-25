@@ -188,12 +188,22 @@ def getChalange(id):
 
 		with open(file_json, 'r') as f:
 			identifiers = json.loads(f.read())
+			#l = []
+			#for i in identifiers.values():
+			#	for ii in [x[1] for x in i]:
+			#		l.append(ii)
+			#		print(ii)
+			#for i in l:
+			#	if i not in os.listdir(dir_exercise):
+			#		print("Y ", i)
+			#	else:
+			#		print("N ", i)
 		
 		outData['list_latex'] = identifiers
 	
 	else:
 		outData = None
-		
+
 	return outData
 	
 @ensure_csrf_cookie	
@@ -209,7 +219,7 @@ def Chalange(request, id):
 	outData['userid'] = request.user.id
 	request.session['signInFailure'] = False # not needed enimore
 	request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../'+str(id)
+	request.session['currentUrl'] = '/'+str(id)
 	
 	outData['chalange'] = getChalange(id)
 	
@@ -287,18 +297,12 @@ def Browse(request, sterm=''):
 
 @ensure_csrf_cookie
 def Home(request):
-		
+	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../'
+	request.session['currentUrl'] = '/'
 
 	# TODO - this takes 22 SQL quaries, could be onley 2 !
 	
@@ -387,6 +391,7 @@ def Profile(request, userid):
 	else:
 			return HttpResponse("trying to peek at other acounts ar ya ?")
 
+'''
 @ensure_csrf_cookie		
 def Login(request):
 		
@@ -413,22 +418,80 @@ def Login(request):
 		if request.session.get('isNew') and request.user.is_authenticated:
 			request.session['isNew'] = False
 			request.session['signInFailure'] = False
-			return redirect('../../../../../../new')
+			return redirect('/new')
 		
 		return redirect(currentPage)
 
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('./../../../../../../../')
+	return redirect('/')
+'''
+@ensure_csrf_cookie
+def Login(request):
+	outData = {
+		'isNew': False,
+		'isAuth': request.user.is_authenticated,
+      	'isLogIn': True,
+      	'currentUrl': request.session['currentUrl'],
+		'userid': str(request.user.id),
+	}
+	return render(request, 'login.html', context={'value': outData} )
+
+def SignUp(request):
+	outData = {
+		'isNew': False,
+		'isAuth': request.user.is_authenticated,
+      	'isLogIn': False,
+      	'currentUrl': request.session['currentUrl'],
+		'userid': str(request.user.id),
+	}
+	return render(request, 'login.html', context={'value': outData} )
+
+def submitLogIn(request):
+	
+	if request.method == 'POST':
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentUrl = request.session.get('currentUrl', '/')
+		
+		user = authenticate(username=uname, password=password)
+		if user is not None:
+			login(request, user)
+			request.session['isAuth'] = True
+			return redirect(currentUrl)
+		else:
+			return HttpResponse('could not login')	
+
+	return redirect(currentUrl)
+
+def submitSignUp(request):
+	
+	if request.method == 'POST':
+		uname = request.POST.get('uname')
+		password = request.POST.get('password')
+		currentUrl = request.session.get('currentUrl', '/')
+		
+		user = User.objects.create_user(
+			uname, '', password
+		)
+		if not user:
+			return HttpResponse('could not create user')
+		else:
+			login(request, user)
+			request.session['isAuth'] = True
+		
+	return redirect(currentUrl)
 
 @ensure_csrf_cookie
 def LogOut(request):
 	
 	logout(request)	
 	# this is ok
-	return redirect("./../../../../")
+	return redirect("/")
 
+# TODO - delete this comment when auth is stable
+'''
 @ensure_csrf_cookie		
 def SignUp(request):
 	
@@ -465,34 +528,36 @@ def SignUp(request):
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('./../../../../../../../')
+	return redirect('/')
+'''
 
 @xframe_options_exempt
 @ensure_csrf_cookie
 def Like(request):
 		
-		if request.method == "POST":
-				id = request.POST['chalangeId']
+	if request.method == "POST":
+		id = request.POST['chalangeId']
 
-				if request.POST['like'] in ('true', True, 1):
-					cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-					cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+		if request.POST['like'] in ('true', True, 1):
+			cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+			cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
 
-				else:
-					cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-					cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
-
-				conn.commit()
-				
-				return(HttpResponse('all good'))
 		else:
-				return(HttpResponse('this should never happen'))
+			cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
+			cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
+
+		conn.commit()
+				
+		return(HttpResponse('all good'))
+		
+	else:
+		return(HttpResponse('this should never happen'))
 
 @ensure_csrf_cookie		
 def New(request, isSourceNav=False):
-	
+
 	if request.user.is_authenticated:
-		
+
 		outData = {} # data for js. will be converted to secure json.
 		outData['isAuth'] = request.user.is_authenticated
 		outData['userid'] = request.user.id
@@ -502,15 +567,23 @@ def New(request, isSourceNav=False):
 		
 		outData['chalange'] = {}
 		outData['chalange']['id'] = 'dummy_id' # id required for new chalange
+		
+		dir_user = os.path.join(dir_users, str(request.user.id))
+		dir_svg_delete = os.path.join(dir_user, 'svg')
+		file_json_delete = os.path.join(dir_user, '.json')
+
+		os.system('rm -r %s'%dir_svg_delete)
+		os.system('rm -r %s'%file_json_delete)
 
 		if request.method == "POST":
+			
 			# user clicked edit - onley way to get here except reload
 			
 			outData['isEdit'] = True
 
 			id_exercise = request.POST.get('id_exercise', -1)
 			if id_exercise == -1:
-					return HttpResponse('Could not get specified exercise')
+				return HttpResponse('Could not get specified exercise')
 			
 			outData['chalange'] = getChalange(id_exercise)
 						
@@ -518,13 +591,19 @@ def New(request, isSourceNav=False):
 				# TODO - understand why empty dict 
 				outData['chalange'] = {}
 			
-			# get latex from .json to file in $$___latex$$ slots
-			dir_user = os.path.join(dir_users, str(outData['chalange']['author']))
+			#print(outData['chalange'])
+			
+			
 			dir_exercise = os.path.join(dir_user, outData['chalange']['latex'])
+			dir_svg = os.path.join(dir_user, 'svg')
 			file_json = os.path.join(dir_exercise, '.json')
-
+			
+			os.system('cp -R %s %s'%(dir_exercise, dir_svg))
+			os.system('cp -R %s %s'%(file_json, os.path.join(dir_user,'.json')) )
+			
+			# get latex from .json to file in $$___latex$$ slots
 			with open(file_json, 'r') as f:
-					dataFromFile = json.loads(f.read())
+				dataFromFile = json.loads(f.read())
 					
 			def reverseLatex(target):
 
@@ -541,10 +620,26 @@ def New(request, isSourceNav=False):
 
 				return ''.join(res)
 						
+			''' NOTE - request.session.get('EditInProgress')
+				we denote request.session.get('EditInProgress') as "var" for this explanation
+				
+				if var is false - 
+					user clicked edit and the page loads for the first time,
+					then js loads the data from inData
+				if var is true - 
+					js hase already loaded inData,
+					so it goes back to normal behaviour
+
+				var is should be set to the exercise id,
+				to differentiate what exercise is being edited.
+
+				var is stored in session because the behaviour
+				in js is different at first load and what goes after
+			'''
 			if request.session.get('EditInProgress','') != id_exercise:
-				
+
 				# edit is in progress
-				
+
 				outData['EditInProgress'] = False
 				request.session['EditInProgress'] = id_exercise
 				
@@ -567,21 +662,22 @@ def New(request, isSourceNav=False):
 
 					a = re.findall('\$\$___latex\$\$', outData['chalange'].get(target,''), flags = re.M | re.S)
 					b = [i[0] for i in dataFromFile.get(target,'')]
-					
+
 					return len(a) == len(b)
 				
 				for i in targets:
 					if not validate(i):
-						print('Exercise Corupted for some reasone ... target: %s\n'%i, outData['chalange'])
-						return HttpResponse('Exercise Corupted for some reasone ...')
+						pass
+						#print('Exercise Corupted for some reasone ... target: %s\n'%i, outData['chalange'])
+						#return HttpResponse('Exercise Corupted for some reasone ...')
 
 				# END_PERROR
 
 			else:
-				outData['EditInProgress'] = True
+				outData['EditInProgress'] = False
 				outData['chalange']['id'] = id_exercise
 				
-			outData['chalange']['title'] = reverseLatex('title')
+			outData['chalange']['title'] = reverseLatex('title')		
 			outData['chalange']['exercise'] = reverseLatex('exercise')
 			outData['chalange']['answer'] = reverseLatex('answer')
 			outData['chalange']['hints'] = reverseLatex('hints')
@@ -597,9 +693,14 @@ def New(request, isSourceNav=False):
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:
-		request.session['signInFailure'] = True
-		request.session['isNew'] = True
-		return redirect(request.session.get('currentUrl'))
+		# return redirect(request.session.get('currentUrl'))
+		outData = {
+			'isNew': True,
+			'isAuth': False,
+      		'isLogIn': False,
+			'userid': str(request.user.id),
+		}
+		return render(request, 'login.html', context={'value': outData} )
 
 @ensure_csrf_cookie
 def NewSubmited(request):
@@ -620,7 +721,9 @@ def NewSubmited(request):
 
 		if(request.POST.get('isSubmit')=='true'):
 
-			request.session['EditInProgress'] = 'none'
+			# user ckliked submit on an exercise that does not yet exist
+
+			request.session['EditInProgress'] = False
 			
 			dir_original = os.getcwd()
 			dir_current_user = os.path.join(dir_users, str(request.user.id))
@@ -653,15 +756,19 @@ def NewSubmited(request):
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints, flags = re.M | re.S)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain, flags = re.M | re.S)
 			
+			title 	 = title.replace("'","''")	 
+			exercise = exercise.replace("'","''")
+			answer 	 = answer.replace("'","''") 	
+			hints 	 = hints.replace("'","''") 	
+			explain	 = explain.replace("'","''")	
+	
 			latexp = request.POST.get('latexp', '')
 			
 			# insert into chalanges database
 			# tags must be converted to teir corresponding id's
-			
+
 			# TODO - fix weird 'false' thing
 			if request.POST.get('isEdit', '') == 'false':
-				
-				# user cklicked submit while editing a non existant exercise
 
 				if not tags:
 					tags = "'this is a non existing tag that while never exsist hopefully, prevents sql problems'"
@@ -690,25 +797,32 @@ def NewSubmited(request):
 				exerciseId = request.POST.get('exerciseId', '')
 				if(exerciseId == ''):
 					return HttpResponse('Failed submiting exercise')
-								
-				cur.execute('''
-						select * from tags where name in (%s)
-				'''%tags)
-				tempInData = cur.fetchall()	
-				tempInData = [str(i[0]) for i in tempInData]
-				tagIds = ','.join(tempInData)
-				
-				cur.execute('''
+
+				if tags:	
+					cur.execute('''
+							select * from tags where name in (%s)
+					'''%tags)
+					tempInData = cur.fetchall()	
+					tempInData = [str(i[0]) for i in tempInData]
+					tagIds = ','.join(tempInData)
+				else:
+					tagIds=''
+
+				try:
+					cur.execute('''
 					update chalanges set 
 						exercise='%s', answer='%s',
 						hints='%s', title='%s', 
 						tags='{%s}', explain='%s', 
 						latex='%s', latexp='%s'
 					where id='%s'
-				'''%(exercise, answer, hints, title, tagIds, explain, now, latexp, exerciseId)
-				)
+					'''%(exercise, answer, hints, title, tagIds, explain, now, latexp, exerciseId)
+					)
+				except Exception as err:
+					print("POOP", err)
+
 				conn.commit()
-			
+
 				dir_oldLatex = os.path.join(dir_current_user, oldLatex)
 				os.system('rm -r %s'%dir_oldLatex)	
 				
@@ -740,7 +854,7 @@ def NewSubmited(request):
 			answer 	 = re.sub(reg_latex_search, reg_latex, answer, flags = re.M | re.S)
 			hints 	 = re.sub(reg_latex_search, reg_latex, hints, flags = re.M | re.S)
 			explain	 = re.sub(reg_latex_search, reg_latex, explain, flags = re.M | re.S)
-	
+			
 			inData = [
 				0, 
 				exercise, 
@@ -786,10 +900,12 @@ urlpatterns = [
 	path('browse/<str:sterm>/', Browse),
 	
 	path('like/', Like),
-	path('login/', Login),
 	path('browse/', Browse),
+	path('login/', Login),
 	path('logout/', LogOut),
 	path('signup/', SignUp),
+	path('submitLogIn/', submitLogIn),
+	path('submitSignUp/', submitSignUp),
 	path('newSubmit/', NewSubmited),
 	path('user/<int:userid>/', Profile),
 	

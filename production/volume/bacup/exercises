@@ -439,7 +439,17 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, authored, liked, answered) FROM stdin;
-1	pbkdf2_sha256$390000$3ekxKw3BdLa4dt8GIkxiGi$ZplAu8d/RlD8yZ6KRsWXvz4NzQSMcoZQwJsWtdwd7d8=	2022-09-14 13:55:31.901925+00	f	a				f	t	2022-09-14 13:55:31.763005+00	[0:2]={1,2,3}	{}	{}
+1	pbkdf2_sha256$390000$w5duJErUjdJ24QYj7mcP56$DsPWSpRqAIiVkqAYv/oQtUaZi/RnoUvAe+MDDpVfYXg=	2022-09-15 19:09:48.019703+00	f	a				f	t	2022-09-05 16:57:39.996111+00	[0:4]={13,48,53,66,69}	{48}	{}
+2	pbkdf2_sha256$390000$pMxkAWkxys8TrEOJjYQilt$rXSUOn+m5tt7jR67w6Lwv8LQhuY2qw2fwKVdwnlxWN8=	2022-09-06 20:48:17.312987+00	f	b				f	t	2022-09-06 20:48:17.016956+00	[0:1]={7,8}	{}	{}
+3	pbkdf2_sha256$390000$8IJgORGn5Vi7Z6xga6j86X$Bht5m05SAjmYcKE2rMWftMBZDnYGRnrBbs+llzkA7Vg=	2022-09-07 23:29:15.402533+00	f	a2				f	t	2022-09-06 21:11:08.457003+00	{}	{}	{}
+4	pbkdf2_sha256$390000$jmXWhVnEKFUpu7talcG75P$4mbOtguaPSwW/QnruLtBqzL0bv0P96BvXyZKA1ghCO4=	2022-09-07 23:29:57.208847+00	f	c				f	t	2022-09-07 08:35:35.556012+00	[0:15]={20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35}	{}	{}
+7	pbkdf2_sha256$390000$a7cKA07n5AoEoZP5tq3gyM$5FvRqvEjK8x6eShgX/kTF7A8rNfMdQCpunBWRc/mtp0=	2022-09-08 21:14:20.517096+00	f	Kalabus				f	t	2022-09-08 21:14:20.26083+00	{}	{48}	{}
+9	pbkdf2_sha256$390000$Tz2pzoTKuWvosQR3YDYkJt$DQbrVtxgDdYHSmP3UzusERG08C6DnJHjH6nDMNKyF1k=	2022-09-12 18:54:06.290824+00	f	w				f	t	2022-09-12 18:54:06.033063+00	{}	{}	{}
+8	pbkdf2_sha256$390000$rFtExfRiARVuAS8Fp8tGj8$+9j8Ow1GgrA7N7KS9qqOdm9LsPxqgwB9AckZiIj8bv8=	2022-09-11 20:27:15.61375+00	f	q				f	t	2022-09-11 20:22:10.325835+00	{}	{53}	{}
+10	pbkdf2_sha256$390000$xznqMVG2HruGOebS9ZJXq0$kn7gEETm/uoaC+ra0GciV/YhuM/2lR0+vX+5HUXGc1M=	2022-09-15 14:04:35.062324+00	f	a3				f	t	2022-09-15 14:04:34.813808+00	{}	{}	{}
+11	pbkdf2_sha256$390000$VLu7DDetdqauFtizZs9n30$PEhBuGgYl3njc81Upz1eNd1mUZQbNFP1BlxsD5MtGKQ=	2022-09-15 15:55:46.808309+00	f	t				f	t	2022-09-15 15:55:46.549447+00	{}	{48}	{}
+12	pbkdf2_sha256$390000$MwbZsg8dfHTJEA8EwegbdK$0w6uJpDCfwBt52AwFiasfEWBpuwYGzY/hA357Ris1oE=	2022-09-16 11:13:09.074825+00	f	Chubby1234				f	t	2022-09-16 11:03:22.963709+00	{}	{}	{}
+13	pbkdf2_sha256$390000$VAzU78ZzfQgIeHMW1GZ81M$YeyMkupoHi5ZNcGh6jwLc+0ayweNL2wdzRVTsMJ5bf4=	2022-09-16 11:43:42.652922+00	f	Avshalom				f	t	2022-09-16 11:43:42.400143+00	{}	{}	{}
 \.
 
 
@@ -464,9 +474,11 @@ COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 --
 
 COPY public.chalanges (id, exercise, answer, hints, author, creationdate, title, rating, tags, explain, latex, latexp) FROM stdin;
-1		a		1	2022-09-14 13:55:37.652187	a	{}	{}		16631637376503963	
-2		b		1	2022-09-14 13:55:43.902343	b	{}	{}		16631637439007823	
-3		q		1	2022-09-14 14:01:22.337024	q	{}	{}		16631640823348498	
+53	$$___latex$$\r\n\r\nIn the following questions, round all answers to the second decimal place.\r\n\r\n\r\nPythagorean theorem:\r\n\r\n1) given b=3, c=4 find a.\r\n2) given a=12, b=13 find c.\r\n3) given c=24, a=25 find b.\r\n\r\nFinding angles (in radians):\r\n\r\n1) find $$___latex$$ given a=3, b=2.\r\n2) find $$___latex$$ given a=5, c=1.\r\n3) find $$___latex$$ given b=7, c=6.\r\n	Pythagorean theorem:\r\n\r\n1) 5\r\n2) 5\r\n3) 7\r\n\r\nFinding angles (in radians):\r\n\r\n1) 0.84\r\n2) 0.2\r\n3) 0.86		1	2022-09-11 17:36:19.212277	Collection of trigonometry question	{8}	{10,12,14}		1663523963917585	\\usepackage{geometry},, \\usepackage{tikz},, \\usepackage{tkz-euclide}
+66	Let $$___latex$$ $$___latex$$ be a line in in $$___latex$$.\r\nfind the transformation matrix $$___latex$$ that takes $$___latex$$ and gives back its (orthogonal) reflection over $$___latex$$ for any $$___latex$$ as in the following diagram:\r\n\r\n$$___latex$$	$$___latex$$		1	2022-09-15 17:28:16.790178	Find the transformation matrix for the reflection transformation	{}	{3,12}	Let's think of a simplified version of the problem: the reflection of a vector over the x axis.\r\n\r\nthe matrix corresponding to this reflection is: \r\n\r\n$$___latex$$\r\n\r\nwe can find the Orthogonal complement of $$___latex$$ denoted $$___latex$$, then change the basis to a basis consisting of a vector from $$___latex$$ and a vector from $$___latex$$. in this basis, denoted $$___latex$$, $$___latex$$ is going to be equal to T`.\r\n\r\na standard calculation of $$___latex$$ yields that $$___latex$$\r\n\r\nso we can define ower basis to be $$___latex$$.\r\n\r\nlet $$___latex$$ be the change of basis matrix that transforms any $$___latex$$ in the standard basis to $$___latex$$.\r\n\r\nso it follows that $$___latex$$.\r\n\r\nin conclusion:\r\n\r\n$$___latex$$\r\n\r\n\r\n\r\n	16635287649560773	 \\usepackage{amsmath},, \\usepackage{tikz},, \\usepackage{amssymb},, \\usetikzlibrary{shapes,positioning,intersections,quotes}
+13		$$___latex$$		1	2022-09-06 21:19:55.236675	Find a function for the nth term of the fibonacci sequence	{}	{3,9,11,12,13}	We start by denoting the fibonnaci sequence as follows:\r\n\r\n$$___latex$$ where $$___latex$$.\r\n\r\nthe n`th term in the fibonnaci sequence is the sum of the two previews elements of the sequence, hence: $$___latex$$.\r\nthis behavier could be achived via matrix multiplication in the following way: \r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nwe construct a sequence of vectors coresponding to the fibonnaci sequence: \r\n\r\n$$___latex$$ \r\n\r\nthus: \r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nwhere a and b are unknowns. solving for a and b we get that a=0, b=1 and so:\r\n\r\n$$___latex$$\r\n\r\nwe are looking to find $$___latex$$ which is the upper index of $$___latex$$. $$___latex$$ is known, so we can use the following inequality:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nit so happens that T is diagonalizable, so to find $$___latex$$ we can use the change of basis rules:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nwhere B is the diagonalizing basis and $$___latex$$ is the change of basis matrix that takes vectors in B end transforms them to vectors in the standard basis.\r\n\r\nby the standard methode of diagonalization, we get that the igen values and vectors of T are:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$\r\n\r\ntherefore:\r\n\r\n$$___latex$$ $$___latex$$\r\n\r\nwe can find $$___latex$$ via row reduction in the following logic:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nnow we have all we need to solve the previously found inequality:\r\n\r\n$$___latex$$\r\n\r\n$$___latex$$\r\n\r\nso we get:\r\n\r\n$$___latex$$\r\n\r\nnotice that we don`t need the bottom index because\r\n\r\n$$___latex$$\r\n\r\nand we are onley interested in $$___latex$$.\r\n\r\nwe conclude that:\r\n\r\n$$___latex$$ $$___latex$$\r\n\r\n\r\n\r\n\r\n\r\n	16635287998958292	null
+48	diagonalize the following matrices, and find their diagonalizing basis:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$	$$___latex$$\r\n$$___latex$$\r\n$$___latex$$		1	2022-09-08 16:51:28.473942	2d matrix diagonalization	{7,1,11}	{3,10,11,12}	For this exercise we only look at matrix A, as the method of diagonalization is the same for all the rest.\r\n\r\nrecall that the relationship between the igen values and igen vectors of A is as follows:\r\n\r\n$$___latex$$\r\n$$___latex$$\r\n\r\nwhere $$___latex$$ are A`s igen values and $$___latex$$ are A`s igen vectors.\r\n\r\nA in the basis $$___latex$$ would be constructed the following way:\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nso we are interested in finding $$___latex$$.\r\n\r\nfrom $$___latex$$ it follows that $$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nnote that a zero igen vector is not that usefull because it hase infinite igen values ( asumming we are diagonalizing over R ):\r\n\r\n$$___latex$$\r\n\r\nso we are only interested in non zero igen vectors.\r\n\r\nfrom the inequality $$___latex$$ we learn that $$___latex$$.\r\n\r\nif $$___latex$$ is a non zero vector, then $$___latex$$ hase a non zero kernel: $$___latex$$, therefore the determinant of $$___latex$$ is zero: $$___latex$$\r\n\r\na 2d square matrix might have 0,1 or 2 igen values so in general we are looking to solve the equation $$___latex$$.\r\n\r\n$$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$\r\n\r\nso the values 2,3 make the determinant of $$___latex$$ zero, therefore only they solve the equation $$___latex$$ for $$___latex$$, therefore they are the igen values.\r\n\r\nwe denote: $$___latex$$ \r\n\r\nas stated above:\r\n\r\n$$___latex$$ $$___latex$$\r\n\r\nthis is the diagonalized matrix A. now for the basis B consisting of the igen vectors of A:\r\n\r\nwe are interested in all the vectors (v) that saticfie $$___latex$$. we plug in $$___latex$$ and we get:\r\n\r\n$$___latex$$\r\nwhere $$___latex$$. this can be solved via row reduction:\r\n\r\n$$___latex$$ $$___latex$$\r\n\r\nnotice that y could be any real number (asuming we are diagonalizing over the real numbers), there fore $$___latex$$ hase infinite igen vectors, and we can peek any one for ower basis (as long as we are consistant).\r\n\r\nthe same goes for the other igen vector, so we get:\r\n\r\n$$___latex$$ $$___latex$$\r\n\r\nthis is ower diagonalizing basis.\r\n\r\n\r\n	16632709726530676	
+69	let $$___latex$$ be a line in $$___latex$$. find a function $$___latex$$ that takes any $$___latex$$ and yields the shortest distance between $$___latex$$ and $$___latex$$.	$$___latex$$		1	2022-09-16 13:04:13.975347	Shortest distance between a vector and a line (2d)	{}	{3,12}	the shortest distance from a vector(v) and a line(U) could be found with the orthogonal projection of v on to U (g(v)). here is a graph demonstrating this projection:\r\n\r\n$$___latex$$\r\n\r\nwe are asked to find the length of $$___latex$$ or in other words: $$___latex$$.\r\n\r\nwe start by defining $$___latex$$, recall that $$___latex$$. notice that $$___latex$$ are on the same line $$___latex$$, therefore there exists $$___latex$$ such that $$___latex$$.\r\n$$___latex$$ is orthogonal to $$___latex$$, so the dot product of $$___latex$$ and $$___latex$$ is zero, therefore $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$. \r\n\r\nwe conclude that for any $$___latex$$, the following holds: $$___latex$$ $$___latex$$ $$___latex$$ $$___latex$$.\r\n\r\n\r\n	16636243506430006	 \\usepackage{amsmath},, \\usepackage{tikz},, \\usepackage{amssymb},, \\usetikzlibrary{shapes,positioning,intersections,quotes},, \\usepackage{tkz-euclide}
 \.
 
 
@@ -497,24 +509,24 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 --
 
 COPY public.django_migrations (id, app, name, applied) FROM stdin;
-1	contenttypes	0001_initial	2022-09-14 13:55:10.262884+00
-2	auth	0001_initial	2022-09-14 13:55:10.350816+00
-3	admin	0001_initial	2022-09-14 13:55:10.382708+00
-4	admin	0002_logentry_remove_auto_add	2022-09-14 13:55:10.395598+00
-5	admin	0003_logentry_add_action_flag_choices	2022-09-14 13:55:10.403585+00
-6	contenttypes	0002_remove_content_type_name	2022-09-14 13:55:10.416042+00
-7	auth	0002_alter_permission_name_max_length	2022-09-14 13:55:10.423257+00
-8	auth	0003_alter_user_email_max_length	2022-09-14 13:55:10.429754+00
-9	auth	0004_alter_user_username_opts	2022-09-14 13:55:10.43673+00
-10	auth	0005_alter_user_last_login_null	2022-09-14 13:55:10.445345+00
-11	auth	0006_require_contenttypes_0002	2022-09-14 13:55:10.447334+00
-12	auth	0007_alter_validators_add_error_messages	2022-09-14 13:55:10.454051+00
-13	auth	0008_alter_user_username_max_length	2022-09-14 13:55:10.465111+00
-14	auth	0009_alter_user_last_name_max_length	2022-09-14 13:55:10.473208+00
-15	auth	0010_alter_group_name_max_length	2022-09-14 13:55:10.480121+00
-16	auth	0011_update_proxy_permissions	2022-09-14 13:55:10.485923+00
-17	auth	0012_alter_user_first_name_max_length	2022-09-14 13:55:10.491749+00
-18	sessions	0001_initial	2022-09-14 13:55:10.50413+00
+1	contenttypes	0001_initial	2022-09-05 13:41:05.750814+00
+2	auth	0001_initial	2022-09-05 13:41:05.797315+00
+3	admin	0001_initial	2022-09-05 13:41:05.812292+00
+4	admin	0002_logentry_remove_auto_add	2022-09-05 13:41:05.820053+00
+5	admin	0003_logentry_add_action_flag_choices	2022-09-05 13:41:05.827844+00
+6	contenttypes	0002_remove_content_type_name	2022-09-05 13:41:05.846687+00
+7	auth	0002_alter_permission_name_max_length	2022-09-05 13:41:05.855084+00
+8	auth	0003_alter_user_email_max_length	2022-09-05 13:41:05.863248+00
+9	auth	0004_alter_user_username_opts	2022-09-05 13:41:05.87054+00
+10	auth	0005_alter_user_last_login_null	2022-09-05 13:41:05.878394+00
+11	auth	0006_require_contenttypes_0002	2022-09-05 13:41:05.880861+00
+12	auth	0007_alter_validators_add_error_messages	2022-09-05 13:41:05.889158+00
+13	auth	0008_alter_user_username_max_length	2022-09-05 13:41:05.900305+00
+14	auth	0009_alter_user_last_name_max_length	2022-09-05 13:41:05.91033+00
+15	auth	0010_alter_group_name_max_length	2022-09-05 13:41:05.920011+00
+16	auth	0011_update_proxy_permissions	2022-09-05 13:41:05.929964+00
+17	auth	0012_alter_user_first_name_max_length	2022-09-05 13:41:05.937894+00
+18	sessions	0001_initial	2022-09-05 13:41:05.94502+00
 \.
 
 
@@ -523,7 +535,212 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-uh0qtdc6mdtu4brzpsnfwngos2kxrg2j	.eJxVjctKAzEUht_lrCVOkiYTZ6fQQheKIF0PuZxMo0MiueBCfHczUsXC2fy373xCCUs8xoMOa8sIk9drwRsI5aX7p_c_w7acMdZTXmECQm7_H2z9J_yAqeb2M75v9fyrZt3F3ArmObg-pnDlGW3fMG6Be9VxScSmWHMwZKuQS1rIY3K4Ply6V4CzLv0XSM6tYpQpykcljBBeDkaPnHEmrZDeKip2Tg7UcDkqz5Tjgg-OSeR33u426N6FeozPOS0ZS-nMmCLC1zfiYF2l:1oYTK7:JyBd9u0JsLoi09mSfC0JSMeuIQU0XsUTj7ejegfY_XE	2022-09-28 14:25:07.17984+00
+ioc1cw15najgfksmwm2cqp6ynodhyw5g	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVIh3:m0m-zYRHmdKg8pozTwdGWeBE1oVY3fJf0FMTLL2G-6A	2022-09-19 20:27:41.491239+00
+66h8krnjhnw4tbiz334c38pptpxrcbh4	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVJPo:NxZHuk10YK2XxYCsnT_LcxPWELJyoWVd9EWdKbG3TQ8	2022-09-19 21:13:56.253284+00
+trjhfick2w03yfm7u3ujejkiswwmk98k	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVJPt:Nu8m-DdtK6EHV4qznVwA1od6GpdlP9DqyU2iVDpy6Sc	2022-09-19 21:14:01.275595+00
+qw8a2evnypp3bp72hsuruj07priastn8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVKdm:c2-O_ZFJMGAdLbr-VtI0QFCcUg5j2cG5NQpSEIRRM9Y	2022-09-19 22:32:26.745518+00
+sbvmjdacwkcqt4uiz6ukkd83bcqdnyax	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf4G:QuprYNnh4DIQ4kpH3jj-VlDO6JutMNCf_OXbRGsAloE	2022-09-20 20:21:08.213059+00
+l3bqx1w25g1dgr1cawhzsgmtt2st7p01	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf4V:9lcEYlW3ApqUXHBZOOPtWR7yQg_Yebl-czWu9sf43uU	2022-09-20 20:21:23.6934+00
+ysb6igahy90e5r01q5evllorietd3iap	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVCzS:SNzKqSo_D9LU1MwHUJp0gu5WKzTmRn5SdQBedggKN3Q	2022-09-19 14:22:18.138881+00
+19k32p8he6nzp2wjlmwllyg380bjjhij	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVKtS:FWFvfIqp-Wx9smwYiLnN5MCE6nuqyl6bTA-HtfcIzNg	2022-09-19 22:48:38.734088+00
+a8rnl45i2jxg1tmg4x1a8g313akbephn	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVKva:-cfPtg4448tF82S8vmCAmYGJFLBhplXo9FyIYIS0iP4	2022-09-19 22:50:50.57383+00
+dhgfnq0w78h4cz75y6czc4o6ojzrr0wb	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVGv2:KvqBilu4WCEHiHW7rkiX3EdfOpWTjHmbO45VXDL0RZQ	2022-09-19 18:34:00.96274+00
+v6nfkud01wymvmebw38jki048c2gittj	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVNzd:i7AGRxKuex0qpocXePv5OB51qWtsosvtWn511fcvyko	2022-09-20 02:07:13.06387+00
+mq3kgo8xq96be95gcvwl1ytd5wnub4y8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPGC:kItBu1Xbsv5X3wZWOoLPZXCLAt5aCfPic1Zhhe83KDs	2022-09-20 03:28:24.007859+00
+jneiak1c06wrfi2ndiyczu3yy59y80tp	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPLf:KinAMCUS-gTPOako8WAbqYBs2wp3oLbq5uwBRVDhMHg	2022-09-20 03:34:03.43516+00
+stbvmcpk7xcorymq3m3n8uz2l7j3hmqf	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPiQ:af3OwwrebIGajZG6nne8BtDc2xKvAa9Uqf4TvAlGGEE	2022-09-20 03:57:34.937348+00
+jjg9va03ezc6acotihhqjv0l31i7qz2s	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPiS:KCYjiKglCa9RXb2GkNP_qYNoAZCTj680bIE2ivQcyPs	2022-09-20 03:57:36.251606+00
+t60b9pu1e0bp4axo128jc441s18tuvrh	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPmS:xPkhk9DncwMNtgCzt1FP7uQjABZpM3hu9bRAZtgfwSs	2022-09-20 04:01:44.427741+00
+44pw45bsphtc69accda0c4x0srg8cjah	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVPtn:a9rDsOre7jOmAhicyKL-payal7tE-NmlUVGiatuZbHk	2022-09-20 04:09:19.053183+00
+zhayt7qce45avaex83duov2vip8v7trh	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVQ88:TMYZc8uKzyTDmRJzck7dy-wDEiRX7hC6C5bPm-7VHG4	2022-09-20 04:24:08.182853+00
+yufix0fczvyizazsh5uu8rqmqmmwdqxu	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVQPr:0kG_NQ33rPNW2CDnu9k-NfsrZXen_SC2pYKEzw-YLQg	2022-09-20 04:42:27.016656+00
+0h7w3d6gxi0f6o86o1cj67zhc2b96a8l	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVQeg:kF1xXN4tOl6k0G1D0z6gJcaAru5H4JWuO6q4CWE6kr4	2022-09-20 04:57:46.482919+00
+uvhnd7atmvey3tkft183d3oh8r12ej35	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVRMm:l8V9l8rBN6rAe4BDw9epbEM2zPKyrffePxNx2kGmEQE	2022-09-20 05:43:20.75052+00
+vll08x4p57nylnw105x9mx7bkaq6prso	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVRYH:_bbc7eB_Owb8tK75wXxReDf8ykZ2-RNUiRMzUigUKPU	2022-09-20 05:55:13.101807+00
+0re8g4rgzjj4o72t3c6n9f0buat8rv4a	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVS2O:XHiMPTqwXoWZZlzoudRYV_f5-292Qek5UdG3gVy6bJs	2022-09-20 06:26:20.10058+00
+z15xegdv50y6c1vs85b9lbi6n3hcxqnx	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVL2t:JXqNJQ9CHuGYyu5hLAhzhKmYQnthdhJKY9lKY5RVMvE	2022-09-19 22:58:23.497246+00
+arnl82n0712gziz5lskt56et8xzrp4jq	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVSQy:kFE5Nu-PldydU697FpooUFrU1E6WbwEVnizI4yfQtAI	2022-09-20 06:51:44.486856+00
+are3rsoix1nnybpczf4608vimltq4h5r	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVSR0:LqA0S9kNTcO-aBQXuGT5c42NQn_rsz2wvcus26YMHzo	2022-09-20 06:51:46.89987+00
+kqgx00p0du4owsq19o8ij2bute11n88a	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVTzr:a4ffc9M0wOOzmD13ipHNCL4PWvy5eNtae_f9TnxRmS4	2022-09-20 08:31:51.154198+00
+2yyacsu5uvcj4tkrwhn0i9vdeinhgh5w	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVUdM:aHw_pjTH0xNQv24taHQ67Xcf7MEu6wKqPdo40FhHjEw	2022-09-20 09:12:40.925241+00
+8rcxc8qocwfdq024ts7il5ljsx8eea6p	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVUsw:r4ufXJ3NVYzQrrNh5ycEtV4VCD4HDDhIxiO5HpGBZXA	2022-09-20 09:28:46.380262+00
+9s5glv49qzi70sox8s89kos0iq8rwig6	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVFtK:_I3aDVHa3EQPEvGEHdZnBwuzxM5Gm1FC2CsPA6d1uWg	2022-09-19 17:28:10.437705+00
+ubux49kkhnik923vg87x5niy1bv3gmas	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVFw8:Pj0ztZ6BY15wnic-aTQiPqp3eE2x0M6MKLsOxw0sgjw	2022-09-19 17:31:04.823766+00
+uaz78ldixbfb0jeeyohiteax7evbc7wx	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVWH6:5a0OMgAtEMTsQofm8cOv7a6lTo5-hKmFxOxOROvaZ3w	2022-09-20 10:57:48.758976+00
+dhqurx6rb0ad2y70utglr7zmsslxcrr9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVXKX:22t4eW3CwO8RjGEroNyV_Fhr0m1jfUIKru886eczFno	2022-09-20 12:05:25.297434+00
+7xbfmog8b7ihx0g99e0j7mgfnwli4t3g	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVXgr:EUno01PoFa88ACsM1hi1rWCS47j80L7IlLGBWC0U-mI	2022-09-20 12:28:29.006684+00
+0sjsd5tqeieq61kd763m2khq347qigzm	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVGkF:RoMhPdRhNQhb8H316oYb1scIC00we_tpHEy_FrqbF8k	2022-09-19 18:22:51.248444+00
+28dc08g1wjq61afxz7m3vim7vt1ohs03	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVZXn:NUajtSGZNnFPvbTwK_5i4SQMM5WbOvkJuQncRGx7XNw	2022-09-20 14:27:15.122658+00
+i82f4bedhtckkc6za9swpkjj0grbzb30	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZGZEkiDX2q5klVJUWlqLQDRjhsa:1oVbUO:ObzIup9LobasLmkIq7VBrIHMxc9X-e32eQM257bm9os	2022-09-20 16:31:52.917093+00
+00ezxsj6zmk184tm3kuyddwtypd7ovzz	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVZe0:1H6ZpYYcy0jw-kdVVdL1gHf26ycFXnvGc708xs696Sc	2022-09-20 14:33:40.895206+00
+z8kzciuaxpwy46jyyrb1gfjjwk1uz9ii	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVa1N:gi-wnBBGSD4LZigj-LdWSD_rEsBzOSWHdbDvDQ6TSAo	2022-09-20 14:57:49.475384+00
+h7e31svbspwjj8zipw41kwtl7vjyjvef	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVaei:MsN8f4PTXDGurr0prJqj5CfLKCeA9yekhSKY2gSyv5g	2022-09-20 15:38:28.595688+00
+z4ecez4i2lgphrf3wql2sbg7t5tqfv88	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVb4i:wmG-sRyIRac2JZ2J1PyjmN1H0K4DEfwwNC5An70mfp4	2022-09-20 16:05:20.167749+00
+lqh5p7xl3xmygy5u2reuuzv9mfnr2sb6	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVfbY:elOVY1aynwHmlo3CShKKtVooqjve180FDmWR0VeoaOE	2022-09-20 20:55:32.620596+00
+qdesq3ay8akdotoj24fsxu7375yc4hc6	.eJxVj0FrwzAMhf-LzsWrtzixc9uggx4Gg9FzcGw58RrkIdunsf8-B8pYQQfx3qcn3jfkuNCZXm3cKiOMwW4ZDxDzR9MvX3-Cq8xI5cIbjCDEw_-BA0y2lnWqGXmKvhHyXputuyLthv-0tCThEhWOs9gRcXOzeEset5cbexew2ry2a-OcdJ3ug1bY9R6V1FKHrq0muOFo-v6ocFCDM2gkPkn1qNQs_RwkBjNYDXuz55YKY-Haap18LGd657Qw5tw-UCKEn18hIFpP:1oVbU1:5LpVDEPFqjisQD5wRKGqK6LDihSfVNseY1lf_b_3H8I	2022-09-20 16:31:29.614733+00
+tfvrfmy3ia1unfq4z1ytolyf90q9c0ps	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVbYl:MsfdD9I06ohvhzbQvQE6eomG3bSlMQFCahQkLtvquQo	2022-09-20 16:36:23.797575+00
+rojs8cz1xflo1asysaib2kcwmvmc0d6a	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVfc0:4XxmkjwXuiZXsAs3xte2fs8WxYkivVhtNr3bHi-K3P0	2022-09-20 20:56:00.426689+00
+8ybf4ogfyk6n7iwcqx8o83f0zdvszx30	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVfc5:ouhAmAudHhnafcEGBsmq0RoXEEFuyWlv1GUJy7On3jQ	2022-09-20 20:56:05.242003+00
+jjfkc0c9yfb0bt5i5xbepp4x1fvjga1w	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVzmD:BgOtAOrxhvBpeQ4i_3uJGwiRx-7XZ85F4It-eOxAy2Q	2022-09-21 18:27:53.450685+00
+zouzd7yy9ln0ueof0lug5s7ajk47dxe8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW020:yLCZ5yBNAX_tk24dIC2sysp_Js6l_PozP8db5HHCzGU	2022-09-21 18:44:12.960526+00
+qnn9evm8lsa7vdyixzqevpqi94rokmt1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW2P7:KNkrJtlRBPtkmdUM0MVfagtZbRj1pkMsAwTfE9CfYoc	2022-09-21 21:16:13.026149+00
+cqvnm5tt5k09lqsugptfl2l7aeb2wzx7	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW31K:zXdVTmsk_8xLyY3tGHWR4cbiHLc8OaG4OUMcSKvG1bk	2022-09-21 21:55:42.900689+00
+aqs4s03eknryndt8lkir1ngellfwfxm4	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVbcD:DLmxcVLtCG8C8m2p6j30JSXSNTA93QFvME_N38PYsKo	2022-09-20 16:39:57.006748+00
+pl2hr7rgfcxm26sdtrkohnpree6yxi5r	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW3qg:YkeWdMFg_J_yqS7nBWws4r9RnjRAr1m2OF8RQaAvPXw	2022-09-21 22:48:46.252123+00
+bst1rtamk63wkcpehzbqvspy4vl67huq	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVvWT:5Yygp3Blsw8Hr-2TgjtWmiJhsvZHEDYFAC1BO5RERhc	2022-09-21 13:55:21.320513+00
+tn31koditwv632y17ith51el3xz4fsn1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVbql:unX6ulVKnekAgFr-vjpZDJg1iO4Q8TyqcK2HSNVxHno	2022-09-20 16:54:59.157623+00
+262cxbkrq3bvv66qyq8pvrgybr83vbch	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWJkG:z3ikMT0aDcihadSaYyEGtSDJQXGcf5xZHG4IODblgLY	2022-09-22 15:47:12.991438+00
+wemy8ncagfu04nb6iizygns1omij776k	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWMxn:sZqQf2WP48-LVRDUf4tbgwQKoJa0O7GLcbTFrYR1dDA	2022-09-22 19:13:23.011308+00
+x6s8u3al9w42g8j7q3aczpx1dv257hrh	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXKlA:uN-dA1Zwc-MggOtePe11cB82o0bf336qPdS-o3t6Pf0	2022-09-25 11:04:20.785465+00
+yjqkna4zkx66ew54gq8tn0paljehmm2i	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXV3n:uJ2yNXz0ZMAvv7kcxaQZEvwZcMiNl4P6_JdtqzIGYgU	2022-09-25 22:04:15.773577+00
+5r06mg3aqvnny62djkoju0eqbzd5z43y	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWHcV:2Wsd6zHSMYHS_lixGKg2pzMB730Dzj4OoW-WjCLUyW8	2022-09-22 13:31:03.879992+00
+75xn3ipsgwajql2ukz1wl0ub9dqqsns2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWIMt:qweQUec5da9eZ-pdB--LHoisAhpXn-sSA3bkOmBPJKE	2022-09-22 14:18:59.07846+00
+quctx385vbmfxqmkw9ow1n8x7rnlx17v	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVsDo:nK8FTrcIkcKGXuufP68svifdQtDF4MM8WDhhqOlvf4Q	2022-09-21 10:23:52.423509+00
+m19ix940moipw3pcprfnnncc8dq3wehw	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVqvu:KAxWXS3dXmdvkMgDTDTS4cdNhia-gCjlaNoIGID7qwE	2022-09-21 09:01:18.626252+00
+ydrcr2n2nsngyt9dkfrwmf99eudjv4bb	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf4G:QuprYNnh4DIQ4kpH3jj-VlDO6JutMNCf_OXbRGsAloE	2022-09-20 20:21:08.245748+00
+5yb1cpsmwojz049eefbymn507zo141ih	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf4W:6AmRsBSFcniFYGSxaT7mYd3eDwdWuYtaqzdydTmfr-s	2022-09-20 20:21:24.140758+00
+jtcd26yx9ueusdwst3d55dx34z22f71x	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf4W:6AmRsBSFcniFYGSxaT7mYd3eDwdWuYtaqzdydTmfr-s	2022-09-20 20:21:24.186464+00
+ir4k6y9txnehl02pb0rrnr54c9rmurog	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf5U:Lzb6Ql5f9yrkit8Cuwg1ae9bw4nIvmVvKaKQfMow41Q	2022-09-20 20:22:24.515076+00
+o1cuvsyydlyt99rcr3cr6chsqb7n6zo8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVf63:heUOwmPq7FNVLc8unJo-p8Lcs612xwvDvlJzNRg55bQ	2022-09-20 20:22:59.011059+00
+xe34ohh3zuc863k50s3rvjj710eg9u0o	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVxqg:K2CEOFe1M3jcrKjKoz-uKcd452JEaD6WneJCgJFQTyI	2022-09-21 16:24:22.738471+00
+gq5acwhtahq9tsiz5qv4z92rgxcft0jo	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVswy:SAxwTHTfb2hZ_AhwFeHoEBTIzLsSdST8h_5sYw7iQRU	2022-09-21 11:10:32.892721+00
+fd0r9izu2bfws99w93pt1gfdfvchc36k	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVr4a:wVHlUYqf1omndo46--2PD6MoKLTYlopw9iX-mBMl_mE	2022-09-21 09:10:16.82616+00
+s4j3c2vty3x5t5soxs5g4ph7kgw4hrln	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oVfb9:wxWz1iJL4NCjHLYkp2M4Fz8z-6vp016Yp5yLgiQ6khI	2022-09-20 20:55:07.72683+00
+amp0jaekyucz03ykdpba8rqb4pxm0eyt	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW5Vs:Z4qC0Haed7Rl-RdIMa1wgMiTG1_XhPeKUgu4xYhpGeo	2022-09-22 00:35:24.660183+00
+lq4x5gmi6sx51upzskqcvjj2tm22oem4	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW84O:SbTAskYbqMijFYKHg0bfNGVvvaF_Ckf021b67jauSbU	2022-09-22 03:19:12.14623+00
+onsh8a8qxzj2szbdmltu3r7u5cnjzgf6	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oW84O:SbTAskYbqMijFYKHg0bfNGVvvaF_Ckf021b67jauSbU	2022-09-22 03:19:12.172257+00
+y0kb3bcuj2t3qrlswo6wxijl9yhb3qn9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWCJJ:DX2_CxuNQkcsquKOAAtml5yb2KxjqF8Xel3jnlLgCsI	2022-09-22 07:50:53.378464+00
+rppw5x4zk28pjhzjnwx10ooojq5eh66a	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXWyQ:1r-0V786-D-Rn1tpIKnX0g9I9B56PCOBDKiE5fz2LXw	2022-09-26 00:06:50.082783+00
+j6p8c85urv12qfudhc9m531gslx45l5w	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXd5V:RMzNg3eI_wJtT6Tk-ntmZlt4uzpj2thIUVNQbW8SZJQ	2022-09-26 06:38:33.276169+00
+457urlkz0nri7lrj6bkc1shuf2od9r05	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWeoz:hpRUeK3G5eZlo3gaym50QzqJk2ZHICJcIQksz6ewyfQ	2022-09-23 14:17:29.093385+00
+76n301a7o22jxi89j205ojfksljewg3t	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWgpp:Uv1tdhgPF74_mxHfqJQ631sp7iGhW0XZf5JZCtQmqYA	2022-09-23 16:26:29.179978+00
+wufy8fiwip63kztpz3gu164c5nyd52h1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXW2U:CJAlVnbwYWY5pHoRJpz4Es0cajDWMgelhkKuubfGOpw	2022-09-25 23:06:58.874686+00
+vsb8qquapj8pt7p3feen3qr2fh99xqsw	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWkEg:FupN7BXPRhxCf6Sbj9rm2T9Zta8ki1c0WcV9pJlZ9Mc	2022-09-23 20:04:22.163042+00
+ot1rhnz02v8s1gs3ng4de7g7pbjtlxj3	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWkPN:OVGmlKMddSTdnFn7LMaTz6d43hdW2AlzB_J-6DedRks	2022-09-23 20:15:25.089137+00
+tda9cpysfalbdz2pqjmbgyq5jdxjb18r	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWm9P:KSBs18MyeBYRzQ6TwW55djR7XZ3pl5t5kkkE1JrrZ4M	2022-09-23 22:07:03.976449+00
+5yq3qjqcx7jzgy8u308fsaaqk1572lkd	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWnTu:YmsIYVBUo7B4VssjsjdtYgzc6embm3A30zRQHWMoSKE	2022-09-23 23:32:18.250466+00
+4hm9iqvjh38mpaxbjpjyrzb6ddkam91c	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWovF:dK8u06mF6GH78QnKk3GUuUMF1dkWSoRqPfu52RZhjYI	2022-09-24 01:04:37.774839+00
+bteuy8feiv2yy2yv2gb5yuw4qktmu651	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWp65:d0A0i2lr6tNIr7xlpdqKt5hX-AnMMbanWfATPXm7WIA	2022-09-24 01:15:49.737833+00
+rpf6ohryc7fzvb3n2t04nz35w250o0zp	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWp65:d0A0i2lr6tNIr7xlpdqKt5hX-AnMMbanWfATPXm7WIA	2022-09-24 01:15:49.76528+00
+pd3vwpawmqqyytigpk7i0zywyp5zzdcv	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWuQk:FSkIy_wl_r5b5zTa9OyVV2L_ae-foWl-tHIkVYH2Ztw	2022-09-24 06:57:30.393815+00
+jjcyw7hpjl2gfkom6pzv04wwcee2xxd9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWuSk:ShIpOPsUwxdwkyV61gC9godkH34YjA_5dBCiKsYgE5w	2022-09-24 06:59:34.715981+00
+0hge5pv5y77tnojczs6wvv48d1bms1s5	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWupm:Z4WSp66CJsz9mtYSCzGcev4X6zW5lqf2RLL66rubxEs	2022-09-24 07:23:22.315823+00
+barc6bcrut8s8u0uqlxhswdiifqjq8dg	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXUJl:yXARIcy0B3k8YR-NSIpIw4h7UiN-BXOJgswoso7PdrQ	2022-09-25 21:16:41.273799+00
+kn4au323lrpc5izw74xiiababer9ttpd	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWx8l:3yg6dY1HiHdcS_r74e5J6h4rZCLyIvB-8Zx4T1_V0uw	2022-09-24 09:51:07.480231+00
+oasv72twc6nnoy5r5uwdan7v4tq55ijw	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWIMr:B0itQfIH_gSQuEXSZ6wfZ8BQC0ie6Zb8P6yj08dUMGA	2022-09-22 14:18:57.937944+00
+4pbvgmxz0958nkdr8o9v3eqjo0mezft0	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWIMx:TnWq7OkU0Hgjt7q6o3QVY00eH7Rtu3pKlEM9L_Wrr8w	2022-09-22 14:19:03.893477+00
+aafrr60e6jsab3wo274377egax4fcvp4	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWz78:9f18k-emWWYD-cQ90-v-j5-5bYzlShuxpCpU5TxlsZY	2022-09-24 11:57:34.768817+00
+jft7x6ek5a5r9pzh2smioeu4hkruo761	.eJxVjbsOwjAMRf_FMwqlTeOmGwxIDEyIucrDbQNVipJmQvw7qYQQSF587rn2E6Ib_MkflZtSIGh7NUXagIuXzK-PLzApBPLLNUzQAmPb3-ENrI19WkZol5Cy3qm8dClS6JzNDYQ_ppW5k18De1N-mJmZ_RKcZqvCPmlk59nSdPi4fwdGFfMv4EaWKIUtRIEoEXd9XwvUJApFleh5w9HoUtQ1lkLUxJFkpSTnu6qxGguE1xue71Fx:1oWOrD:ATAIMcLmdOVmAnwToQuY1IZmQs5U0HigqavuJKQHBQA	2022-09-22 21:14:43.514736+00
+driic6ncv4lpw7p7qeebkag638907u1s	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWQPU:dhph1vrpd_SOOgnW_NLXynX1bIkm8wAHfUJEEruILRU	2022-09-22 22:54:12.900145+00
+pzamj45ejs846qqemh3ca2jr7mc3lrdl	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWSFy:2ykM2odkMaUXguDW57dKliKK9V_0tUEBLNiopB9WD38	2022-09-23 00:52:30.602072+00
+w36is9dboih6x7dthozgh4qonus0h8jm	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWTr6:zGNfKTMZGGm0PddYJgV35nUcGagZ18ilMaqLXH4b2fM	2022-09-23 02:34:56.290111+00
+dy24sviuspyd6n8dtlqgjekplg76c47f	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWUUR:o5CsA-G2CwXAM-o2bwh98ii7YweXW3PLT1lhtfcYk8M	2022-09-23 03:15:35.857207+00
+x4cw1lyramvmwl40c7b59eyw0lhf90jc	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWVtN:NPAGOpDl5EA2FFD5U72ax-bSpKmkdjeT6a-i6Q3wXgA	2022-09-23 04:45:25.155307+00
+imhqg91xz2qej6mlfhytcz7hqq1p2uez	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWWhk:ifiNMoa328XFrGHXcLrYOYTPagpHJIz8XBH5gH0OkSs	2022-09-23 05:37:28.738342+00
+ohzqtxps4zien4c5bjg1jjzcwfnne08o	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWaUK:l-VBik0j_5ryJjjrPVjQL6PPFNdO5HKSQnOKF-pHc24	2022-09-23 09:39:52.123557+00
+5rwb9amhdfwckkbuzss3r989sjfb3uom	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWc6z:btlqe8I9T2ntZYyCUNuTDH7wAOi7N1OniRqfioxMhUY	2022-09-23 11:23:53.935112+00
+resh5ajnru8jyvuhrikd5e0yrhidp07s	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oWMxm:-iXISLin2q3T8TJF8XoY30YSVUTdL7eeTHQAtt77KS8	2022-09-22 19:13:22.981953+00
+hx3hqerxjy8nm9q62mjnuoxssdo469wl	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX5ji:dfpD8Ovyp3Zh6VnGKtBusmKii0UCXwMHUgwcjXp_na8	2022-09-24 19:01:50.650807+00
+aib0klvwqv7bntylntvipfkahq2ey0kz	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX6C7:HhV-6I4tZ7RhWJ6RLEDchcF-as9smkbYL5MYhmmW6dg	2022-09-24 19:31:11.28397+00
+40rj9wklox2ec1fqrh9324vnbh4q9tn1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX6Go:3eArtEjOfKrkV-_4gh0Os7dgOfK4zZp99moxYsWXZ2w	2022-09-24 19:36:02.65417+00
+t1ws0617axbbwhywypanok97adpz9ryr	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX6Xc:Tnl8LTrDfONgz_XyhG_ZK8GV3RK_arK0yjqRbOLj31E	2022-09-24 19:53:24.718138+00
+yrn43si9oer1k24w0gznd15rulraa5p0	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYsFK:cfznJA9oTrd-lBTEelLHwUEqgI6hKQ-Q-WLrDxnmefI	2022-09-29 17:01:50.520846+00
+nnsyvo658puq3oqpwtl9mlfpt00ayers	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYu0i:joT1P6XhrIW8mZFxY2aLKKINk4Z3QHU2O7OajPGFH4Y	2022-09-29 18:54:52.950961+00
+caqj0222kwhu8n30dcicoc6rz0bew5xg	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYza1:DbjMfHC5-Ut84ZVo_dowaHJK0SlhA6HF3ijm6z2hvi4	2022-09-30 00:51:41.769977+00
+g3rotjmzx3b7yl0miwqwgxt30u15vppo	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXzQI:212xd_vYpp4rJuUqIGTZ_CkbaRhjwyY9pfExbRNixF4	2022-09-27 06:29:30.831502+00
+d3wm9alpx12ekzxundccdd7f2isqy9wo	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX81s:WHlZYGXa1FlOmanvoQPCX6bcNxmzbixm-BKLnQcIE-I	2022-09-24 21:28:44.31264+00
+27aglcqpdqb04x5j7ysm6hiu1m8q222n	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX8Pe:0XHkw5YNT_WyF4EGSpiHcbxIrdDSvnRF0cnj8PSt3Gw	2022-09-24 21:53:18.192041+00
+e9wa211jtfldrqen3l0z1wpujrx1ypds	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oX9OQ:J-_GXLaf1WaU8KWNba9b9ohE1SBCQwhzatQ85Yd0ikg	2022-09-24 22:56:06.546353+00
+3qr4n2vnnk2hvdulc1ap56s4koxwerpr	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXD3r:6iN8yBppEs3yiVK8F0Mb58fFEy4H3ufkw3bAwZpzS4c	2022-09-25 02:51:07.529161+00
+4073kwtw65dwrvnakmhe631rvd7j92tu	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXD4A:_M2UsMrGFE6AfRfYlGFaT5ZZyORtet6t7ag81s0Geno	2022-09-25 02:51:26.898702+00
+wvragmi9w7ajmgcrcv0jvj4i4f7qjtol	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXEw0:wmJJqwx8bQzty9ljd_dbMgW3BhGZ6KyPs9ot-sOcfsA	2022-09-25 04:51:08.082725+00
+daq1sr9awiz12uak98sfd7055enidib0	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXFF8:mEUo8GvTCRSwYcec2JLELWZUBD_Xb9bCflbu86dUwGo	2022-09-25 05:10:54.74378+00
+6551bcnxjqktm26o5uswdcfg1iw28b04	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXFs4:8vE9fP_vGFuyJm0hfDVcFSNkdKKFjnwtFKoLyREkHGw	2022-09-25 05:51:08.10782+00
+63jz0ty5rvd3bz85qoec56ehrcorx4pb	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXHbi:O34OMT8b-0iP1RSdFk0ZIcshWyicnPaV1CQLR0FzMKw	2022-09-25 07:42:22.995379+00
+p1hyswq531avp62dw5mnemib9d01mef5	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oY2fI:J3sWPtHamMaC2AkUwqPfC0FtjiORVhrz6_dt3a7tZ-w	2022-09-27 09:57:12.418834+00
+gzhztt49kwepx51t10ycd06y6yi9qsbj	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXKSv:dER715ffIoIu7QeHhdxRq0YjOFIYV5R_0btHW9JsJa0	2022-09-25 10:45:29.338305+00
+x3wvlkm7zijdmwg3ouff7080bf05pbse	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oY3ey:i4oQ2EEXevt7WUNP7QvgGvs61g_cMLq-qbbeeoo5vOI	2022-09-27 11:00:56.549751+00
+5u3tbvqh1nwwkyekxqq1mejzi7v8p08w	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZ8lQ:aTcvppv7bHQRx_EICmt3TltPkWFZgIM0JVIirgEzioo	2022-09-30 10:40:04.795288+00
+eaee4jccbtnl6ovyfysm2q1ui8zy87gj	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXbgO:gIEeuvEdsFmgTOL52w-4b99m3fcd37vc0yzyxVPFTus	2022-09-26 05:08:32.75474+00
+2np9izevmn1pp0iq09xq6z1rrf26n56j	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFffl6qUi0A2CoYBA:1oYDXQ:vpRiBCch2WP_szVtF7vtHCXw_Ji2MZoVXFEIYfDoI4g	2022-09-27 21:33:48.46914+00
+7g1pwqi6qmnru562ts66tqblkq5buaez	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXeOm:Ns6xqf976YY06yQSQQ_k_Z-ZUsVdQsps4dwAmMwLYuc	2022-09-26 08:02:32.998235+00
+0u7s9hpy23fo32kxbw2sw4r1hg37qcaq	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXjxd:Azaeqp4lT9qwNsG_aefsiHAJKN50_RXXc3oM-4cxpQQ	2022-09-26 13:58:53.931884+00
+inihdmq3288z5pscg6wafnhjzlszcvfh	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXjxe:J4OIyWQNlwQARRPqDwfiiiL4uhKsTKL0QNXbhp8QCcQ	2022-09-26 13:58:54.084858+00
+44gk43hoxaxia6n8gne9sro6lye65h6s	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXjxe:J4OIyWQNlwQARRPqDwfiiiL4uhKsTKL0QNXbhp8QCcQ	2022-09-26 13:58:54.364967+00
+8vh5ksvwe9p4vxw6weojcztils7k9eys	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXjxe:J4OIyWQNlwQARRPqDwfiiiL4uhKsTKL0QNXbhp8QCcQ	2022-09-26 13:58:54.69508+00
+tho7u0nd41vmgojh79wqrr7wvw3z5do3	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXns8:05-spP61N2w678Q0llb33F-c-Qs99bvBkcLMBv8jjx8	2022-09-26 18:09:28.638097+00
+3zsa1e8kvh7ab2fq15pzp0qx1iko6l69	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXo6v:bLbStVhykvcFN3QN0YoTM6N9WCWdkT3R7KH3stUYm0c	2022-09-26 18:24:45.37894+00
+2zmu2iutxduo3vqt5542sp1znz5yys3t	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYEcn:evV_U4W_FDfZkbDZhdY84HVv2N0zL4AeKav69uC5G4M	2022-09-27 22:43:25.507378+00
+nc82mqoqcyyxt2b7d8cbc7jx4klajer5	.eJxVT02LwyAQ_S-eFxu3MdHcWmihh5aFknMwOia2wZRR2cOy_31NCWULcxjeF-_9kOAGf_JH5aaEQBqrpgAfxIVrxtvHC9AJEXxscSINoXTz__iWLI4LfL_knUpx7FIA7JzJDkbesF7pO_iFMDflh5nq2Ud0PV0kdGUDPc8Gpv2qfQsYVRizW2rNdCkqKziUlQHOBBO2zK-0ui5kVRUcal5rCZLBlvFPzntmesvAylqJZ-9dTiVNxJR7H4yLJ_-F84AQwjrn9w97zV-J:1oXSyV:Zg_8qreAhixee4EEyRvlxg77gVPV2__kJzjvH4lyTRA	2022-09-25 19:50:39.533667+00
+yjq8mwo98wqonamid13blprqfyftn1vt	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oXoUO:VE0pYTqFnQEllNnIeE7RDB5uyZOZzsXwbr9529DQLJY	2022-09-26 18:49:00.715505+00
+mmxflfewngjnl74dnghei70sxsdm9aeh	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYEy9:fmQFPvlgA-6fz-tnE8kvzPOcM-p0HVJTrNlydFuYklE	2022-09-27 23:05:29.84823+00
+aqjv1bku8odtm4nqkjfjbipi3ed5vdm7	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYF9b:O4k3r94VutenCLjjWO8fZSkft4ekqQVAvslipD6uq8k	2022-09-27 23:17:19.595544+00
+n1hmkz7442i278qeakgl10gqjwq6kq8i	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYHHS:-DgV-_rqCpZ7lup3vp59jQhYOLhOaFNjdRpoWbf3H6k	2022-09-28 01:33:34.667006+00
+92my7h7ls2q5zkpyh99gux89gso43181	.eJxVj0FrwzAMhf-LzsWr1yixc-tggx4GhdJzcGw58RacIdunsv8-B0pZQQfx3qcn3g1SmOIpfpiwFCbovVkS7SCkS9WvPw_BFmaK-coL9CDEy__BA-xgMCXPQ0nEQ3CVkc_aaOw3xc1wXyZOq7BrzBxGsSHi7ibxuTpa3u7sU8Bs0lyvtbXSNqr1CqlpHaFUUvmmrtrbbq_bdo_UYWc1aUkHia-Io3Sjl-R1ZxRs3Y41FfrMpRZ7dyGf4pnXiSml-gE1_P4B67FZdQ:1oXs6p:BZ8ROO9Bt69xO5TuU1e7Fq_Q5i4Qf7DhoBCeNWhi-ZQ	2022-09-26 22:40:55.017873+00
+dlgrr90ao6hdmxzgtealr4o0swz2w534	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYPRU:J-xhv-P_tX3WyqDGx4g3lbHr9e7wGDNW3AfPHZjxytA	2022-09-28 10:16:28.190796+00
+atgo3monu3flqa7skcbr0121o20t335m	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaMrB:fY4fFJkS9xn7FDVhAwneFtg-cIsCqedWTnv4HoeFH9o	2022-10-03 19:55:05.711393+00
+7qwocz0ia2mli1rhgyedo0n0u1z5qsp2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYPra:CR-g--qSGDIRB_sxeihJfPTkgegqobkMINM-mJ4FAYA	2022-09-28 10:43:26.395731+00
+9jxi2uonxpdo60f68wm8kupd5p1hyawq	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZ0e9:DuVBp_ZmyJprXVLRERSXgfemqDDOwveOOmYbYxZ3rEk	2022-09-30 02:00:01.182506+00
+rvehkgiycmotfhmeaq9o2iie3tgjigbj	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYQcm:QddpWfT1dOyBqi-o2k8VyOo33mmCl8wPWbN8dkLD0nw	2022-09-28 11:32:12.917645+00
+p60uircolp05qdaftgwmtn817typpwnl	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYRCE:o0OvDZ27z8CB6a6z3FGRBKgYWx5J-SX_r6xbKTORbjY	2022-09-28 12:08:50.488718+00
+4p98wwuiq8ojxeokzcjbjohqj9z3bomg	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYRTN:zJ5wEnJE8GwpIyZ6duq22N3TlQXlNS-OxC5PzywX7wo	2022-09-28 12:26:33.87086+00
+m3m6cnfddmvx5q525woohq22xqezr7j2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZESSL1farmSVUlRaWotALhZGuQ:1oYUwK:VUOSGc9sXEs6e5NCX17if_Ab6W3Bk216-v4oJLeA34E	2022-09-28 16:08:40.379348+00
+8upkzk5svdheoqdkmgsdegank3l7yo7z	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYW0U:QMnfVi_k9EhIyvhRqEi7cVxdiC5Ji_-gm93-1Ab6ziU	2022-09-28 17:17:02.202158+00
+apvkjgidj2iex2t4po4dcuj8xs4m274i	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYW0y:KvvJm8HSlvBnDTPzabnLwM6tnK7ksU0kasoxB4LfbGs	2022-09-28 17:17:32.902755+00
+7fvyiitznk07ycai253fus9cqk6ki3o2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZTfK:yjezF4EV37u3E3tIoNtBokAZmhHxoECrhL65u2OWOV8	2022-10-01 08:59:10.54294+00
+rbfvc5nfizrl0o97qhghm67xfqxkqxy3	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZYrN:8GjmHiLDltBfETypQuYCC8xhSxsJ889bGhUmN6IJWEM	2022-10-01 14:31:57.754302+00
+hy2ffc3k6c3aednywwvpl2as3v74ff2k	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZbfA:dEFtLrCQFBth_r3_ubXdHb_EBvLtbO4JCCVazY9KW_c	2022-10-01 17:31:32.832297+00
+d51dvdg4q3lloz3ie3btkplr52v4mut2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYbCe:ctJFrjdXtV1-f0kblArH0pHsqXZ7ax6vl_4YSrSVFco	2022-09-28 22:49:56.63209+00
+8o5ygel62skdasah7kuxmxiszuvuq0r0	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYbCe:ctJFrjdXtV1-f0kblArH0pHsqXZ7ax6vl_4YSrSVFco	2022-09-28 22:49:56.812921+00
+jw54q2n8osgccj21wzumyec72ugf8kqe	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYfbJ:Eaeh5QEeFkEzbCh2PPcJShTVMCK-IwSSdKhN4uT51QI	2022-09-29 03:31:41.841092+00
+3a033cthdapo40li6j7aasl5yxp9j3r9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYg23:czIskVOk8mPdGjt770tmE0BPe89dLj0jZM5yrEyhcpk	2022-09-29 03:59:19.818434+00
+wm00jl55806e3accigfdds6cut3wf0ll	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYjCW:lTYUQ_TFL8IS6Omq1SfGaZDoKoRqfFl8UtMTkpsMxTY	2022-09-29 07:22:20.021527+00
+d7u7hlm49dt3j0ssxe8i0kq495ynj5u8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYkba:Q1I1ZAvQcB-xe6DzR11HI6sElPyNJO_-KMZp56AM-7Q	2022-09-29 08:52:18.719278+00
+0k9nlg3y62qh31gssulfadsd6s6k3760	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZeuQ:0DAjse9M0z38QrP6MRRyyXAEazvM35XeOeZ3pFusfpU	2022-10-01 20:59:30.212481+00
+9h6c82skg8k0ukpfl8xtbcbo5ee3c231	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFffl6qUi0A2CoYBA:1oZBJY:gZIA9QPLrZJeelmaUp_BphdV62toZo4sdZzBuKX1bGI	2022-09-30 13:23:28.020289+00
+2ber16qcawwjk6vgd3muycai4mt9vme2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZf5g:aB70HKlYkofqlMz000JiY6An2-XA8Ks6p2q82QqcL0g	2022-10-01 21:11:08.653066+00
+b53okl9i7feof2f7vj7w9gfqr6vf5q0a	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZpYX:CvVVsDNEgz5Se0adz8Z8uAG74BGf6n4F2PCtAFXf6_Y	2022-10-02 08:21:37.347055+00
+n5x63b3w4jx6cn3ojxbhph6klju1r2o1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZDjX:1_E_fzwppyHOYnUANZqn7TzSjGc9iC_Dvz0u8G0gHZY	2022-09-30 15:58:27.848541+00
+7ljeshpfysicefy4ah90j7o54ylwoywj	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZ9KE:rf14lRotGjnLqdwV6hFsyySD6joPZqxRdfxJrWVQHqc	2022-09-30 11:16:02.650056+00
+n0jepq5uucghl39r5ur59effq2x8tyem	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZ9RQ:hblJsFPTJD_lYtSzvGTEZIyBGQ2ZqUNyo1QjKXBznKg	2022-09-30 11:23:28.238366+00
+pso01prjzso816hmjktk8kjwu7ihtvvw	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYqdH:74oKcPC_EO1iUwK2XPzeTtY599v6mg8xfGjhpl7orjY	2022-09-29 15:18:27.662302+00
+9stzey9c6qnc133uu14i0af8u0jka88p	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZzl1:kYeKtbbi1hc4tPuedjkqk6r0xc9Qy9AvZS2PVfyoQ20	2022-10-02 19:15:11.791413+00
+rx7kgb1s06z3qxghb1v7gt8vn608zs0g	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oYqrq:N2VGo7ulEYeeXHtOCjaHlbtYF91xZXzW4vn_si3VtLg	2022-09-29 15:33:30.827404+00
+c8h1a9v43rbpu6xdbw05hyv5nkdiyak2	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oa0Ky:GjMhiWb4EF1R4OKGms0zYR23i30nIv2aE0FzVposN0w	2022-10-02 19:52:20.365539+00
+rf8u7m15lgougc1tmi4vwls9q6xwd6mz	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oa1A7:kqDOyDtgBYpUNq1hbZTXdiLTyu8TWqRSehP6Zq_lCr4	2022-10-02 20:45:11.360078+00
+zr9jkz8h12dk8v29i4kkg66hzeql4db9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oa9Hs:O8cZP1DrREPdvLkh2sb46j_pAiTQCXSl7ZAoAHC6Xdg	2022-10-03 05:25:44.954318+00
+nixt5px6snjboiv0s3vtpn6jpe828pr1	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaCeA:0xQj_TGQSoEXTQADvyl_UcJOMj5ctg4KlaIGiTxrU_c	2022-10-03 09:00:58.840354+00
+132f9v3sebzofhyzjkettrg0jvfaiaaq	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaCsx:TvlqZ_8sx1aAt3hYK_T5XyQUsG5USIkjhknc3vGNN4g	2022-10-03 09:16:15.647337+00
+3ard1lfwsfe2gewle15zlbbrg8yciyse	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oZJyJ:3dUDKVZmBfoU6NMuOIIy21BCxc1rMXvz6O7XpSE92Zo	2022-09-30 22:38:07.447985+00
+4axl7sl0ueha2zdmtfjyiylk7wfemfba	.eJxVjbsOgjAUht_lzKYW24Jl08HEQRfDTHo5SJUU09I4GN9dMGg0Oct_-c7_gOjOfu93ynUpIJSN6iIuwMXT6Fe3r2FSCOiHKnRQAiHL3xMMJuKIdyiHkN74Jg3tR9VqFHWKGGpnRzyb-j-mVuaKfkrsRflzT0zvh-A0mSpkTiM59Ba77dz9e9CqOI4BytxoataWcmptQQvKbWM0W0vWoOKZYEww0yC3vJBiJfMsozKXulgJRVFSeL4AgYlW0A:1oZ9l1:YL2r-ASKxytYk5iTApmk8hwbf85Ol08r2fQVDG465QU	2022-09-30 11:43:43.089925+00
+33qayrsj50e6fruk5becb716gp0svrgt	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaNtf:9GnvVrhIdL9i3TTYy3-R2dAlfkXLeBWZaCIa1hG6Il4	2022-10-03 21:01:43.107438+00
+4a9k92vxbfki4ohgj4dejvjpcn5ow9hu	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaRM5:sETvwXZ6PYyjvwV0prYe34wVLOWtqrTwwdZLQoGlHzA	2022-10-04 00:43:17.132695+00
+oql60voqorykfmqr2tz98e3y7tcwbtc8	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oadn7:0Gseo7CqUKb5zbEKmAhcX23DzORbGrwV25CEgYY6Akg	2022-10-04 14:00:01.185305+00
+o1e9vljlb65hxwjy5djfhucj23lgp3oc	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oadn7:0Gseo7CqUKb5zbEKmAhcX23DzORbGrwV25CEgYY6Akg	2022-10-04 14:00:01.96855+00
+msikkiniz3e6yois21upf1tvy5byv8ch	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oajIx:jW0dJskw36aVqltrTQOfaLOt5cuhfPkAh2i0_DXUam4	2022-10-04 19:53:15.284132+00
+qvndd6v6ffkp7uk4ktyjhdlqqgum36kt	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaq0u:j5HbVL-B8_ezvgxeTFJSNkYBqP8ze2jg18LHEc8cwfQ	2022-10-05 03:03:04.322049+00
+ojqryx5rso9ktdwk2hbm6p3rpee6t2zn	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oawyg:g-P-81tOjBotb2CyS82uyXKjqFAEeOzX8IbIb1sd1Ew	2022-10-05 10:29:14.20935+00
+ome52ewagl6b28k94e7mf78j2qsv8c23	.eJxVj8FqwzAQRP9lz0GJWsuWfEshAR8KhZCzkaWVrcTIZSWdSv49MpjQwB6GN7MD8wfRj6ELZ-3nTAit03PEHfh4Kfz6-wImE2FIV5qhBcb2_w920Oucpj5HpN7bkuDvbNDmjmE17E2HcWFmCYn8wNYI29zIvheL89eWfSuYdJzKtzKGm0rWTgqsaouCSy5dVaRypjmouj4IbERjFCqOn1x8CDFwOziOTjVawrrsWFqhTZTLrJP1qQs_tIyEMW5rH0_Id1pm:1oaxDa:OfgSUBVvGnURprYmLPx0SKO6FNJlObTTJKkRBekjxGY	2022-10-05 10:44:38.046861+00
+0jmaf7jdtronszwquvw52xyn7va8kf9r	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1obF9i:y7-k_63reuUcIdKrHQqVvgEZUTJ23EEzFp19Olxv4G8	2022-10-06 05:53:50.216242+00
+jiuv59dl9tdhncwja6k8cc755gvq3wgp	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1obK1f:Oe7z2gnTDMLBDgSOeYHqQg5qfhu70SWYk2L_5xwmlHs	2022-10-06 11:05:51.061287+00
+w4jnhqnewggem3qd3lof1rhcfug8zv30	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1obKpR:XrZyHDe35qhA04XqpsxTDHiZU9_83YvqXcOfipwT4Ig	2022-10-06 11:57:17.826334+00
+q779k47dtgcw7ojn0yuqinjuhcf7j1cb	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaL6r:EaBYKEqzd3McwF7rppjlHsAvE6q8X6rVUVVOw7hDheg	2022-10-03 18:03:09.565226+00
+y8e1zvidwgspn5zbf7f2pg3t7rr79f1l	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaP7i:UNWGqeUU7P0-GgaxWsu63HnoG1MYev2PUKaUfiuk-1A	2022-10-03 22:20:18.525308+00
+15h9tbmdtx0zkqf7s539m18jgb8wd9ye	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaL6w:3kCpt77ktL6v5GPtxz0A7jcDje6yqGwLY_9OfKEtsvs	2022-10-03 18:03:14.434664+00
+ma02cxu828mk0naw7urxs0lbw901kiu6	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oadn6:2yCvKSIKPggVxrxqXUlQwAy2pUfq3TkPlWG2VHzG8co	2022-10-04 14:00:00.721146+00
+1ax54bsj25p25gcjzkd47aal693mo22g	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oadn7:0Gseo7CqUKb5zbEKmAhcX23DzORbGrwV25CEgYY6Akg	2022-10-04 14:00:01.69121+00
+xk2sek4d3e02v9gb6pv0cnmpj8azbe8v	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaL7g:C7FSgjUJCrPf_CFqc4t6tgaZ0vkm6wa8q_PJ7tyt39Y	2022-10-03 18:04:00.772344+00
+y9fkwh3il3bkeog1ep70wt6k7nafjpos	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaLUO:HsS2TPubhKr-rOhEW_kJUSFh8MhOniTQU-5ZBtB6AGw	2022-10-03 18:27:28.926755+00
+f5wnj9ehrghdz0z7bktkn64grslcr316	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaLUP:-YxgiQBccen8heL-mAEkr9On2StzLpEuaSbFIlLi6TQ	2022-10-03 18:27:29.125813+00
+mbizeo8034tlg0a5i9pygk71qzqc0p72	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaLUP:-YxgiQBccen8heL-mAEkr9On2StzLpEuaSbFIlLi6TQ	2022-10-03 18:27:29.444982+00
+dwxz9wlv161uqiizc8g6ns0t1s49vru9	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oaLUP:-YxgiQBccen8heL-mAEkr9On2StzLpEuaSbFIlLi6TQ	2022-10-03 18:27:29.696873+00
+0m5qu7p4fj8uxvhvtopeeklxamb771ta	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oanzY:PllDhlFkj9LEbt6QVvxYIi5sqMgrEQdR1CPd2nx4bUw	2022-10-05 00:53:32.672891+00
+rqzn3orrai81awfu4k85skcxnbbfjj5o	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oavh2:GuXNbzdQkcuibLaTUGZZbYbBzsAWW86vU8hIbwhPFcw	2022-10-05 09:06:56.316433+00
+1nx9ugr08985thowtaurzvdl1p3xp1vv	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oawOx:_azNTESxjaEdzmqwJpgJ5VBhSf3DQZrhbled7J4GNg8	2022-10-05 09:52:19.607761+00
+mn1ogc1om2ytlzm0r2jcxf7s4g0v2apa	.eJxVjUtLxDAQx7_LnCVmu2ma9raCwh4UQfZc8ph0o2UieeBB_O6msooLc_n9X_MJOSx0pAcd1poQJq_XjDcQ8kvTT-9_gq0pIZVTWmECxm7_H2z5J_yAqaT6Uz7Ucv6lWTeYa8Y0B9fKAq40o-0b0ma4V01LZDZSScGwLcIubmaP0eF6d8leDZx1br9Ayc4qPojRK-PtsBs7L5xRo_YDl9yaHTdij7LfG6e4kqJBp3xvedfzgTvZRu9dKEd6TnFJmHPbpEgIX98jN149:1oawwQ:M7_QNktGzMyAi7qFA0uTveJ2L4LC2WsHsPdKDdFagLo	2022-10-05 10:26:54.611258+00
+myasnx279f8cseuflmxp4143u112ukks	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1oawyg:g-P-81tOjBotb2CyS82uyXKjqFAEeOzX8IbIb1sd1Ew	2022-10-05 10:29:14.47094+00
+6etpttvminqoa3czhvlxtiibbhtpomd3	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1obICW:iH6Kb61Xa1GpAFHPU2zTyoM0i7iBUFUIzIL6VrnNFEs	2022-10-06 09:08:56.351721+00
+1bc0jhr36gt9ihbropdblpeaglwjvzrb	.eJyrVirOTM_zzHNLzMwpLUpVskpLzClO1VHKLA4GiocWwAWSS4uKUvNKQotylKyU9PT0kZFSLQB58BZ0:1obKM2:YISZua8UeEwrsO8cPjoE_SW52i-CFK4CUOQTdsujNxg	2022-10-06 11:26:54.352883+00
 \.
 
 
@@ -532,6 +749,13 @@ uh0qtdc6mdtu4brzpsnfwngos2kxrg2j	.eJxVjctKAzEUht_lrCVOkiYTZ6fQQheKIF0PuZxMo0Miue
 --
 
 COPY public.tags (id, name) FROM stdin;
+3	linear algebra
+9	difficulty - hard
+10	difficulty - basic
+11	diagonalization
+12	math
+13	fibonacci sequence
+14	trigonometry
 \.
 
 
@@ -567,7 +791,7 @@ SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: danny
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 13, true);
 
 
 --
@@ -581,7 +805,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
 -- Name: chalanges_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.chalanges_id_seq', 3, true);
+SELECT pg_catalog.setval('public.chalanges_id_seq', 69, true);
 
 
 --
@@ -609,7 +833,7 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 18, true);
 -- Name: tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.tags_id_seq', 1, false);
+SELECT pg_catalog.setval('public.tags_id_seq', 14, true);
 
 
 --
