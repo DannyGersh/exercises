@@ -60,6 +60,7 @@ TEMPLATES = [
 					'/volume/static/pages/home/',
 					'/volume/static/pages/user/',
 					'/volume/static/pages/new/',
+                    '/volume/static/pages/login/',
 				],
         'APP_DIRS': True,
         'OPTIONS': {

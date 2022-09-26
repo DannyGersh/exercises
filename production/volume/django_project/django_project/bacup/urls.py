@@ -93,7 +93,7 @@ def AddTag(request):
 	return HttpResponse(200)
 
 @ensure_csrf_cookie
-def Delete(request):
+def DeleteChalange(request):
 
 	# body - [int (exercise id), str (latex folder name), int (caller)]
 	body = json.loads(request.body.decode("utf-8"))
@@ -211,14 +211,14 @@ def Chalange(request, id):
 	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.user.is_authenticated
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '/'+str(id)
 	
 	outData['chalange'] = getChalange(id)
@@ -233,14 +233,14 @@ def Browse(request, sterm=''):
 	
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../browse/'+sterm
 
 	outData["search term"] = sterm		
@@ -328,14 +328,14 @@ def Profile(request, userid):
 
 	outData = {} # data for js. will be converted to secure json.
 	# when no signInFailure occures, ssesion.signInFailure is undefined
-	if not request.session.has_key('signInFailure'):
-		request.session['signInFailure'] = False
-	outData['signInFailure'] = request.session.get('signInFailure')
-	outData['isSignUp'] = request.session.get('isSignUp')
+	#if not request.session.has_key('signInFailure'):
+	#	request.session['signInFailure'] = False
+	#outData['signInFailure'] = request.session.get('signInFailure')
+	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['signInFailure'] = False # not needed enimore
-	request.session['isSignUp'] = False # not needed enimore
+	#request.session['signInFailure'] = False # not needed enimore
+	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
 
 	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
@@ -693,11 +693,11 @@ def New(request, isSourceNav=False):
 		return render(request, 'new.html', context={'value': outData})
 	
 	else:
-		# return redirect(request.session.get('currentUrl'))
+		# user is not authenticated
 		outData = {
 			'isNew': True,
 			'isAuth': False,
-      		'isLogIn': False,
+      		'isLogIn': True,
 			'userid': str(request.user.id),
 		}
 		return render(request, 'login.html', context={'value': outData} )
@@ -910,7 +910,7 @@ urlpatterns = [
 	path('user/<int:userid>/', Profile),
 	
 	path('test/', UpdateLatex),
-	path('delete/', Delete),
+	path('delete/', DeleteChalange),
 	path('addtag/', AddTag),
 
 	path('testNameUnique/', testNameUnique),
