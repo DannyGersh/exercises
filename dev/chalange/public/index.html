@@ -8,9 +8,11 @@
   
   {{ value|json_script:"jsonElement" }}
   <script>
-	if(!window.is_debug){
+	try {
 	  window.jsonData = JSON.parse(document.getElementById('jsonElement').textContent);
-	}  
+	} catch {
+    console.log("can't get json, ignore this if in react development")
+  }
   </script>
   
   <body>

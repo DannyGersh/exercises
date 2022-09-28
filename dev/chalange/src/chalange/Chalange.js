@@ -200,7 +200,7 @@ function Chalange(props){
 
       <div className='vscroll'>
       { !props.narrowWindow && 
-        chalange['tags'].map(i => <Tag url={'../browse/'+i} key={i*2}>{i}</Tag>)
+        chalange['tags'].map((e, i) => <Tag url={'/browse/'+e} key={i}>{e}</Tag>)
       }
       </div>          
 

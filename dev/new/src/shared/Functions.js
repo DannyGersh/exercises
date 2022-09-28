@@ -5,7 +5,6 @@ import {useState} from 'react'
 
 window.is_debug = (process.env.NODE_ENV === 'development')
 window.isdebug = true
-
 				
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
