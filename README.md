@@ -36,7 +36,7 @@ the server is responsible for the creation of latex images (svg) from raw latex 
 the latex compilation process is as follows:
 raw text -> pdf -> svg -> cropped svg. 
 this ensures the user while have access to all latex capabilities and the most accurate results.
-although it is a slightly slow process, it is handled in the background so when the user clicks submit, everything is ready. there are banned latex keywords and a time limit for compilation as a security measure, for avoiding un proper latex.
+although it is a slightly slow process, it is handled in a new proccess on the server in the background so when the user clicks submit, everything is ready. there are banned latex keywords and a time limit for compilation as a security measure, for avoiding un proper latex. also there are strict permissions on the server file system, and the docker container only have access to the shared volume dir, so if there is a problem, it is easy to restore the system.
 
 every page of the website is a separate react application. when requested a page, the server sends the index.html of the compiled react app. this file contains all of the static contents of the page. each "index.html" file is named after the page it represent. the dynamic content is passed in json format via the django api (not directly, as a mesure of defence from Cross-Site Scripting).
 
@@ -65,6 +65,18 @@ echo "DJANGO_SECRET_KEY = 'fake sekret key'" > /volume/django_project/django_pro
 cd /volume/temp && \
 ./bootstrap
 ```
+make sure that postgresql and nginx services are running:
+```console
+service postgresql status
+```
+```console
+service nginx status
+```
+make sure that gunicorn is running:
+```console
+lsof -i :8000
+```
+
 now the docker container is up and running, you can check if everything is working by typing localhost at the address bar.
 
 for development of the server side, the django "runserver" method isn't used. instead, the project is run as if it was on the server by restarting gunicorn after changes. here is an example of compiling all the react apps and seting the server to its most current state (on linux, for windows, use the corresponding batch scripts).
