@@ -8,8 +8,6 @@ import {mainText2html} from '../shared/Functions'
 function Chalange(props){
   
 	const chalange = window.jsonData['chalange']
-	const signInFailure = window.jsonData['signInFailure']
-	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
   const userid = window.jsonData['userid']
 	
@@ -35,7 +33,7 @@ function Chalange(props){
 			
 	useEffect( () => {
 		isError && window.alert(errorStr);
-	}, [])
+	}, [errorStr, isError])
 	
 	// END_PERROR
 	
@@ -66,7 +64,7 @@ function Chalange(props){
 	useEffect(()=>{
 		document.getElementById('title').innerHTML = htmlTitle;
 		document.getElementById('exercise').innerHTML = htmlExercise;
-	},[])
+	},[htmlTitle, htmlExercise])
 	
 	// end_latex
 
@@ -98,13 +96,13 @@ function Chalange(props){
 		if(dspAnswer) {
 			document.getElementById('answer').innerHTML = htmlAnswer;
 		}
-	},[dspAnswer])
+	},[htmlAnswer, dspAnswer])
 	
 	useEffect(()=>{
 		if(dspHints) {
 			document.getElementById('hints').innerHTML = htmlHints;
 		}
-	},[dspHints])
+	},[htmlHints, dspHints])
 	
 	useEffect(()=>{
 		if(dspExplain) {
@@ -113,7 +111,7 @@ function Chalange(props){
 			document.getElementById('title').innerHTML = htmlTitle;
 			document.getElementById('exercise').innerHTML = htmlExercise;
 		}
-	},[dspExplain])
+	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 	
   return ( 
 	<div style={{paddingLeft: '1rem'}}>
