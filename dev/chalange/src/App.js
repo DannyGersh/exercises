@@ -12,8 +12,6 @@ function App() {
 
 		window.jsonData = 
 {
-    "signInFailure": false,
-    "isSignUp": false,
     "isAuth": false,
     "userid": 1,
     "chalange": {

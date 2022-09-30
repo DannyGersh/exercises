@@ -1,70 +1,194 @@
 import Exercise from '../shared/exercise/Exercise'
 import BtnMenue from '../shared/buttons/BtnMenue'
+import {sendData} from '../shared/Functions'
 import {useState, useRef, useEffect} from 'react'
 import './User.css'
+import Card from '../shared/card/Card'
+
+
+function Message(props) {
+
+	// User.js is the only place this component is used
+
+    // props:
+    // messageId (int)
+    // chalangeId (int)
+    // creationDate (str)
+    // sender (int)
+    // message (str)
+    // messages (react state - array of messages)
+
+    function deleteMessage() {
+    	
+    	if(!window.confirm('Are you sure you want do delete this message ?')) {
+    		return false;
+    	}
+		
+    	sendData('deleteMessage',
+    		{'messageId': props.messageId})
+    	.then((res)=>res.json())
+    	.then((data)=>{
+    		
+    		// data: 
+    		// {'result': 0} - success
+    		// {'result': str} - str is the error
+    		
+    		if(data['result']) { 
+    			// error acured
+    			window.alert(data['result'])
+    		} else {
+    			// success
+    			let temp = props.messages[0];
+    			temp = temp.filter(e=>e[0]!=props.messageId);
+    			props.messages[1](temp);
+    		}
+    	})
+    }
+
+	return(
+	<Card 
+		isRedirect={false} 
+		className={`message ${props.className}`}
+		style={props.style}
+	>
+
+	{/*card children*/}
+	<div className='messageBody'>
+		<p>
+		{props.children}
+		<br/><br/>
+		{props.sender} - {props.creationDate} - <a href={'/'+props.chalangeId}>view exercise</a>
+		</p>
+	</div>
+	<BtnMenue onClick={deleteMessage} style={{height:'2rem'}}>X</BtnMenue>
+	
+	</Card>
+	)
+
+}
 
 function User(){
+	const authored = window.jsonData['data'][0];
+	const liked = window.jsonData['data'][1];
+	const userName = window.jsonData['data'][2];
 
-	const authored = window.jsonData['data'][0]
-	const liked = window.jsonData['data'][1]
-	const userName = window.jsonData['data'][2]
-		
-  const menueSelection = useState("Authored");
-  function menueHandle(event, selection){
+	let messages = useState([]);
+	useEffect(()=>{
+		// only load messages once
+		// from server data, on window load.	
+		messages[1](window.jsonData['messages']);
+	},[])
+
+	// menueSelection[0] must be one of tabs:
+	const tabs = ['Authored', 'Liked', 'Messages'];
+	const menueSelection = useState("Authored");
+	function menueHandle(event, selection){
 		menueSelection[1](selection);
-  }
+	}
   
-  const refA = useRef();
-  const refB = useRef();
+	const ref_menueTabs = useRef();
+	const ref_mainBody = useRef();
   
-  function onNavDropDown(){
-		if(refA.current) {
-			let q = refA.current.offsetTop + refA.current.offsetHeight;
-			refB.current.style.top = String(q)+"px";
+	function onNavDropDown(){
+		if(ref_menueTabs.current) {
+			let q = ref_menueTabs.current.offsetTop + ref_menueTabs.current.offsetHeight;
+			ref_mainBody.current.style.top = String(q)+"px";
 		}
-  }
-  window.addEventListener("navDropDown", onNavDropDown)
-	
+	}
 	useEffect(() => {
 		onNavDropDown();
-  })
-  
-  function selectMenue(selection){
+	}, [menueSelection[0]])
+  	useEffect(()=>{
+  		window.addEventListener("navDropDown", onNavDropDown)
+  	},[])
+
+	function selectMenue(selection){
 		if (selection==="Liked") {
 			return liked;
-		} else {
+		} else if (selection==="Authored") {
 			return authored;
+		} else {
+			return null; 
 		}
-  }
+	}
 
-  return(
-  <>		
-		<h3 style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</h3>
-				
-		<div ref={refA} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
-			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection[0]==='Authored' && 'green'}`} onClick={(e)=>menueHandle(e,"Authored")}>Authored</BtnMenue>
-			<BtnMenue style={{width:'6rem',height:'2rem'}} className={`${menueSelection[0]==='Liked'		 && 'green'}`} onClick={(e)=>menueHandle(e,"Liked")}>Liked</BtnMenue>
-		</div>
-				
-		<div ref={refB} className="hscroll scrollStyle gridContainer">
-		{
-			selectMenue(menueSelection[0]).map( (item, index) =>
-				<Exercise
-					style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
-					key={index}
-					identifier={index}
-					isUser={true}
-					url={'../../' + item['id']} 
-					chalange={item}
-					userid={window.jsonData['userid']}
-					isOptions={true}
-					forceRenderDummyState={menueSelection}
-				/>
-			)
-		}	
-		</div>
-	</>
-  )
+	return( <>		
+	
+	{/* greeting */}
+	<h3 style={{'padding': '0rem 0rem 0rem 1rem'}}>welcome {userName}</h3>
+		
+	{/* menue tabs (buttons) */}	
+	<div ref={ref_menueTabs} style={{'padding': '0rem 0rem 0rem 0.3rem'}}>
+		
+		<BtnMenue 
+			className={`menueTabs ${menueSelection[0]==='Authored' && 'green'}`} 
+			onClick={(e)=>menueHandle(e,"Authored")}
+		>
+		Authored
+		</BtnMenue>		
+
+		<BtnMenue 
+			className={`menueTabs ${menueSelection[0]==='Liked' && 'green'}`} 
+			onClick={(e)=>menueHandle(e,"Liked")}
+		>
+		Liked
+		</BtnMenue>
+		
+		<BtnMenue 
+			className={`menueTabs ${menueSelection[0]==='Messages' && 'green'}`} 
+			onClick={(e)=>menueHandle(e,"Messages")}
+		>
+		Messages
+		
+		{ messages[0].length !== 0 &&
+			<div className='messagesDot'/>
+		}
+
+		</BtnMenue>
+	</div>
+	
+	{/* main body */}	
+	<div 
+		ref={ref_mainBody} 
+		className="hscroll scrollStyle ${menueSelection[0]===tabs[2] && gridContainer}"
+	>
+	
+	{ tabs.slice(0,2).includes(menueSelection[0]) && 
+		selectMenue(menueSelection[0]).map( (item, index) =>
+			<Exercise
+				style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
+				key={index}
+				identifier={index}
+				isUser={menueSelection[0]===tabs[0] ? true : false}
+				url={'/' + item['id']} 
+				chalange={item}
+				userid={window.jsonData['userid']}
+				isOptions={menueSelection[0]===tabs[0] ? true : false}
+				forceRenderDummyState={menueSelection}
+			/>
+		)
+	}
+	
+	{ menueSelection[0] === tabs[2] &&
+		
+		messages[0].map((e,i) => 
+			<Message 
+				key={i}
+				messages={messages}
+				messageId={e[0]}
+				chalangeId={e[1]} 
+				creationDate={e[2]}
+				sender={e[3]}
+				>
+			{e[4]}
+			</Message>
+		)
+	}
+
+	</div>
+	
+	
+	</> )
 }
 export default User;
 

@@ -1,10 +1,10 @@
-.bottomRight{
+.bottomRight {
 	position: fixed;
 	bottom: 0;
 	right: 0;
 	white-space: nowrap;
 }
-.bottomLeft{
+.bottomLeft {
     display: flex;
     align-items: center;
 	position: fixed;
@@ -21,7 +21,7 @@
 	background-color: #777;
 }
 
-.additional{
+.additional {
 	vertical-align: middle;
 	background-color: #5b92e5;
 	border-radius: 100px;
@@ -32,14 +32,14 @@
 	height: 1.8rem;
     margin: 0rem 0.3rem 0rem 0rem;
 }
-.additional:hover{
+.additional:hover {
 	background-color: #6ba2f5;
 }
-.additional:active{
+.additional:active {
 	background-color: #5b92e5;
 }
 
-.additionalMenue{
+.additionalMenue {
     position: fixed;
     left: 0.3rem;
     bottom: 4rem;
@@ -49,7 +49,7 @@
     border-radius: 0.3rem;
 	color: white;
 }
-.additionalArrow{
+.additionalArrow {
     position: fixed;
     left: 0.9rem;
     bottom: 3.5rem;
@@ -59,15 +59,34 @@
     transform: rotate(45deg);
 }
 
-.report{
-	font-size: 0.7rem;
+.report {
 	-webkit-user-select: none;  
 	-moz-user-select: none;    
 	-ms-user-select: none;      
 	user-select: none;
 }
-.report:hover{
+.report:hover {
 	color: red;
+}
+
+.sendMessage{
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+}
+.sendMessage:hover {
+	color: green;
+}
+
+
+.info {
+	width: 1.3rem !important;
+	height: 1.3rem  !important;
+	border-color: black  !important;
+	border-width: 0.1rem !important;
+	border-style: solid !important;
+	margin-left: 1rem !important;
 }
 
 

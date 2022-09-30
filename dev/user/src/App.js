@@ -15,10 +15,19 @@ function App() {
 		
 		window.jsonData = 
 {
-    "signInFailure": false,
-    "isSignUp": false,
     "isAuth": true,
     "userid": 1,
+    "messages": [
+        // [messageId, chalangeId, message_creation_date, sender_name, message_text]        
+        [1, 1, '16:51 09/08/2022', 'sender 1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'], 
+        [2, 2, '16:51 09/08/2022', 'sender 2', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'], 
+        [3, 3, '16:51 09/08/2022', 'sender 3', 'Test message c'], 
+        [4, 4, '16:51 09/08/2022', 'sender 4', 'Test message d'], 
+        [5, 5, '16:51 09/08/2022', 'sender 5', 'Test message e'], 
+        [6, 6, '16:51 09/08/2022', 'sender 6', 'Test message f'], 
+        [7, 7, '16:51 09/08/2022', 'sender 7', 'Test message g'], 
+        [8, 8, '16:51 09/08/2022', 'sender 8', 'Test message h']
+    ],
     "data": [
         [
             {
@@ -43,16 +52,38 @@ function App() {
                 }
             }
         ],
-        [],
+        [
+            {
+                "id": 1,
+                "exercise": "b",
+                "answer": "b",
+                "hints": "b",
+                "author": 1,
+                "creationdate": "09/10/2022 - 10:47",
+                "title": "b",
+                "rating": [],
+                "tags": [],
+                "explain": "b",
+                "latex": "",
+                "authorName": "b",
+                "list_latex": {
+                    "title": [],
+                    "exercise": [],
+                    "answer": [],
+                    "hints": [],
+                    "explain": []
+                }
+            }
+        ],
         "a"
     ]
 }
 	
 	}
-	const signInFailure = window.jsonData['signInFailure']
+    const signInFailure = window.jsonData['signInFailure']
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
-  const userid = window.jsonData['userid']
+    const userid = window.jsonData['userid']
 	
   return (
     <>

@@ -4,7 +4,7 @@ import {useState} from 'react'
 // window.isdebug == false - for final production stage - site upload
 
 window.is_debug = (process.env.NODE_ENV === 'development')
-window.isdebug = true
+window.isdebug = false
 				
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
@@ -151,9 +151,6 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	return textList.join('');
 }
 export {mainText2html}
-
-
-
 
 
 

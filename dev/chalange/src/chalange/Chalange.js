@@ -3,7 +3,8 @@ import CSRFToken from "../shared/csrftoken";
 import {useState, useEffect} from 'react'
 import Tag from '../shared/tag/Tag'
 import BtnRound from '../shared/buttons/BtnRound'
-import {mainText2html} from '../shared/Functions'
+import BtnMenue from '../shared/buttons/BtnMenue'
+import {error_server, sendData, mainText2html} from '../shared/Functions'
 
 function Chalange(props){
   
@@ -50,7 +51,8 @@ function Chalange(props){
   const [dspAdditionalMenue, setAdditionalMenue] = useState(false);
   const [dspReport, setDspReport] = useState(false);
 	const [dspExplain, setDspExplain] = useState(false);
-	
+	const dspSendMessage = useState(false);
+
 	// latex
 	let identifier_latex = chalange['latex'];
 	let formFile_latex = chalange['list_latex'];
@@ -68,9 +70,69 @@ function Chalange(props){
 	
 	// end_latex
 
+	function sendLike() {
+  	if(isAuth) {
+			sendData('like', {
+				chalangeId: chalange['id'],
+				like: !dspLike ? 'True' : 'False', // this is a string for debbuging purposes
+				user: userid
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				
+				// data['result'] is 0: success
+				// data['result'] is str: data['result'] is an error string
+				
+				if(data['result']) {
+					console.log(data['result']);
+					window.alert(data['result']+'\nconsider reporting at the contact page');
+				}
+			});
+		}
+  }
+  function sendMessage() {
+
+  	if(isAuth) {
+	  	let message = document.getElementById('sendMessage').value;
+			
+			if(message.length > 800) {
+    		window.alert('over 800 characters not allowed.');
+    		return;
+    	}
+    	if(message.length < 5) {
+    		window.alert('less then 5 characters not allowed.');
+    		return;
+    	}
+
+			sendData('message2user', {
+				chalangeId: chalange['id'],
+				sender: userid,
+				receiver: window.jsonData['chalange']['author'],
+				message: message
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				
+				// data['result'] is 0: success
+				// data['result'] is str: data['result'] is an error string
+				
+				if(data['result']) {
+					console.log(data['result']);
+					window.alert(data['result']+'\nconsider reporting at the contact page');
+				} else { //success
+					window.alert('message sent successfully.');
+					dspSendMessage[1](false);
+					setDspReport(false);
+					setAdditionalMenue(false);
+				}
+			});
+		}
+  }
+
   function dspLikeHandle() { 
 	  if(isLike) { !dspLike ? setAddToLikes(0): setAddToLikes(-1) }
 	  else { !dspLike ? setAddToLikes(1): setAddToLikes(0) };
+  	sendLike();
   }
   function hintsHandle() { 
     setDspAnswer(false);
@@ -85,13 +147,18 @@ function Chalange(props){
 		setDspHints(false);
 		setDspAnswer(false);
 	}
-  function additionalMenueHandler(){
+  function additionalMenueHandler() {
     setAdditionalMenue(!dspAdditionalMenue);
   }
-  function reportHandle(){
+  function sendMessageHandle() {
+  	dspSendMessage[1](!dspSendMessage[0]);
+  	setDspReport(false)
+  }
+  function reportHandle() {
+  	dspSendMessage[1](false);
 	  setDspReport(!dspReport)
   }
-  
+
 	useEffect(()=>{
 		if(dspAnswer) {
 			document.getElementById('answer').innerHTML = htmlAnswer;
@@ -138,39 +205,30 @@ function Chalange(props){
 		</div>
 		
     <div className='bottomRight'>
-    
-      <iframe title='dummyframe' name="dummyframe" id="dummyframe" style={{"display": "none"}}></iframe>
-      <form action="/like/" target="dummyframe" method='POST'>
-        <CSRFToken />
-        <input type="hidden" name="chalangeId" value={chalange['id']}/>
-        <input type="hidden" name="like" value={dspLike}/>
-        <input type="hidden" name="user" value={userid}/>
-		
-				{ isAuth ?
-        <BtnRound state={[dspLike,setDspLike]} onClick={dspLikeHandle} type="submit" active={true}>
-          {chalange['rating'].length+addToLikes}<br/>Like
-        </BtnRound>
-				:
-				<BtnRound>{chalange['rating'].length}<br/>Like</BtnRound>
-				}
-				
-        { isHints &&
-          <BtnRound state={[dspHints, setDspHints]} onClick={hintsHandle}>
-            Hints
-          </BtnRound>
-        }
 
-        <BtnRound state={[dspAnswer, setDspAnswer]} onClick={answerHandle}>
-          Answer
+			{ isAuth ?
+       <BtnRound state={[dspLike,setDspLike]} onClick={dspLikeHandle} active={true}>
+         {chalange['rating'].length+addToLikes}<br/>Like
+       </BtnRound>
+			:
+			<BtnRound onClick={sendLike}>{chalange['rating'].length}<br/>Like</BtnRound>
+			}
+			
+      { isHints &&
+        <BtnRound state={[dspHints, setDspHints]} onClick={hintsHandle}>
+          Hints
         </BtnRound>
-				
-				{ isExplain &&
-					<BtnRound state={[dspExplain, setDspExplain]} onClick={explainHandle}>
-						Explain
-					</BtnRound>
-				}
+      }
+      <BtnRound state={[dspAnswer, setDspAnswer]} onClick={answerHandle}>
+        Answer
+      </BtnRound>
+			
+			{ isExplain &&
+				<BtnRound state={[dspExplain, setDspExplain]} onClick={explainHandle}>
+					Explain
+				</BtnRound>
+			}
 		
-      </form>
     </div>
 
     
@@ -186,6 +244,34 @@ function Chalange(props){
           { props.narrowWindow &&
             chalange['tags'].map(i => <Tag url={'../browse/'+i} key={i}>{i}</Tag>)
           }
+          
+          { isAuth &&
+  	      <>
+  	        <hr/>
+	          <div style={{display: 'flex', alignItems:'center'}}>
+	          	
+	          	<p onClick={sendMessageHandle} className='sendMessage'>send message</p>
+	          
+	          	<div className='tooltip'>
+	          	<BtnRound className='info'>i</BtnRound>
+	          	<span className="tooltiptext">
+	          		inform the author of typos, mistakes, improvements, etc.<br/>
+	          		the message would be sent with this exercise attached.
+	          	</span>
+	          	</div>
+
+	          </div>
+
+          	{ dspSendMessage[0] &&
+	          	<>
+	          	<textarea id='sendMessage' rows='4' type='textarea'/>
+	          	<br/>
+	          	<button onClick={sendMessage}>Send</button>
+	          	</>
+	          }
+	        </>
+          }
+
           <hr/>
           <p onClick={reportHandle} className='report'>report</p>
           
@@ -194,6 +280,7 @@ function Chalange(props){
           }
           
         </div>
+
       </> }
 
       <div className='vscroll'>

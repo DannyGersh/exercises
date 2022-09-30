@@ -1,3 +1,8 @@
+.menueTabs {
+	width: 6rem;
+	height:2rem;
+}
+
 .scrollStyle{
 	position: fixed;
 	bottom: 0px;
@@ -6,4 +11,25 @@
 	margin: 0.6rem;
 	text-align: center;
 	border-radius: 0.3rem;
+}
+
+.message {
+	display: flex;
+	justify-content: space-between; 
+	width: calc(100% - 4rem);
+	word-wrap: break-word;
+	height: unset;
+}
+.messageBody {
+	display: inline-block;
+	word-break: break-word;
+}
+.messagesDot {
+	background-color: #ff6666; 
+	width: 0.5rem; 
+	height: 0.5rem;
+	border-radius: 50%;
+	position: relative;
+	top: -1.5rem;
+	left: 5.2rem;
 }

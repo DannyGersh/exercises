@@ -5,12 +5,20 @@ import "./Card.css"
 function Card(props){
 	
 	function redirect(){
-		window.location.replace(props.url);
+		if(props.isRedirect) {
+			window.location.replace(props.url);
+		}
 	}
 	return(
 	<>
 		<div 
-			className={`card ${props.className && props.className} ${props.narrowWindow ? 'narrowWindow': 'wideWindow'}`}
+			className = {
+				`card 
+				${props.isRedirect && 'redirect'} 
+				${props.className && props.className} 
+				${props.narrowWindow ? 'narrowWindow': 'wideWindow'}
+				${props.isRedirect && 'redirect'}`
+			}
 			style={props.style}
 			onClick={redirect}>
 		{ props.children }

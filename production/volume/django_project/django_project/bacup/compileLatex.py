@@ -67,6 +67,8 @@ def gen_svg(latex, user, identifier, pacages):
 			return -1
 			
 	dir_base = os.path.join(dir_static, user)
+	dir_svg = os.path.join(dir_base, 'svg')
+	file_tex = os.path.join(dir_svg, identifier)
 	os.chdir(dir_base)
 		
 	if not os.path.exists('svg'):
@@ -74,16 +76,26 @@ def gen_svg(latex, user, identifier, pacages):
 	
 	os.chdir('svg')
 	
-	with open(identifier+'.tex', 'w') as f:
+	with open(identifier + '.tex', 'w') as f:
 		# print(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 		f.write(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
-		
+
 	# dangere zone
-	
 	res = 0
 	def run(strList):
 		return subprocess.run(strList, timeout=2).returncode
 	
+	try:
+		subprocess.Popen([
+			'/volume/django_project/django_project/compileLatex.sh', 
+			dir_svg,
+			identifier,
+		])
+	except Exception as exp:
+		# print(exp)
+		pass
+
+	''' TODO - remove when stable
 	if not res:
 		res = run([
 			'pdflatex',
@@ -114,7 +126,8 @@ def gen_svg(latex, user, identifier, pacages):
 			identifier+'.pdf',
 			identifier+'.tex',
 	])	
-	
+	'''
+
 	# end dangere zone
 	
 	os.chdir(dir_original)
@@ -200,7 +213,8 @@ def updateLatexList(latexList, user, target, pacages):
 	os.chdir(dir_svg)
 	for i in os.listdir():
 		if i not in temp:
-			os.system('rm '+i)
+			#os.system('rm '+i)
+			pass
 				
 	os.chdir(dir_original)
 

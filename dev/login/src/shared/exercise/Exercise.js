@@ -1,8 +1,8 @@
+import './Exercise.css'
 import Card from '../card/Card'
 import BtnRound from '../../shared/buttons/BtnRound'
 import Tag from '../../shared/tag/Tag'
 import BtnMenue from '../../shared/buttons/BtnMenue'
-import './Exercise.css'
 import {mainText2html} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
 import {sendData} from '../../shared/Functions'
@@ -61,44 +61,63 @@ function Exercise(props){
 	
   return(
   <>
-	<Card url={props.url} style={props.style} className={props.className} narrowWindow={props.narrowWindow}>
-      
-			<div className='topRight'>
-				{ props.isOptions && <BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>}
-			</div>
-			{ dspOptions[0] && 
-				<div style={{display:'flex'}}>
+	<Card 
+		url={props.url} 
+		style={props.style} 
+		className={props.className} 
+		narrowWindow={props.narrowWindow}
+		isRedirect={true}
+	>
+    
+    {/*Card children*/} 
+
+	{/* aditional menue button - only on profile */}
+	{ props.isOptions && 
+		<div className='topRight'>
+			<BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>
+		</div>
+	}
+
+	{/* aditional menue - only on profile */}
+	{ dspOptions[0] && 
+		
+		<div style={{display:'flex'}}>
 					
-					<form name='Edit' action={'/new/'} method='POST'>
-						<CSRFToken/>
-						<input type="hidden" name="id_exercise" value={	props.chalange['id'] } />
-						<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
-					</form>
+		<form name='Edit' action={'/new/'} method='POST'>
+			<CSRFToken/>
+			<input type="hidden" name="id_exercise" value={	props.chalange['id'] } />
+			<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
+		</form>
 
-					<BtnMenue onClick={(evt)=>onDelete(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Delete</BtnMenue>
-				</div>
-			}
-			
-			<div className='bottomRight'>
-				<BtnRound>
-				{props.chalange['rating'].length}<br/>Likes
-				</BtnRound>
-			</div>
+		<BtnMenue onClick={(evt)=>onDelete(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Delete</BtnMenue>
+		</div>
 
-			<div style={{maxHeight: '12rem', overflow:'hidden'}}>
-				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
-				<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
-			</div>
+	}
+	
+	{/* likes */}		
+	<div className='bottomRight'>
+		<BtnRound>
+		{props.chalange['rating'].length}<br/>Likes
+		</BtnRound>
+	</div>
+
+	{/* title, exercise */}
+	<div style={{maxHeight: '12rem', overflow:'hidden'}}>
+		<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
+		<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
+	</div>
+	
+	{/* tags */}		
+	<div style={{height:'3rem'}}/>
 			
-			<div style={{height:'3rem'}}/>
-			
-      <div className="vscroll bottomLeft">
-      { 
-				props.chalange['tags'].map((i) => 
-					<Tag key={i} url={'/browse/'+i}>{i}</Tag>
-				)
-			}
-      </div>
+	    <div className="vscroll bottomLeft">
+	    { 
+			props.chalange['tags'].map((i) => 
+				<Tag key={i} url={'/browse/'+i}>{i}</Tag>
+			)
+		}
+    
+    </div>
 		    
     </Card>
   </>

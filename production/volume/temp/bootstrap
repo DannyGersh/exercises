@@ -22,8 +22,9 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 cd /volume/temp/
-psql -U postgres -a -f createChalanges.sql
+psql -U postgres -a -f createTableChalanges.sql
 psql -U postgres -a -f createTableTags.sql
+psql -U postgres -a -f createTableMessages.sql
 psql -U postgres -a -f updateTableAuthUser.sql
 
 gunicorn -c /volume/conf/gunicorn_config.py django_project.wsgi &

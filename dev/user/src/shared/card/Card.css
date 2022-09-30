@@ -1,4 +1,5 @@
-.card{
+.card {
+	display: inline-block;
 	position: relative;
 	border-radius: 0.5rem;
 	background-color: #fbceb1;
@@ -7,17 +8,12 @@
 	width: calc(100% - 4rem);
 	border: none;
 	text-align: left;
-	max-height: 15rem;
+	height: 15rem;
 	overflow: hidden;
 }
-.card:hover{
-	/*background-color: #ffd5b8;*/
+.redirect:hover {
 	cursor: pointer;
 }
-.card:active{
-	background-color: #fbceb1;
-}
-
 
 .narrowWindow{
 	width: calc(50% - 5rem);
