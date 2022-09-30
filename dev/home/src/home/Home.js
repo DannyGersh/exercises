@@ -10,7 +10,7 @@ function Home(props) {
 	const latest = window.jsonData['latest'];
 	const hotest = window.jsonData['hotest'];
 	const ms = useState(false) // Menue Selection - true: latest, false: hotest
-
+	
 	return(
 	<>		
 		<center>
@@ -23,7 +23,7 @@ function Home(props) {
 		<div className='gridContainer'>
 		{ (ms[0] ? latest: hotest).map( (item,index) =>
 				<Exercise
-					narrowWindow={!window.nrw}
+					narrowWindow={window.nrw}
 					key={index}
 					identifier={index}
 					isUser={true}

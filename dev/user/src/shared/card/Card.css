@@ -8,7 +8,7 @@
 	width: calc(100% - 4rem);
 	border: none;
 	text-align: left;
-	height: 15rem;
+	height: var(--cardHeight);
 	overflow: hidden;
 }
 .redirect:hover {
@@ -16,8 +16,10 @@
 }
 
 .narrowWindow{
-	width: calc(50% - 5rem);
+	width: calc(100% - 5rem);
+	height:  unset;
+	max-height: var(--cardHeight);
 }
 .wideWindow{
-	width: calc(100% - 5rem);
+	width: calc(50% - 5rem);
 }

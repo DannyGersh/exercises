@@ -1,9 +1,8 @@
 import "./Card.css"
 
 // define props.url to be a url for redirection.
-
 function Card(props){
-	
+
 	function redirect(){
 		if(props.isRedirect) {
 			window.location.replace(props.url);

@@ -156,7 +156,7 @@ function User(){
 	{ tabs.slice(0,2).includes(menueSelection[0]) && 
 		selectMenue(menueSelection[0]).map( (item, index) =>
 			<Exercise
-				style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
+				narrowWindow={window.nrw}
 				key={index}
 				identifier={index}
 				isUser={menueSelection[0]===tabs[0] ? true : false}

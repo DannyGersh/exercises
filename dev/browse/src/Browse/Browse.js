@@ -17,28 +17,28 @@ function Browse(){
 	
 	<p style={{'padding': '0rem 0rem 0rem 1rem'}}>search result for: <strong>{window.jsonData["search term"]}</strong></p>
 	
-	<center>
-	<div className='gridContainer'>
+	<center className='gridContainer'>
+
 	{ items.length !== 0 ?
-	  items.map( (item,index) =>
+	items.map( (item,index) =>
       <Exercise
-					style={window.nrw ? {width:'calc(100% - 5rem)'}: {width:'calc(50% - 5rem)'}}
-					key={index}
-					identifier={index}
-					isUser={true}
-					title={item['title']} 
-					paragraph={item['question']} 
-					url={'../../' + item['id']} 
-					likes={item['rating'].length} 
-					tags={item['tags']}
-					chalange={item}
-					forceRenderDummyState={[null,null]}
-				/>
-      )
-	  :
-	  <p>no results found</p>
+		narrowWindow={window.nrw}
+		key={index}
+		identifier={index}
+		isUser={true}
+		title={item['title']} 
+		paragraph={item['question']} 
+		url={'/' + item['id']} 
+		likes={item['rating'].length} 
+		tags={item['tags']}
+		chalange={item}
+		forceRenderDummyState={[null,null]}
+	/>
+    )
+	:
+	<p>no results found</p>
 	}
-	</div>
+
 	</center>
 	
   </>
