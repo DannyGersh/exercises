@@ -4,11 +4,26 @@ this website is meant for people to upload and solved exercises in math, physics
 
 ## currently supported functionality:
 
-* log in & sign up
-* create\edit\delete exercises on your profile
-* view & like exercises others have created
-* latex supported - everything that comes with the "texlive-latex-extra" installation
-* usage of latex packages
+- login / sign up.
+- profile:
+  - view liked and authored exercises.
+  - view messages from other users.
+  - edit, delete own exercises.
+  - delete own messages.
+- exercises:
+  - create, preview and display mode.
+  - navigation tabs: main body, solution, hints and explanation.
+  - additional menu: author name, date of creation, message author, report.
+- latex:
+  - all latex in the" texlive-latex-extra" installation is supported.
+  - usage of packages.
+  - latex, normal text combination.
+  - content wrapping - the same exercise looks good on all monitor sizes, even with latex.
+- browse by - latest, hottest.
+- search bar - matching text for all elements of an exercises.
+- tags:
+  - clickable tags. click to view exercise with the same tag.
+  - creation of new tags.
 
 ## technical overvie:
 
