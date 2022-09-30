@@ -5,7 +5,15 @@ import {useState} from 'react'
 
 window.is_debug = (process.env.NODE_ENV === 'development')
 window.isdebug = false
-				
+
+/*
+windowBp - window break point
+defines the window width in rem,
+at which the app changes from
+narrow display mode to wide.
+*/
+const windowBp = 50;
+		
 export function compArr(arr1, arr2) {
 		return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
@@ -24,16 +32,15 @@ export {remToPx};
 	
 function useWindowResize(){
 
-	const maxWidthInRem = 30;
 	const [narrowWindow, setNarrowWindow] = useState(
-      ( px2rem(window.innerWidth) < maxWidthInRem )
+      ( px2rem(window.innerWidth) < windowBp )
       ? true : false
   );
 	
 	function windowResizeHandler(){
     const w = px2rem(window.innerWidth);
 
-    if( w  < maxWidthInRem ){
+    if( w  < windowBp ){
   		setNarrowWindow(true);
   	} else {
   		setNarrowWindow(false);
