@@ -185,9 +185,11 @@ function Chalange(props){
 		}
 	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 
+	// EXERIMENTAL
 	@include './jsx.jsx'
 	@ the above directive pasts in here
 	@ all the jsx, including jsx_main
+	@ this is a comment
 
 	return(jsx_main)
 

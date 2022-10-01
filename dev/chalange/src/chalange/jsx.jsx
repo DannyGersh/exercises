@@ -1,6 +1,6 @@
+// EXERIMENTAL
 
 
-// ---
 
 const jsx_exercise_body = 
 <>
@@ -18,12 +18,16 @@ const jsx_exercise_body =
 
 </>
 
+
 // ---
+
 
 const jsx_explain_body = 
 <div id='explain' style={{whiteSpace: 'break-spaces'}}/>
 
+
 // ---
+
 
 const jsx_bottom_right_menue = 
 <div className='bottomRight'>
@@ -54,7 +58,9 @@ const jsx_bottom_right_menue =
 
 </div>
 
+
 // ---
+
 
 const jsx_tooltip = 
 <div className='tooltip'>
@@ -67,7 +73,9 @@ const jsx_tooltip =
 
 </div>
 
+
 // ---
+
 
 const jsx_send_message = 
 <>
@@ -90,18 +98,22 @@ const jsx_send_message =
 
 </>
 
+
 // ---
+
 
 const jsx_popup_menue = 
 <>
 
+	{/* what makes the popup look like a talking buble */}
   <div className='additionalArrow'/>
 
+	{/* main popup */}
   <div className='additionalMenue'>
 
     Created by {chalange['authorName']} <br/> {chalange['creationdate']}  <br/>
     { props.narrowWindow &&
-      chalange['tags'].map(i => <Tag url={'../browse/'+i} key={i}>{i}</Tag>)
+      chalange['tags'].map(i => <Tag url={'/browse/'+i} key={i}>{i}</Tag>)
     }
 
     { isAuth && jsx_send_message}
@@ -118,6 +130,7 @@ const jsx_popup_menue =
   </div>
 
 </>
+
 
 // ---
 
@@ -137,6 +150,7 @@ const jsx_bottom_left_menue =
  	</div>          
 
 </div>
+
 
 // ---
 
