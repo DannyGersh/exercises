@@ -191,7 +191,6 @@ function Chalange(props){
 
 const jsx_exercise_body = 
 <>
-	
 	<div id='title' className='textWithLatex'></div>
 	<div id='exercise' className='textWithLatex'></div>
 		
