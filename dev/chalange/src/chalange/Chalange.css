@@ -1,3 +1,7 @@
+.textWithLatex {
+	whiteSpace: break-spaces;
+}
+
 .bottomRight {
 	position: fixed;
 	bottom: 0;
@@ -88,6 +92,8 @@
 	border-style: solid !important;
 	margin-left: 1rem !important;
 }
+
+
 
 
 

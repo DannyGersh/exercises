@@ -12,7 +12,7 @@ function App() {
 
 		window.jsonData = 
 {
-    "isAuth": false,
+    "isAuth": true,
     "userid": 1,
     "chalange": {
         "id": 1,

@@ -236,6 +236,7 @@ def Chalange(request, id):
 	outData['chalange'] = getChalange(id)
 	
 	if outData['chalange']:
+		print(outData)
 		return render(request, 'chalange.html', context={'value': outData})
 	else:
 		return HttpResponse("could not find this exercise")

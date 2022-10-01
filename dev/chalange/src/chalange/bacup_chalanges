@@ -186,7 +186,6 @@ function Chalange(props){
 	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 
 
-
 // ---
 
 const jsx_exercise_body = 
@@ -208,8 +207,7 @@ const jsx_exercise_body =
 
 // ---
 
-const jsx_explain_body = 
-<div id='explain' style={{whiteSpace: 'break-spaces'}}/>
+const jsx_explain_body = <div id='explain' style={{whiteSpace: 'break-spaces'}}/>
 
 // ---
 
