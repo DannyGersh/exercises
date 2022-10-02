@@ -77,14 +77,25 @@ reg_latex_search = r'\$\$(.+?)\$\$'
 def testNameUnique(request):
 	
 	# validate name uniquenes on user sign in
-	uname = json.load(request)
+	
+	# input - str - username to check if unique in sql
+	
+	# output
+	# {"isUnique": bool, "error": str}
+	# "error": str - 0: success, str: - error message
+	
+	uname = json.loads(request.body.decode("utf-8"))
 
-	cur.execute('''
-		select username from auth_user
-	''')
+	try:
+		cur.execute('''
+			select username from auth_user
+		''')
+	except err:
+		return JsonResponse({"isUnique":uname not in inData, "error":err})
+
 	inData = [i[0] for i in cur.fetchall()]
 
-	return JsonResponse({"isUnique":uname not in inData})
+	return JsonResponse({"isUnique":uname not in inData, "error": 0})
 
 @ensure_csrf_cookie
 def AddTag(request):

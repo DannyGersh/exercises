@@ -3,17 +3,17 @@ import CSRFToken from "../shared/csrftoken";
 import ReCAPTCHA from "react-google-recaptcha";
 import BtnMenue from '../shared/buttons/BtnMenue'
 import {sendData} from '../shared/Functions'
-import {useState, createRef, useEffect} from 'react'
+import {useState, useRef, useEffect} from 'react'
 
 function Login(props) {
 	
 	const isLogin = window.jsonData['isLogIn'];
 	
-	const ref_cap = createRef(window.is_debug)
-	const ref_terms = createRef(false)
-	const ref_uname = createRef('');
-	const ref_password = createRef('');
-	const ref_confirm_password = createRef('');
+	const ref_cap = useRef(window.isdebug)
+	const ref_terms = useRef(window.isdebug)
+	const ref_uname = useRef('');
+	const ref_password = useRef('');
+	const ref_confirm_password = useRef('');
 
 	const Lcase = useState(false);
 	const Ucase = useState(false);
@@ -33,47 +33,61 @@ function Login(props) {
 	async function submitMainForm() {
 	  	
 	  	// NOTE - validate
-		
-		let proceed = true;
-	  			
+
+	  	// ceck if empty		
 	  	if(!ref_uname.current.value || !ref_password.current.value) {
 			window.alert('make sure all fields are valid');
-			proceed = false;
+			return;
 	  	}
 	  	
-	  	else if(!isLogin) { // signup
+	  	// signup
+	  	else if(!isLogin) { 
+
+	  		// passwords dont match
 	  		if(ref_password.current.value !== ref_confirm_password.current.value) {
 	  			window.alert('password does not match verify password');
-	  			proceed = false;
+	  			return;
 	  		}
+	  		// captcha not human
 	  		else if(!ref_cap.current) {
 	  			window.alert("make sure that you are human.");
-	  			proceed = false;
+	  			return;
 	  		}
+	  		// terms not checked
 	  		else if(!ref_terms.current) {
 	  			window.alert("please read the terms and conditions.");
-	  			proceed = false;
+	  			return;
 	  		}
+	  		// validate password
+	  		else if(!Lcase[0] || !Ucase[0] || !Ncase[0] || !Scase[0]) {
+	  			window.alert("make sure password is valid.");
+	  			return;
+	  		}
+	  		// dont convert last "else if" to "else".
 	  	}
-	  	// dont convert last "else if" to "else".
 
+	  	// TODO - encapsulate fetch even more
 	  	// let server check if uname is unique on signup
-	  	if(!isLogin && proceed) {
-	  		await sendData('testNameUnique', ref_uname.current.value)
-				.then((response) => response.json())
-				.then((data) => {
-					if(!data['isUnique']) { 
+	  	if(!isLogin) {
+			sendData('testNameUnique', ref_uname.current.value)
+			.then((response) => response.json())
+			.then((data) => {
+				
+				// data['error'] is 0: success
+				// data['error'] is str: data['error'] is an error string
+				
+				if(data['error']) {
+					console.log(data['error']);
+					window.alert(data['error']+'\nconsider reporting at the contact page');
+				} else {
+					if(!data['isUnique']) {
 						window.alert('display name taken, choose another one');
-						proceed = false;
+					} else {
+						document.getElementById("mainForm").submit();
 					}
+				}
 			});
-	  	}
-
-	  	// NOTE_END - validate
-
-	  	if(proceed) {
-	  		document.getElementById("mainForm").submit();
-	  	}
+		}
 
 	}
 
@@ -119,9 +133,9 @@ function Login(props) {
 		<p style={{color: `${Scase[0] ? 'green': 'red'}`}}>{Scase[0] ? '✓': 'x'} more than 7 characters</p>
 		</div>
 		
-		{ !window.is_debug &&
+		{ !window.isdebug &&
 		<ReCAPTCHA
-    	sitekey={window.isdebug ? "6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5": "6LdeXCsiAAAAALHCw874KA8T09tr1iECZcwQ8n8v"}
+    	sitekey={window.isdebug ? "6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5": "6Ld73kkiAAAAAM7Pp9rgeUTA9uBZEdojcYiadpuk"}
     	onChange={()=>ref_cap.current=true}
     	onExpired={()=>ref_cap.current=false}
   		/>
