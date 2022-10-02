@@ -1008,6 +1008,11 @@ def NewSubmited(request):
 	return redirect('/')
 
 
+def Test(request):
+	body = json.loads(request.body.decode("utf-8"))
+	print(body)
+	return JsonResponse({"error":"a"})
+
 
 urlpatterns = [
   path('admin/', admin.site.urls),
@@ -1034,4 +1039,6 @@ urlpatterns = [
 	path('message2user/',Message2user),
 	path('deleteMessage/', DeleteMessage),
 	path('testNameUnique/', testNameUnique),
+
+	path('test123/', Test),
 ]

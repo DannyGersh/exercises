@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import BtnMenue from '../shared/buttons/BtnMenue'
 import {sendData} from '../shared/Functions'
 import {useState, useRef, useEffect} from 'react'
+import {TsendData} from '../shared/Functions'
 
 function Login(props) {
 	
@@ -19,7 +20,14 @@ function Login(props) {
 	const Ucase = useState(false);
 	const Ncase = useState(false);
 	const Scase = useState(false);
-	
+
+//	TODO - replace sendData with TsendData	
+//	TsendData('test1234', 'a',
+//		(success)=>console.log(success),
+//		()=>{}
+//		
+//	);
+
 	function validate() {
 		
 		let text = ref_password.current.value;
@@ -87,6 +95,8 @@ function Login(props) {
 					}
 				}
 			});
+		} else {
+			document.getElementById("mainForm").submit();
 		}
 
 	}
