@@ -76,20 +76,3 @@ body{
 }
 
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  position: absolute;
-  white-space: nowrap; 
-  text-align: center;
-  z-index: 1;
-
-  color: black;
-  background-color: white;
-  border-radius: 6px;
-  
-  padding: 0.5rem;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}

@@ -1,7 +1,8 @@
 import './Chalange.css'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import Tag from '../shared/tag/Tag'
 import BtnRound from '../shared/buttons/BtnRound'
+import ToolTip from '../shared/tooltip/ToolTip'
 import {sendData, mainText2html} from '../shared/Functions'
 
 function Chalange(props){
@@ -54,6 +55,25 @@ function Chalange(props){
 	const dspExplain = useState(false);
 	const dspSendMessage = useState(false);
 
+	const ref_test = useRef(null)
+	window.addEventListener("resize", ()=>{
+		
+		const ref = ref_test.current;
+
+		if(ref){
+			const rect = ref.getBoundingClientRect();
+			const left = rect['left'];
+			const right = rect['right'];
+
+			if(right > window.innerWidth){
+
+				const width = (window.innerWidth - left).toString();
+				ref_test.current.style.whiteSpace = 'unset'
+				ref_test.current.style.width = width+'px'
+				
+			}
+		}
+	});
 
 	// latex
 
@@ -185,13 +205,14 @@ function Chalange(props){
 		}
 	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 
-	// EXERIMENTAL
+	// EXPERIMENTAL
 // EXERIMENTAL
 
 
 
 const jsx_exercise_body = 
 <>
+
 	<div id='title' className='textWithLatex'></div>
 	<div id='exercise' className='textWithLatex'></div>
 		
@@ -220,6 +241,7 @@ const jsx_explain_body =
 const jsx_bottom_right_menue = 
 <div className='bottomRight'>
 
+	{/* like btn */}
 	{ isAuth ?
     <BtnRound state={dspLike} onClick={likeHandle} active={true}>
     	{chalange['rating'].length+addToLikes[0]}<br/>Like
@@ -254,7 +276,7 @@ const jsx_tooltip =
 <div className='tooltip'>
 
 	<BtnRound className='info'>i</BtnRound>
-	<span className="tooltiptext">
+	<span ref={ref_test} className="tooltiptext">
 		inform the author of typos, mistakes, improvements, etc.<br/>
 		the message would be sent with this exercise attached.
 	</span>
@@ -272,7 +294,17 @@ const jsx_send_message =
 
 	<p onClick={sendMessageHandle} className='sendMessage'>send message</p>
 
-	{ jsx_tooltip }
+	<ToolTip 
+		id1 = 'ToolTip1'
+		id2 = 'ToolTip2'
+		text = '
+		inform the author of typos, mistakes, improvements, etc.
+		the message would be sent with this exercise attached.
+		'
+	>
+	<BtnRound className='info'>i</BtnRound>
+	</ToolTip>
+
 
 	</div>
 
@@ -344,7 +376,7 @@ const jsx_bottom_left_menue =
 
 const jsx_main = 
 <div style={{paddingLeft: '1rem'}}>
-			
+	
 	<div className='hscroll' style={{height:'calc(100vh - 6rem)'}}>
 			
 		{ dspExplain[0] ? 
@@ -361,6 +393,7 @@ const jsx_main =
 </div>
 
 // ---
+
 
 	return(jsx_main)
 

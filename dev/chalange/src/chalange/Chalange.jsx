@@ -1,7 +1,8 @@
 import './Chalange.css'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import Tag from '../shared/tag/Tag'
 import BtnRound from '../shared/buttons/BtnRound'
+import ToolTip from '../shared/tooltip/ToolTip'
 import {sendData, mainText2html} from '../shared/Functions'
 
 function Chalange(props){
@@ -54,6 +55,25 @@ function Chalange(props){
 	const dspExplain = useState(false);
 	const dspSendMessage = useState(false);
 
+	const ref_test = useRef(null)
+	window.addEventListener("resize", ()=>{
+		
+		const ref = ref_test.current;
+
+		if(ref){
+			const rect = ref.getBoundingClientRect();
+			const left = rect['left'];
+			const right = rect['right'];
+
+			if(right > window.innerWidth){
+
+				const width = (window.innerWidth - left).toString();
+				ref_test.current.style.whiteSpace = 'unset'
+				ref_test.current.style.width = width+'px'
+				
+			}
+		}
+	});
 
 	// latex
 
@@ -185,7 +205,7 @@ function Chalange(props){
 		}
 	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 
-	// EXERIMENTAL
+	// EXPERIMENTAL
 	@include './jsx.jsx'
 	@ the above directive pasts in here
 	@ all the jsx, including jsx_main
