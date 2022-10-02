@@ -15,7 +15,7 @@ function Home(props) {
 	<>		
 		<center>
 		<h1>www.ididthisforu.com</h1>
-		<p>The website for uploading and solving exercises in any field</p>
+		<p style={{margin:'1rem'}}>The website for uploading and solving exercises in any field</p>
 		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={()=>ms[1](false)}>hottest</BtnMenue>
 		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
 		</center>
