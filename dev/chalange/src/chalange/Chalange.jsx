@@ -208,7 +208,7 @@ function Chalange(props){
 	// EXPERIMENTAL
 	@include './jsx.jsx'
 	@ the above directive pasts in here
-	@ all the jsx, including jsx_main
+	@ all the contents of jsx.jsx.
 	@ this is a comment
 
 	return(jsx_main)
