@@ -4,7 +4,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 import BtnMenue from '../shared/buttons/BtnMenue'
 import {sendData} from '../shared/Functions'
 import {useState, useRef, useEffect} from 'react'
-import {TsendData} from '../shared/Functions'
 
 function Login(props) {
 	
@@ -21,13 +20,6 @@ function Login(props) {
 	const Ncase = useState(false);
 	const Scase = useState(false);
 
-//	TODO - replace sendData with TsendData	
-//	TsendData('test1234', 'a',
-//		(success)=>console.log(success),
-//		()=>{}
-//		
-//	);
-
 	function validate() {
 		
 		let text = ref_password.current.value;
@@ -38,10 +30,8 @@ function Login(props) {
 		Scase[1](text.length > 7);
 	}
 
-	async function submitMainForm() {
+	async function submitMain() {
 	  	
-	  	// NOTE - validate
-
 	  	// ceck if empty		
 	  	if(!ref_uname.current.value || !ref_password.current.value) {
 			window.alert('make sure all fields are valid');
@@ -72,45 +62,36 @@ function Login(props) {
 	  			return;
 	  		}
 	  		// dont convert last "else if" to "else".
+	  		// this is to ensure the script keeps on going.
 	  	}
 
-	  	// TODO - encapsulate fetch even more
-	  	// let server check if uname is unique on signup
-	  	if(!isLogin) {
-			sendData('testNameUnique', ref_uname.current.value)
-			.then((response) => response.json())
-			.then((data) => {
-				
-				// data['error'] is 0: success
-				// data['error'] is str: data['error'] is an error string
-				
-				if(data['error']) {
-					console.log(data['error']);
-					window.alert(data['error']+'\nconsider reporting at the contact page');
-				} else {
-					if(!data['isUnique']) {
-						window.alert('display name taken, choose another one');
-					} else {
-						document.getElementById("mainForm").submit();
-					}
+	  	if(isLogin) {
+
+	  		sendData('submitLogIn', {
+				'uname': ref_uname.current.value,
+				'password': ref_password.current.value,
+			})
+			.then(data=>window.location = data['url'])
+	  	
+	  	} else { // sign up
+	  		
+			sendData('submitSignUp', {
+				'uname': ref_uname.current.value,
+				'password': ref_password.current.value,
+			})
+			.then(data=>{
+				if(!data['error']) {
+					window.alert('Thank you for signing up!');
+					window.location = '/';
 				}
-			});
-		} else {
-			document.getElementById("mainForm").submit();
+			})
+
 		}
 
 	}
 
 	return(
 	<center style={{margin:'1rem'}}>
-
-	<form id='mainForm' action={ window.jsonData['isLogIn'] ? '/submitLogIn/' : '/submitSignUp/' } method='POST'>
-        
-    <CSRFToken/>
-        
-    <input type="hidden" name="login_signup" value={isLogin}/>
-    <input type="hidden" name="currentPage" value={props.currentPage}/>
-    <input type="hidden" name="validated" value={Lcase && Ucase && Ncase && Scase}/>
 
     { window.jsonData['isLogIn'] && 
 		<>
@@ -121,7 +102,7 @@ function Login(props) {
     	<input ref={ref_password} name='password' type='password'/>
 
     	<br/><br/>
- 		<BtnMenue className='green' onClick={submitMainForm} type='button'>{isLogin ? 'Log in': 'Sign up'}</BtnMenue>
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>{isLogin ? 'Log in': 'Sign up'}</BtnMenue>
  		<br/><br/>
  		<a href='/signup/'>Sign Up here</a>
     	</>
@@ -157,14 +138,13 @@ function Login(props) {
   		</div>  
 
     	<br/>
- 		<BtnMenue className='green' onClick={submitMainForm} type='button'>{isLogin ? 'Log in': 'Sign up'}</BtnMenue>
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>{isLogin ? 'Log in': 'Sign up'}</BtnMenue>
 
 		</>
     }
-        
     
-    </form>
 	</center>
+
 	)
 }
 export default Login;

@@ -78,7 +78,7 @@ function getCookie(name) {
 export {getCookie};
 
 //'http://www.ididthisforu.com/test/': 'http://localhost/test/'
-async function sendData(url, data, methode='POST') {
+async function raw_sendData(url, data, methode='POST') {
 	
 	if(url[0] === '/') {
 		url = url.slice(1,url.length)
@@ -113,8 +113,53 @@ async function sendData(url, data, methode='POST') {
 	}
 
 }
-export {sendData};
+export {raw_sendData};
 
+async function sendData(url, data, methode='POST'){
+	
+	// send data to server
+
+	// args:
+	// url - string
+	// data - object to send
+
+	// return: promise, resolves to object
+
+	if(methode === 'GET') {
+
+		return raw_sendData(url, data, 'GET')
+
+	} else if(methode === 'POST') {
+
+		return raw_sendData(url, data)
+			
+			// client side
+			.then((res)=>{
+				
+				if(res['status']===200) {
+					return new Promise(function(resolve, reject) {
+						resolve(res.json())
+					})
+				} else {
+					window.alert('an error has accurred ...');
+				}
+
+			})
+			// server side
+			.then((data)=>{
+				// here, error is not nesseseraly software failure
+				// it could be username not unique for example
+				if(data['error']) {
+					window.alert(data['error'])
+				} else {
+					return new Promise(function(resolve, reject) {
+						resolve(data)
+					})
+				}
+			});
+	}
+}
+export {sendData};
 
 
 function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
@@ -158,84 +203,6 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	return textList.join('');
 }
 export {mainText2html};
-
-
-
-
-
-
-
-
-
-
-
-async function TsendData(
-	url, data,
-	onSuccess=null, onError=null, 
-	on404err=null) {
-	
-	// send data to server and receive response
-
-	// onSuccess, onError are function callbacks
-	// onError args - str representing error.
-	// onSuccess args - object defined by the server.
-	// see urls.py for the object definition.
-
-	// url must be a valide url path on the server.
-	// otherwise 404 (Not Found)
-
-	// server responsibillity:
-	// must return as response on of the following:
-	// {error: str} on error
-	// {data: structure} on success
-
-	try {
-		sendData(url, data)
-		.then((response) => { 
-			if(response['status']==404) {
-				if(on404err) {
-					on404err()
-				} else {
-					var stack = new Error().stack;
-					window.alert('an error has occurred (404), consider reporting at the contact page.\n'+stack)
-				}
-			}
-			return response.json()
-		})
-		.then((data) => {
-			console.log(data)
-			if(data['error']) { // server error		
-
-				if(onError){ // user defined callback
-					onError(data['error']);
-				} else { // default
-					window.alert('an error has occurred on the server, consider reporting at the contact page.\n'+data['error']);
-				}
-
-			} else { // server success
-
-				if(onSuccess) { // user defined callback
-					onSuccess(data['data']);
-				}
-
-			}
-		});
-	} catch (error) {
-		console.error(error);
-	}
-}
-export {TsendData};
-
-
-
-
-
-
-
-
-
-
-
 
 
 
