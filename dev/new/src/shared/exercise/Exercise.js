@@ -3,9 +3,8 @@ import Card from '../card/Card'
 import BtnRound from '../../shared/buttons/BtnRound'
 import Tag from '../../shared/tag/Tag'
 import BtnMenue from '../../shared/buttons/BtnMenue'
-import {mainText2html} from '../../shared/Functions'
+import {mainText2html, sendData} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
-import {sendData} from '../../shared/Functions'
 import CSRFToken from '../../shared/csrftoken'
 
 function Exercise(props){
@@ -35,26 +34,16 @@ function Exercise(props){
 		
 		evt.stopPropagation();
 		
-		try{
-			if(window.confirm("Delete this exercise ?")) {
-				const promise = sendData(
-					'delete', 
-					[
-						props.chalange['id'],
-						props.chalange['latex'],
-					]
-				)
-				
-				promise.then(res => ()=>{
-				if(!res.status===200) {
-					window.alert('Failed deleting this exercise');
-				}});
-				
-				await new Promise(r => setTimeout(r, 200));
-				window.location.reload()
-			}
-		} catch {
-			window.alert('Failed deleting this exercise');
+		if(window.confirm("Delete this exercise ?")) {
+			sendData(
+				'delete', 
+				[
+					props.chalange['id'],
+					props.chalange['latex'],
+				]
+			)
+			await new Promise(r => setTimeout(r, 200));
+			window.location.reload()
 		}
 
 	}

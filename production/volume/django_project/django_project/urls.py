@@ -1,3 +1,5 @@
+# TODO - implement sql error table
+# get stack trace - traceback.print_exc(file=sys.stdout)
 
 from django.contrib import admin
 from django.urls import path
@@ -174,13 +176,13 @@ def UpdateLatex(request):
 
 	inData = json.loads(request.body.decode("utf-8"))
 
-	target = inData[0]
-	latexList = inData[1]
-	pacages = inData[2]
+	target = inData['target']
+	latexList = inData['latexList']
+	pacages = inData['pacages']
 	
 	res = updateLatexList(latexList, str(request.user.id), target, pacages)
 	
-	return HttpResponse('UpdateLatex')
+	return JsonResponse({'success': 0})
 
 def getChalange(id):
 	
@@ -312,16 +314,14 @@ def Home(request):
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
 	request.session['currentUrl'] = '/'
-
-	# TODO - this takes 22 SQL quaries, could be onley 2 !
 	
-	# TODO - make one SQL quary insted of 10
+	# TODO - make one SQL quary insted of many
 	cur.execute("select id from chalanges order by creationdate desc limit 10")
 	in_latest = cur.fetchall()	
 	for i in range(len(in_latest)):
 		in_latest[i] = getChalange(in_latest[i][0])
 	
-	# TODO - make one SQL quary insted of 10
+	# TODO - make one SQL quary insted of many
 	cur.execute("select id from chalanges order by cardinality(rating) desc limit 10")
 	in_hotest = cur.fetchall()	
 	for i in range(len(in_hotest)):
@@ -393,7 +393,7 @@ def Profile(request, userid):
 		messages = cur.fetchall()
 		outData['messages'] = messages
 	
-	except err:
+	except Exception as err:
 		print(err)
 
 	if request.user.is_authenticated and request.user.id == userid:		
@@ -515,11 +515,7 @@ def Like(request):
 	# chalangeId: chalange id (int),
 	# like: 'True' or 'False' (str), // this is a string for debbuging purposes
 	# user: user id (int)
-
-	# return values:
-	# {'result': 0} - success
-	# {'result': str} - str is the error
-				
+	
 	if request.method == "POST":
 
 		body = json.loads(request.body.decode("utf-8"))
@@ -530,7 +526,7 @@ def Like(request):
 		
 		# PERROR
 		if not chalangeId or not like or not user:
-			return JsonResponse({'result':'ERROR - missing information'})
+			return JsonResponse({'error':'could not like ...'})
 
 		# SQL
 		try:
@@ -544,13 +540,13 @@ def Like(request):
 				cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(chalangeId)+'\'')#
 		
 		except err:
-			return JsonResponse({'result':'ERROR - sql error\n'+err})
+			return JsonResponse({'error':'could not like ...'})
 	
 		conn.commit()
-		return JsonResponse({'result':0}) # success
+		return JsonResponse({'success':0}) # success
 	
 	# not a POST request	
-	return JsonResponse({'result':'ERROR - not a POST request'})
+	return JsonResponse({'error':'could not like ...'})
 
 def Message2user(request):
 
@@ -562,10 +558,6 @@ def Message2user(request):
 	# receiver: user receiving id (int),
 	# message: message (str)
 
-	# return values:
-	# {'result': 0} - success
-	# {'result': str} - str is the error
-				
 	if request.method == "POST":
 
 		body = json.loads(request.body.decode("utf-8"))
@@ -580,7 +572,7 @@ def Message2user(request):
 			or not sender
 			or not receiver
 			or not message):
-			return JsonResponse({'result':'ERROR - missing information'})
+			return JsonResponse({'error':'could not send message ...'})
 		
 		message = message.replace("'", "''")
 
@@ -596,12 +588,12 @@ def Message2user(request):
 				values('%s','%s','%s','%s')
 			'''%(chalangeId, sender, receiver, message))
 		except err:
-			return JsonResponse({'result':'ERROR - sql error\n'+err})
+			return JsonResponse({'error':'could not send message ...'})
 
-		return JsonResponse({'result':0}) # success
+		return JsonResponse({'success':0}) # success
 	
-	# not a POST request	
-	return JsonResponse({'result':'ERROR - not a POST request'})
+	# not a POST request
+	return JsonResponse({'error':'could not send message ...'})
 
 @ensure_csrf_cookie		
 def New(request, isSourceNav=False):
@@ -965,7 +957,7 @@ urlpatterns = [
 	
 	# fetch request
 	path('like/', Like),
-	path('test/', UpdateLatex),
+	path('updateLatex/', UpdateLatex),
 	path('delete/', DeleteChalange),
 	path('addtag/', AddTag),
 	path('message2user/',Message2user),

@@ -102,17 +102,6 @@ function Chalange(props){
 				like: !dspLike[0] ? 'True' : 'False', // this is a string for debbuging purposes (in the server)
 				user: userid
 			})
-			.then((response) => response.json())
-			.then((data) => {
-				
-				// data['result'] is 0: success
-				// data['result'] is str: data['result'] is an error string
-				
-				if(data['result']) {
-					console.log(data['result']);
-					window.alert(data['result']+'\nconsider reporting at the contact page');
-				}
-			});
 		}
   }
   function sendMessage() {
@@ -135,16 +124,8 @@ function Chalange(props){
 				receiver: window.jsonData['chalange']['author'],
 				message: message
 			})
-			.then((response) => response.json())
 			.then((data) => {
-				
-				// data['result'] is 0: success
-				// data['result'] is str: data['result'] is an error string
-				
-				if(data['result']) {
-					console.log(data['result']);
-					window.alert(data['result']+'\nconsider reporting at the contact page');
-				} else { //success
+				if(!data['error']) {
 					window.alert('message sent successfully.');
 					dspSendMessage[1](false);
 					dspReport[1](false);
