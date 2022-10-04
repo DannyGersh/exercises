@@ -172,7 +172,7 @@ def DeleteMessage(request):
 @ensure_csrf_cookie		
 def UpdateLatex(request):
 
-	inData =	json.loads(request.body.decode("utf-8"))
+	inData = json.loads(request.body.decode("utf-8"))
 
 	target = inData[0]
 	latexList = inData[1]
