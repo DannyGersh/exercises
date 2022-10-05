@@ -94,4 +94,10 @@
 }
 
 
+.textContainer {
+	position: fixed;
+	width: calc(100% - 2rem);
+}
+
+
 

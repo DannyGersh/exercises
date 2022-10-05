@@ -39,7 +39,7 @@ function Chalange(props){
 		castumErr('creationdate');
 	}
 			
-	useEffect( () => {
+	useEffect(() => {
 		isError && window.alert(errorStr);
 	}, [errorStr, isError])
 	
@@ -47,7 +47,7 @@ function Chalange(props){
 
 	// states - dsp = display
   const dspLike = useState(isLike);
-  const addToLikes = useState(0); // add 1 likes (without database intervension)
+  const addToLikes = useState(0); // add likes (without database intervension)
   const dspHints = useState(false);
   const dspAnswer = useState(false);
   const dspAdditionalMenue = useState(false);
@@ -55,26 +55,18 @@ function Chalange(props){
 	const dspExplain = useState(false);
 	const dspSendMessage = useState(false);
 
-	const ref_test = useRef(null)
-	window.addEventListener("resize", ()=>{
-		
-		const ref = ref_test.current;
-
-		if(ref){
-			const rect = ref.getBoundingClientRect();
-			const left = rect['left'];
-			const right = rect['right'];
-
-			if(right > window.innerWidth){
-
-				const width = (window.innerWidth - left).toString();
-				ref_test.current.style.whiteSpace = 'unset'
-				ref_test.current.style.width = width+'px'
-				
-			}
-		}
-	});
-
+	// set top position of 'Hionts' and 'Answer' to bottom of exercise
+	const ref_exercise = useRef();
+	const ref_hints = useRef();
+	const ref_answer = useRef();
+	const ref_explain = useRef();
+	useEffect(()=>{
+		const bottom = ref_exercise.current.getBoundingClientRect().bottom;
+		ref_hints.current.style.top = toString(bottom)+'px';
+		ref_answer.current.style.top = toString(bottom)+'px';
+		ref_explain.current.style.top = '3rem';
+	},[])
+	
 	// latex
 
 	// get server data
@@ -187,34 +179,47 @@ function Chalange(props){
 	},[htmlExplain, htmlTitle, htmlExercise, dspExplain])
 
 	// EXPERIMENTAL
-// EXERIMENTAL
-
 
 
 const jsx_exercise_body = 
 <>
 
-	<div id='title' className='textWithLatex'></div>
-	<div id='exercise' className='textWithLatex'></div>
-		
-	{ dspAnswer[0] && ( <>
+	<div 
+		id='title' 
+		className='textWithLatex'
+		style={{visibility: dspExplain[0] ? 'hidden' : 'visible'}}
+	/>
+	<div 
+		id='exercise' 
+		className='textWithLatex' 
+		ref={ref_exercise}
+		style={{visibility: dspExplain[0] ? 'hidden' : 'visible'}}
+	/>
+
+	<div 
+		ref={ref_answer} 
+		style={{visibility: (dspAnswer[0] ? 'visible': 'hidden')}}
+		className='textContainer'
+	>
 		<hr />
 		<div id='answer' className='textWithLatex'></div>
-		</> ) }
-	{ dspHints[0] && ( <>
+	</div>
+
+	<div 
+		ref={ref_hints} 
+		style={{visibility: (dspHints[0] ? 'visible': 'hidden') }}
+		className='textContainer'
+	>
 		<hr/>
-		<div id='hints' className='textWithLatex'></div>
-		</> ) }
+		<div id='hints' className='textWithLatex'/>
+	</div>
+
+	<div id='explain' 
+	ref = {ref_explain}
+	style={{width:'calc(100% - 2rem)',position:'fixed', visibility: (dspExplain[0] ? 'visible': 'hidden') }}
+	/>
 
 </>
-
-
-// ---
-
-
-const jsx_explain_body = 
-<div id='explain' style={{whiteSpace: 'break-spaces'}}/>
-
 
 // ---
 
@@ -246,21 +251,6 @@ const jsx_bottom_right_menue =
 			Explain
 		</BtnRound>
 	}
-
-</div>
-
-
-// ---
-
-
-const jsx_tooltip = 
-<div className='tooltip'>
-
-	<BtnRound className='info'>i</BtnRound>
-	<span ref={ref_test} className="tooltiptext">
-		inform the author of typos, mistakes, improvements, etc.<br/>
-		the message would be sent with this exercise attached.
-	</span>
 
 </div>
 
@@ -360,10 +350,7 @@ const jsx_main =
 	
 	<div className='hscroll' style={{height:'calc(100vh - 6rem)'}}>
 			
-		{ dspExplain[0] ? 
-			jsx_explain_body
-			: jsx_exercise_body
-		}
+		{ jsx_exercise_body }
 
 	</div>
 				
