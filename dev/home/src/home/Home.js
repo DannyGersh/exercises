@@ -23,6 +23,7 @@ function Home(props) {
 		<div className='gridContainer'>
 		{ (ms[0] ? latest: hotest).map( (item,index) =>
 				<Exercise
+					userId={window.jsonData['userid']}
 					narrowWindow={window.nrw}
 					key={index}
 					identifier={index}

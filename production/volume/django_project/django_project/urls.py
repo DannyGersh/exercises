@@ -530,14 +530,14 @@ def Like(request):
 
 		# SQL
 		try:
-			# remove duplicates from rating array
+			# remove duplicates from rating in chalanges 
 			cur.execute('''
 				update chalanges 
 				set rating = (select array(select distinct a from unnest(rating) as a) from chalanges where id = %s) 
 				where id = %s
 			'''%(chalangeId, chalangeId))
 
-			# add or remove user from rating
+			# add or remove user from rating in chalange
 			cur.execute('''
 				update chalanges set rating = 
 				case when %s = any(rating) then array_remove(rating, %s)
@@ -545,6 +545,23 @@ def Like(request):
 				end
 				where id=%s
 			'''%(user,user, user, chalangeId))
+
+			# remove duplicates from liked in auth_user
+			cur.execute('''
+				update auth_user 
+				set liked =  array(select distinct a from unnest(liked) as a) 
+				where id=%s;
+			'''%(user))
+			
+			# add or remove user from liked in auth_user
+			cur.execute('''
+				update auth_user set liked = 
+				case when %s = any(liked) then array_remove(liked, %s)
+				else array_append(liked, %s)
+				end
+				where id=%s
+			'''%(user,user, user, chalangeId))
+
 		except Exception as err:
 			print(err)
 			return JsonResponse({'error':'could not like ...'})

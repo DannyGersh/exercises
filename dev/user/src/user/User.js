@@ -149,6 +149,7 @@ function User(){
 		selectMenue(menueSelection[0]).map( (item, index) =>
 			<Exercise
 				narrowWindow={window.nrw}
+				userId={window.jsonData['userid']}
 				key={index}
 				identifier={index}
 				isUser={menueSelection[0]===tabs[0] ? true : false}

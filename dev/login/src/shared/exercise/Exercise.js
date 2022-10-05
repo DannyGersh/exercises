@@ -15,6 +15,8 @@ function Exercise(props){
 	const htmlTitle = '<h4>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'title')+'</h4>';
 	const htmlExercise = '<p>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'exercise')+'</p>';
 	
+	const isLike = props.chalange['rating'].includes(props.userId)
+
 	useEffect(()=>{
 		document.getElementById('title_'+props.identifier.toString()).innerHTML = htmlTitle;
 		document.getElementById('exercise_'+props.identifier.toString()).innerHTML = htmlExercise;
@@ -85,7 +87,7 @@ function Exercise(props){
 	
 	{/* likes */}		
 	<div className='bottomRight'>
-		<BtnRound>
+		<BtnRound style={{backgroundColor: isLike ? 'var(--DKgreen)' : 'var(--UNblue)'}}>
 		{props.chalange['rating'].length}<br/>Likes
 		</BtnRound>
 	</div>
