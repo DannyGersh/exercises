@@ -521,25 +521,32 @@ def Like(request):
 		body = json.loads(request.body.decode("utf-8"))
 		
 		chalangeId = body.get('chalangeId', None)
-		like = body.get('like', None) # string for debbuging purposes
 		user = body.get('user', None)
 		
 		# PERROR
-		if not chalangeId or not like or not user:
+		if not chalangeId or not user:
+			raise Exception('could not like ...')
 			return JsonResponse({'error':'could not like ...'})
 
 		# SQL
 		try:
+			# remove duplicates from rating array
+			cur.execute('''
+				update chalanges 
+				set rating = (select array(select distinct a from unnest(rating) as a) from chalanges where id = %s) 
+				where id = %s
+			'''%(chalangeId, chalangeId))
 
-			if like == 'True':
-				cur.execute('update auth_user set liked=array_append(liked, \''+str(chalangeId)+'\') where id=\''+str(request.user.id)+'\'')
-				cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(chalangeId)+'\'')#
-			
-			else:
-				cur.execute('update auth_user set liked=array_remove(liked, \''+str(chalangeId)+'\') where id=\''+str(request.user.id)+'\'')
-				cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(chalangeId)+'\'')#
-		
-		except err:
+			# add or remove user from rating
+			cur.execute('''
+				update chalanges set rating = 
+				case when %s = any(rating) then array_remove(rating, %s)
+				else array_append(rating, %s)
+				end
+				where id=%s
+			'''%(user,user, user, chalangeId))
+		except Exception as err:
+			print(err)
 			return JsonResponse({'error':'could not like ...'})
 	
 		conn.commit()

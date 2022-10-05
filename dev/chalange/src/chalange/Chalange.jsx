@@ -63,7 +63,7 @@ function BottomRightMenue(props) {
 			{/* like btn */}
 			{ a.isAuth ?
 		    <BtnRound state={a.dspLike} onClick={a.likeHandle} active={true}>
-		    	{a.chalange['rating'].length+a.addToLikes[0]}<br/>Like
+		    	{a.chalange['rating'].length+a.likes[0]}<br/>Like
 		    </BtnRound>
 				: 
 				<BtnRound onClick={a.sendLike}>{a.chalange['rating'].length}<br/>Like</BtnRound>

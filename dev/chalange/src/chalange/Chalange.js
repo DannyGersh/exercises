@@ -1,4 +1,3 @@
-import './Chalange.css'
 import MainJsx from './Chalange.jsx'
 import {useState, useEffect, useRef} from 'react'
 import {sendData, mainText2html} from '../shared/Functions'
@@ -24,8 +23,8 @@ function Chalange(props){
 		fromFile_latex		: window.jsonData.chalange.list_latex,
 
 		// states
-  	dspLike 						: useState(null),
-  	addToLikes					: useState(0),
+  	dspLike 						: useState(window.jsonData.chalange.rating.includes(window.jsonData.userid)),
+  	likes								: useState(0),
   	dspHints						: useState(false),
   	dspAnswer						: useState(false),
   	dspAdditionalMenue	: useState(false),
@@ -42,10 +41,9 @@ function Chalange(props){
 		// functions and handles:
 
 	 	sendLike : ()=> {
-	  	if(a.isAuth) {
+	  	if(a.isAuth && !window.is_debug) {
 				sendData('like', {
 					chalangeId: a.chalange['id'],
-					like: !a.dspLike[0] ? 'True' : 'False', // this is a string for debbuging purposes (in the server)
 					user: a.userid
 				})
 			}
@@ -81,8 +79,7 @@ function Chalange(props){
 			}
 	  },
 		likeHandle: ()=> { 
-		  if(a.isLike) { !a.dspLike[0] ? a.addToLikes[1](0): a.addToLikes[1](-1) }
-		  else { !a.dspLike[0] ? a.addToLikes[1](1): a.addToLikes[1](0) };
+		  a.dspLike[0] ? a.likes[1](a.likes[0]-1) : a.likes[1](a.likes[0]+1);
 	  	a.sendLike();
 	  },
 	  hintsHandle: ()=> { 
@@ -145,7 +142,7 @@ function Chalange(props){
 		isError && window.alert(errorStr);
 	},[a.chalange])
 
-	// set text elements to initialized latex + test
+	// set text elements to initialized latex + text
 	useEffect(()=>{
 		document.getElementById('title').innerHTML = htmlTitle;
 		document.getElementById('exercise').innerHTML = htmlExercise;
@@ -160,8 +157,7 @@ function Chalange(props){
 		htmlExplain
 	])
 
-	// find bottom pos(px) of exercise
-	// to know where to put hints and answer
+	// element positioning
 	useEffect(()=>{
 		if(a.ref_exercise.current) {
 			const bottom = a.ref_exercise.current.getBoundingClientRect().bottom;
