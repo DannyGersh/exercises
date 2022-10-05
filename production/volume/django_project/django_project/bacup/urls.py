@@ -74,17 +74,21 @@ reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
 
 
+# remove testNameUnique
 def testNameUnique(request):
 	
-	# validate name uniquenes on user sign in
-	uname = json.load(request)
+	uname = json.loads(request.body.decode("utf-8"))
 
-	cur.execute('''
-		select username from auth_user
-	''')
+	try:
+		cur.execute('''
+			select username from auth_user
+		''')
+	except err:
+		return JsonResponse({"error": err})
+
 	inData = [i[0] for i in cur.fetchall()]
 
-	return JsonResponse({"isUnique":uname not in inData})
+	return JsonResponse({"isUnique": uname not in inData})
 
 @ensure_csrf_cookie
 def AddTag(request):
@@ -244,16 +248,9 @@ def Chalange(request, id):
 def Browse(request, sterm=''):
 	
 	outData = {} # data for js. will be converted to secure json.
-	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	#if not request.session.has_key('signInFailure'):
-	#	request.session['signInFailure'] = False
-	#outData['signInFailure'] = request.session.get('signInFailure')
-	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	#request.session['signInFailure'] = False # not needed enimore
-	#request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../browse/'+sterm
+	request.session['currentUrl'] = '/browse/'+sterm
 
 	outData["search term"] = sterm		
 
@@ -341,7 +338,7 @@ def Profile(request, userid):
 	outData = {} # data for js. will be converted to secure json.
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
+	request.session['currentUrl'] = '/user/'+str(request.user.id)
 
 	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
@@ -421,43 +418,6 @@ def Profile(request, userid):
 	else:
 		return HttpResponse("nop")
 
-'''
-@ensure_csrf_cookie		
-def Login(request):
-		
-	if request.method == "POST":
-		
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentPage = request.POST.get('currentPage')
-		verPassword = request.POST.get('Verify password')
-		validated = request.POST.get('validated')	
-								
-		request.session['isSignUp'] = False
-		user = authenticate(username=uname, password=password)
-		
-		if not user:
-			request.session['isAuth'] = False
-			request.session['signInFailure'] = True
-		else:
-			login(request, user)
-			request.session['isAuth'] = True
-			request.session['signInFailure'] = False
-		
-		# after unauth user clicks new and registers
-		if request.session.get('isNew') and request.user.is_authenticated:
-			request.session['isNew'] = False
-			request.session['signInFailure'] = False
-			return redirect('/new')
-		
-		return redirect(currentPage)
-
-	# this should never happen
-	frame = getframeinfo(currentframe())
-	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('/')
-'''
-
 @ensure_csrf_cookie
 def Login(request):
 	outData = {
@@ -481,38 +441,63 @@ def SignUp(request):
 
 def submitLogIn(request):
 	
-	if request.method == 'POST':
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentUrl = request.session.get('currentUrl', '/')
-		
-		user = authenticate(username=uname, password=password)
-		if user is not None:
-			login(request, user)
-			request.session['isAuth'] = True
-			return redirect(currentUrl)
-		else:
-			return HttpResponse('could not login')	
+	# input: {'uname': str, 'password': str}
+	# output: {'url': str - wher to send user after login}
 
-	return redirect(currentUrl)
+	body = json.loads(request.body.decode("utf-8"))
+
+	uname = body.get('uname')
+	password = body.get('password')
+	currentUrl = request.session.get('currentUrl', '/')
+
+	user = authenticate(username=uname, password=password)
+	if user is not None:
+		login(request, user)
+		request.session['isAuth'] = True
+		return JsonResponse({'url': currentUrl})
+	else:
+		return JsonResponse({'error': "could not log in ..."})
 
 def submitSignUp(request):
 	
-	if request.method == 'POST':
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentUrl = request.session.get('currentUrl', '/')
-		
+	# input: {'uname': str, 'password': str}
+	# output: {'url': str - wher to send user after login}
+
+	body = json.loads(request.body.decode("utf-8"))
+	
+	uname = body.get('uname')
+	password = body.get('password')
+	currentUrl = request.session.get('currentUrl', '/')
+	
+	# SQL - is uname unique
+	
+	try:
+		cur.execute('''
+			select username from auth_user
+		''')
+	except err:
+		return JsonResponse({"error": "could not create user ..."})
+
+	inData = [i[0] for i in cur.fetchall()]
+
+	if uname in inData:
+		return JsonResponse({"error": 'user name taken, try another one.'})
+
+	# END_SQL
+
+	try:
 		user = User.objects.create_user(
 			uname, '', password
 		)
 		if not user:
-			return HttpResponse('could not create user')
+			return JsonResponse({'error': "could not create user ..."})
 		else:
 			login(request, user)
 			request.session['isAuth'] = True
-		
-	return redirect(currentUrl)
+	except:
+		return JsonResponse({'error': "could not create user ..."})
+	
+	return JsonResponse({'success': 0})
 
 @ensure_csrf_cookie
 def LogOut(request):
@@ -521,48 +506,6 @@ def LogOut(request):
 	# this is ok
 	return redirect("/")
 
-# TODO - delete this comment when auth is stable
-'''
-@ensure_csrf_cookie		
-def SignUp(request):
-	
-	if request.method == "POST":
-		
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentPage = request.POST.get('currentPage')
-		verPassword = request.POST.get('Verify password')
-		validated = request.POST.get('validated')	
-		
-		request.session['signInFailure'] = True
-		request.session['isSignUp'] = True
-		request.session['isAuth'] = False
-		
-		if validated == 'false':
-			return redirect(currentPage)
-			
-		elif password != verPassword:
-			return redirect(currentPage)
-			
-		user = User.objects.create_user(
-			uname, '', password
-		)
-		if not user:
-			return redirect(currentPage)
-		else:
-			login(request, user)
-			request.session['isAuth'] = True
-			request.session['signInFailure'] = False
-			
-		return redirect(currentPage)
-
-	# this should never happen
-	frame = getframeinfo(currentframe())
-	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('/')
-'''
-
-#@xframe_options_exempt
 @ensure_csrf_cookie
 def Like(request):
 	
@@ -662,6 +605,8 @@ def Message2user(request):
 
 @ensure_csrf_cookie		
 def New(request, isSourceNav=False):
+
+	request.session['currentUrl'] = '/new'
 
 	if request.user.is_authenticated:
 
@@ -997,6 +942,11 @@ def NewSubmited(request):
 	return redirect('/')
 
 
+def Test(request):
+	body = json.loads(request.body.decode("utf-8"))
+	print(body)
+	return JsonResponse({"test":0})
+
 
 urlpatterns = [
   path('admin/', admin.site.urls),
@@ -1010,8 +960,6 @@ urlpatterns = [
 	path('login/', Login),
 	path('logout/', LogOut),
 	path('signup/', SignUp),
-	path('submitLogIn/', submitLogIn),
-	path('submitSignUp/', submitSignUp),
 	path('newSubmit/', NewSubmited),
 	path('user/<int:userid>/', Profile),
 	
@@ -1022,5 +970,7 @@ urlpatterns = [
 	path('addtag/', AddTag),
 	path('message2user/',Message2user),
 	path('deleteMessage/', DeleteMessage),
+	path('submitLogIn/', submitLogIn),
+	path('submitSignUp/', submitSignUp),
 	path('testNameUnique/', testNameUnique),
 ]

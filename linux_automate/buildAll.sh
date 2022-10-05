@@ -15,5 +15,7 @@ cd $DIR_BASE/dev/user
 npm run build &
 cd $DIR_BASE/dev/home
 npm run build &
+cd $DIR_BASE/dev/login
+npm run build &
 
 cd $DIR_ORIGIN
