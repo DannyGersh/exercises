@@ -16,7 +16,7 @@ function Exercise(props){
 	const htmlExercise = '<p>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'exercise')+'</p>';
 	
 	const isLike = props.chalange['rating'].includes(props.userId)
-
+	
 	useEffect(()=>{
 		document.getElementById('title_'+props.identifier.toString()).innerHTML = htmlTitle;
 		document.getElementById('exercise_'+props.identifier.toString()).innerHTML = htmlExercise;

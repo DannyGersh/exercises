@@ -135,7 +135,7 @@ function PopupMenue(props) {
 	  <div className='additionalMenue'>	
 
 	    Created by {a.chalange['authorName']} <br/> {a.chalange['creationdate']}  <br/>
-	    { props.narrowWindow &&
+	    { window.narrowWindow &&
 	      a.chalange['tags'].map(i => <Tag url={'/browse/'+i} key={i}>{i}</Tag>)
 	    }	
 
@@ -171,7 +171,7 @@ function BottomLeftMenue(props) {
 
 	  {/* tags in wide window mode */}
 	  <div className='vscroll'>
-	  	{ !props.narrowWindow && 
+	  	{ !window.narrowWindow && 
 	    	a.chalange['tags'].map((e, i) => <Tag url={'/browse/'+e} key={i}>{e}</Tag>)
 	  	}
 	 	</div>          	

@@ -152,10 +152,8 @@ function User(){
 				userId={window.jsonData['userid']}
 				key={index}
 				identifier={index}
-				isUser={menueSelection[0]===tabs[0] ? true : false}
 				url={'/' + item['id']} 
 				chalange={item}
-				userid={window.jsonData['userid']}
 				isOptions={menueSelection[0]===tabs[0] ? true : false}
 				forceRenderDummyState={menueSelection}
 			/>

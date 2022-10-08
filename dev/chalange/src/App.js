@@ -6,7 +6,7 @@ import './shared/Global.css'
 
 function App() {
 
-  let narrowWindow = useWindowResize();
+  window.narrowWindow = useWindowResize();
   
 	if( process.env.NODE_ENV === 'development'){
 
@@ -45,24 +45,24 @@ function App() {
 	const signInFailure = window.jsonData['signInFailure']
 	const isSignUp = window.jsonData['isSignUp']
 	const isAuth = window.jsonData['isAuth']
-  const userid = window.jsonData['userid']
+    const userid = window.jsonData['userid']
 
-  return (
-    <>
-    
-    <Nav 
-      narrowWindow = { narrowWindow } 
-      currentPage = { './../../../../../../' + String(chalange['id']) }
-      signInFailure = { signInFailure } 
-      isSignUp = { isSignUp }
-			isAuth = { isAuth }
-			userid = { userid }
-    />
-    
-    <Chalange narrowWindow={narrowWindow}/>
-    
-    </>
-  )
+    return (
+      <>
+      
+      <Nav 
+        narrowWindow = { window.narrowWindow } 
+        currentPage = { '/' + String(chalange['id']) }
+        signInFailure = { signInFailure } 
+        isSignUp = { isSignUp }
+	   	isAuth = { isAuth }
+	   	userid = { userid }
+      />
+      
+      <Chalange narrowWindow={window.narrowWindow}/>
+      
+      </>
+    )
 	
 } 
 

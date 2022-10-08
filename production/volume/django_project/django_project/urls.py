@@ -340,6 +340,18 @@ def Profile(request, userid):
 	outData['userid'] = request.user.id
 	request.session['currentUrl'] = '/user/'+str(request.user.id)
 
+	# synchronize rating(chalanges) and liked(auth_user)
+	cur.execute('''
+	update chalanges as c
+	set rating=
+		(case when a.id=any(rating) 
+		then rating 
+		else array_append(rating, a.id) 
+		end)  
+	from auth_user as a where c.id=any(a.liked);
+	''')
+	conn.commit()
+
 	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
 	
@@ -560,7 +572,7 @@ def Like(request):
 				else array_append(liked, %s)
 				end
 				where id=%s
-			'''%(user,user, user, chalangeId))
+			'''%(chalangeId,chalangeId, chalangeId, user))
 
 		except Exception as err:
 			print(err)
