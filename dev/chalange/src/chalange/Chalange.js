@@ -1,5 +1,5 @@
 import MainJsx from './Chalange.jsx'
-import {useState, useEffect, useRef} from 'react'
+import {useState, useEffect} from 'react'
 import {sendData, mainText2html} from '../shared/Functions'
 
 // TODO - fix like
@@ -31,23 +31,10 @@ function Chalange(props){
   	dspReport						: useState(false),
 		dspExplain					: useState(false),
 		dspSendMessage			: useState(false),
-
-		// refs - for proper positioning elements
-		ref_exercise	: useRef(),
-		ref_hints			: useRef(),
-		ref_answer		: useRef(),
-		ref_explain		: useRef(),
+		dspHae							: useState('Exercise'), // Hinst, Anser, Explain. default - Exercise
 
 		// functions and handles:
 
-	 	sendLike : ()=> {
-	  	if(a.isAuth && !window.is_debug) {
-				sendData('like', {
-					chalangeId: a.chalange['id'],
-					user: a.userid
-				})
-			}
-	  },
 	  sendMessage: ()=> {
 
   		if(a.isAuth) {
@@ -79,22 +66,18 @@ function Chalange(props){
 			}
 	  },
 		likeHandle: ()=> { 
+		  
+		  // determine like number
 		  a.dspLike[0] ? a.likes[1](a.likes[0]-1) : a.likes[1](a.likes[0]+1);
-	  	a.sendLike();
+	  	
+	  	// send like
+	  	if(a.isAuth && !window.is_debug) {
+				sendData('like', {
+					chalangeId: a.chalange['id'],
+					user: a.userid
+				})
+			}
 	  },
-	  hintsHandle: ()=> { 
-	    a.dspAnswer[1](false);
-			a.dspExplain[1](false);
-	  },
-	  answerHandle: ()=> { 
-	    a.dspHints[1](false);
-			a.dspExplain[1](false);
-		},
-		explainHandle: ()=> {
-			a.dspExplain[1](!a.dspExplain[0]);
-			a.dspHints[1](false);
-			a.dspAnswer[1](false);
-		},
 	  additionalMenueHandler: ()=> {
 	    a.dspAdditionalMenue[1](!a.dspAdditionalMenue[0]);
 	  },
@@ -106,6 +89,13 @@ function Chalange(props){
 	  	a.dspSendMessage[1](false);
 		  a.dspReport[1](!a.dspReport[0])
 	  },
+		haeHandle: (target)=> {
+			if(a.dspHae[0] === target) {
+				a.dspHae[1]('Exercise')
+			} else {
+				a.dspHae[1](target)
+			}
+		}
 
   }
 
@@ -155,24 +145,6 @@ function Chalange(props){
 		htmlAnswer,
 		htmlHints,
 		htmlExplain
-	])
-
-	// element positioning
-	useEffect(()=>{
-		if(a.ref_exercise.current) {
-			const bottom = a.ref_exercise.current.getBoundingClientRect().bottom;
-			a.ref_hints.current.style.top = toString(bottom)+'px';
-			a.ref_answer.current.style.top = toString(bottom)+'px';
-			a.ref_explain.current.style.top = '3rem';
-		}
-	},[
-		a.dspHints, 
-		a.dspAnswer, 
-		a.dspExplain, 
-		a.ref_answer, 
-		a.ref_exercise, 
-		a.ref_explain, 
-		a.ref_hints
 	])
 
 	return(<MainJsx a={a}/>)

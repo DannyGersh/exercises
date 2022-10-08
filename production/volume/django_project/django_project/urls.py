@@ -225,7 +225,7 @@ def getChalange(id):
 			identifiers = json.loads(f.read())
 
 		outData['list_latex'] = identifiers
-	
+		
 	else:
 		outData = None
 

@@ -10,42 +10,36 @@ function ExerciseBody(props) {
 
 	return(
 	
-	<div className='hscroll' style={{height:'calc(100vh - 6rem)'}}>
+	<div className='hscroll' style={{height:'calc(100vh - 7rem)'}}>
 
 		<div 
 			id='title' 
 			className='textWithLatex'
-			style={{visibility: a.dspExplain[0] ? 'hidden' : 'visible'}}
+			style={{visibility: a.dspHae[0]==='Exercise' ? 'visible' : 'hidden'}}
 		/>
 		<div 
 			id='exercise' 
 			className='textWithLatex' 
 			ref={a.ref_exercise}
-			style={{visibility: a.dspExplain[0] ? 'hidden' : 'visible'}}
+			style={{visibility: a.dspHae[0]==='Exercise' ? 'visible' : 'hidden'}}
 		/>	
 
-		<div 
+		<div id='answer'
 			ref={a.ref_answer} 
-			style={{visibility: (a.dspAnswer[0] ? 'visible': 'hidden')}}
-			className='textContainer'
-		>
-			<hr />
-			<div id='answer' className='textWithLatex'></div>
-		</div>	
+			style={{visibility: a.dspHae[0]==='Answer' ? 'visible' : 'hidden'}}
+			className='textWithLatex clientBody'
+		/>	
 
-		<div 
+		<div id='hints' 
 			ref={a.ref_hints} 
-			style={{visibility: (a.dspHints[0] ? 'visible': 'hidden') }}
-			className='textContainer'
-		>
-			<hr/>
-			<div id='hints' className='textWithLatex'/>
-		</div>	
+			style={{visibility: a.dspHae[0]==='Hints' ? 'visible' : 'hidden' }}
+			className='textWithLatex clientBody'
+		/>
 
 		<div id='explain' 
 			ref = {a.ref_explain}
-			style={{visibility: (a.dspExplain[0] ? 'visible': 'hidden') }}
-			className='textContainer'
+			style={{visibility: a.dspHae[0]==='Explain' ? 'visible' : 'hidden'}}
+			className='textWithLatex clientBody'
 		/>
 
 	</div>
@@ -70,17 +64,17 @@ function BottomRightMenue(props) {
 			}
 					
 		  { a.isHints &&
-		    <BtnRound state={a.dspHints} onClick={a.hintsHandle}>
+		    <BtnRound className={`${a.dspHae[0]==='Hints' ? 'green' : 'blue'}`} onClick={()=>a.haeHandle('Hints')}>
 		      Hints
 		    </BtnRound>
 		  }
 		  
-		  <BtnRound state={a.dspAnswer} onClick={a.answerHandle}>
+		  <BtnRound className={`${a.dspHae[0]==='Answer' ? 'green' : 'blue'}`} onClick={()=>a.haeHandle('Answer')}>
 		    Answer
 		  </BtnRound>
 					
 			{ a.isExplain &&
-				<BtnRound state={a.dspExplain} onClick={a.explainHandle}>
+				<BtnRound className={`${a.dspHae[0]==='Explain' ? 'green' : 'blue'}`} onClick={()=>a.haeHandle('Explain')}>
 					Explain
 				</BtnRound>
 			}		
