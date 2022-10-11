@@ -3,9 +3,8 @@ import Card from '../card/Card'
 import BtnRound from '../../shared/buttons/BtnRound'
 import Tag from '../../shared/tag/Tag'
 import BtnMenue from '../../shared/buttons/BtnMenue'
-import {mainText2html} from '../../shared/Functions'
+import {mainText2html, sendData} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
-import {sendData} from '../../shared/Functions'
 import CSRFToken from '../../shared/csrftoken'
 
 function Exercise(props){
@@ -15,6 +14,8 @@ function Exercise(props){
 	
 	const htmlTitle = '<h4>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'title')+'</h4>';
 	const htmlExercise = '<p>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'exercise')+'</p>';
+	
+	const isLike = props.chalange['rating'].includes(props.userId)
 	
 	useEffect(()=>{
 		document.getElementById('title_'+props.identifier.toString()).innerHTML = htmlTitle;
@@ -35,26 +36,16 @@ function Exercise(props){
 		
 		evt.stopPropagation();
 		
-		try{
-			if(window.confirm("Delete this exercise ?")) {
-				const promise = sendData(
-					'delete', 
-					[
-						props.chalange['id'],
-						props.chalange['latex'],
-					]
-				)
-				
-				promise.then(res => ()=>{
-				if(!res.status===200) {
-					window.alert('Failed deleting this exercise');
-				}});
-				
-				await new Promise(r => setTimeout(r, 200));
-				window.location.reload()
-			}
-		} catch {
-			window.alert('Failed deleting this exercise');
+		if(window.confirm("Delete this exercise ?")) {
+			sendData(
+				'delete', 
+				[
+					props.chalange['id'],
+					props.chalange['latex'],
+				]
+			)
+			await new Promise(r => setTimeout(r, 200));
+			window.location.reload()
 		}
 
 	}
@@ -96,7 +87,7 @@ function Exercise(props){
 	
 	{/* likes */}		
 	<div className='bottomRight'>
-		<BtnRound>
+		<BtnRound style={{backgroundColor: isLike ? 'var(--DKgreen)' : 'var(--UNblue)'}}>
 		{props.chalange['rating'].length}<br/>Likes
 		</BtnRound>
 	</div>

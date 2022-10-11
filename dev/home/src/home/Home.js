@@ -14,8 +14,8 @@ function Home(props) {
 	return(
 	<>		
 		<center>
-		<h1>www.ididthisforu.com</h1>
-		<p>The website for uploading and solving exercises in any field</p>
+		<h1>www.ididthisforu.com <font color='green'>Alpha</font></h1>
+		<p style={{margin:'1rem'}}>The website for uploading and solving exercises in any field</p>
 		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={()=>ms[1](false)}>hottest</BtnMenue>
 		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
 		</center>
@@ -23,13 +23,13 @@ function Home(props) {
 		<div className='gridContainer'>
 		{ (ms[0] ? latest: hotest).map( (item,index) =>
 				<Exercise
+					userId={window.jsonData['userid']}
 					narrowWindow={window.nrw}
 					key={index}
 					identifier={index}
 					isUser={true}
 					url={'/' + item['id']} 
 					chalange={item}
-					userid={window.jsonData['userid']}
 					isOptions={false}
 					forceRenderDummyState={ms}
 				/>
@@ -41,8 +41,3 @@ function Home(props) {
 	)
 }
 export default Home;
-
-// title={item['title']} 
-// paragraph={item['question']} 
-// likes={item['rating'].length} 
-// tags={item['tags']}

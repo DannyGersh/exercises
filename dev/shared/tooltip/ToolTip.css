@@ -1,0 +1,13 @@
+
+.toolTip {
+	position: absolute;
+	text-align: center;
+	white-space: nowrap;
+	z-index: 1;
+
+	color: black;
+	background-color: var(--DKgreen);
+
+	padding: 1rem;
+	border-radius: 0.3rem;
+}

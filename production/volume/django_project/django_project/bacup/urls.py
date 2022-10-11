@@ -27,8 +27,7 @@ cur = conn.cursor()
 cur.execute('SELECT version()')
 db_version = cur.fetchone()
 
-# chalanges database columns
-SQLDataKeys = [
+sql_chalange = [
 	'id',           # serial primary key not null 
 	'exercise',     # varchar(4000) not null
 	'answer',       # varchar(4000) not null
@@ -39,21 +38,27 @@ SQLDataKeys = [
 	'rating',       # integer[] not null default '{}'
 	'tags',         # varchar(100)[] not null default '{}'
 	'explain',      # varchar(4000)
-	'latex',				# varchar(30)[] not null default '{}'
-	'latexp',				# varchar(400)
+	'latex',		# varchar(30)[] not null default '{}'
+	'latexp',		# varchar(400)
 ]
-# auth_user database extra columns
-auth_user_extra = [
+sql_auth = [
 	'authored', # integer[] default '{}'
 	'liked',    # integer[] default '{}'
 	'answered'  # integer[] default '{}'
 ]
-# tags database
-database_tags = [
-	'id',		# serial primary key not null
+sql_tags = [
+	'id',	# serial primary key not null
 	'name',	# varchar(100) not null unique
 ]
-# new(page) targets
+sql_messages = [
+	'id'         	# serial			primary key not null,
+	'chalangeId'  	# serial 			not null 			,
+	'sender'  		# serial 			not null 			,
+	'receiver'    	# serial 			not null 			,
+	'message'       # varchar(4000)		not null
+]
+
+# new(page) targets / tabs
 targets = [
 	'title',
 	'exercise',
@@ -62,22 +67,28 @@ targets = [
 	'explain'
 ]
 
+
 dir_users = os.path.join('/','volume','static','users')
 
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
 
+
+# remove testNameUnique
 def testNameUnique(request):
 	
-	# validate name uniquenes on user sign in
-	uname = json.load(request)
+	uname = json.loads(request.body.decode("utf-8"))
 
-	cur.execute('''
-		select username from auth_user
-	''')
+	try:
+		cur.execute('''
+			select username from auth_user
+		''')
+	except err:
+		return JsonResponse({"error": err})
+
 	inData = [i[0] for i in cur.fetchall()]
 
-	return JsonResponse({"isUnique":uname not in inData})
+	return JsonResponse({"isUnique": uname not in inData})
 
 @ensure_csrf_cookie
 def AddTag(request):
@@ -135,6 +146,29 @@ def DeleteChalange(request):
 		
 	return HttpResponse('Delete')
 
+def DeleteMessage(request):
+	
+	# only post request, otherwise error
+	
+	# POST data {'messageId' : messageId}
+
+	# return values:
+	# {'result': 0} - success
+	# {'result': str} - str is the error
+				
+	if request.method == "POST":
+		body = json.loads(request.body.decode("utf-8"))
+		messageId = body['messageId']
+
+		try:
+			cur.execute("delete from messages where id='%s'"%messageId)
+			return JsonResponse({'result':0})
+		except err:
+			return JsonResponse({'result':'ERROR - sql error\n'+err})
+
+	# not a POST request	
+	return JsonResponse({'result':'ERROR - not a POST request'})
+
 @ensure_csrf_cookie		
 def UpdateLatex(request):
 
@@ -171,34 +205,23 @@ def getChalange(id):
 	inData = cur.fetchone()	
 	
 	if inData:
-		# TODO - authid should be set in the chalanges table, for avoiding this second sql call.
-		# cur.execute("select id from auth_user where username='%s'"%(inData[4]))
-		# authid = cur.fetchone()[0]
-		
-		outData = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+
+		outData = { k:v for (k,v) in zip(sql_chalange, inData) }
 		outData['authorName'] = inData[-1]
 		
 		dir_exercise = os.path.join(dir_users, str(outData['author']), outData['latex'])
 		file_json = os.path.join(dir_exercise, '.json')
+		
 		if not os.path.exists(dir_exercise):
 			os.makedirs(dir_exercise)
+		
 		if not os.path.exists(file_json):
 			with open(file_json, 'w') as f:
 				f.write(json.dumps({"title": [], "exercise": [], "answer": [], "hints": [], "explain": []}))
 
 		with open(file_json, 'r') as f:
 			identifiers = json.loads(f.read())
-			#l = []
-			#for i in identifiers.values():
-			#	for ii in [x[1] for x in i]:
-			#		l.append(ii)
-			#		print(ii)
-			#for i in l:
-			#	if i not in os.listdir(dir_exercise):
-			#		print("Y ", i)
-			#	else:
-			#		print("N ", i)
-		
+
 		outData['list_latex'] = identifiers
 	
 	else:
@@ -210,15 +233,8 @@ def getChalange(id):
 def Chalange(request, id):
 	
 	outData = {} # data for js. will be converted to secure json.
-	# when no signInFailure occures, ssesion.signInFailure is undefined
-	#if not request.session.has_key('signInFailure'):
-	#	request.session['signInFailure'] = False
-	#outData['signInFailure'] = request.session.get('signInFailure')
-	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.user.is_authenticated
 	outData['userid'] = request.user.id
-	#request.session['signInFailure'] = False # not needed enimore
-	#request.session['isSignUp'] = False # not needed enimore
 	request.session['currentUrl'] = '/'+str(id)
 	
 	outData['chalange'] = getChalange(id)
@@ -232,16 +248,9 @@ def Chalange(request, id):
 def Browse(request, sterm=''):
 	
 	outData = {} # data for js. will be converted to secure json.
-	# when no signInFailure occures, ssesion.signInFailure is undefined, define it.
-	#if not request.session.has_key('signInFailure'):
-	#	request.session['signInFailure'] = False
-	#outData['signInFailure'] = request.session.get('signInFailure')
-	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	#request.session['signInFailure'] = False # not needed enimore
-	#request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../browse/'+sterm
+	request.session['currentUrl'] = '/browse/'+sterm
 
 	outData["search term"] = sterm		
 
@@ -327,16 +336,9 @@ def Home(request):
 def Profile(request, userid):
 
 	outData = {} # data for js. will be converted to secure json.
-	# when no signInFailure occures, ssesion.signInFailure is undefined
-	#if not request.session.has_key('signInFailure'):
-	#	request.session['signInFailure'] = False
-	#outData['signInFailure'] = request.session.get('signInFailure')
-	#outData['isSignUp'] = request.session.get('isSignUp')
 	outData['isAuth'] = request.session.get('isAuth')
 	outData['userid'] = request.user.id
-	#request.session['signInFailure'] = False # not needed enimore
-	#request.session['isSignUp'] = False # not needed enimore
-	request.session['currentUrl'] = '../../../../../'+str(request.user.id)
+	request.session['currentUrl'] = '/user/'+str(request.user.id)
 
 	cur.execute('select authored, liked, username from auth_user where id='+str(userid))
 	inData = cur.fetchone()
@@ -345,8 +347,9 @@ def Profile(request, userid):
 	frame = getframeinfo(currentframe())
 	
 	if not inData:
-		print('ERROR: inData is undefined\nin: ', frame.filename, frame.lineno)
-		inData = [[], [], request.user.username]
+		# inData not defined
+		err = 'ERROR\n: file: %s\n line: %s'%(frame.filename, frame.lineno)
+		return HttpResponse(err)
 	# END_PERROR
 	
 	inData = list(inData)
@@ -368,65 +371,53 @@ def Profile(request, userid):
 		print('ERROR: inData[2] is undefined\nin: ', frame.filename, frame.lineno)
 		inData.append([])	
 	# END_PERROR
+	
+	# SQL
+	# get - [chalangeId, message_creation_date, sender_name, message_text] 
+	try:
+		cur.execute('''
+		select
+			a.id, 
+			b.id, 
+			to_char(a.creationDate, 'HH24:MI MM/DD/YYYY'), 
+			c.username, 
+			a.message 
+
+		from messages as a 
+		inner join chalanges as b on a.chalangeId=b.id 
+		inner join auth_user as c on a.sender=c.id
+
+		where a.receiver = '%s'
+		'''%request.user.id)
 		
+		messages = cur.fetchall()
+		outData['messages'] = messages
+	
+	except err:
+		print(err)
+
 	if request.user.is_authenticated and request.user.id == userid:		
 
-			authored = []
-			liked = []
+		authored = []
+		liked = []
 			
-			for i in inData[0]:
-				data = getChalange(i)
-				if data:
-					authored.append(data)
+		for i in inData[0]:
+			data = getChalange(i)
+			if data:
+				authored.append(data)
 					
-			for i in inData[1]:
-				data = getChalange(i)
-				if data:
-					liked.append(data)
+		for i in inData[1]:
+			data = getChalange(i)
+			if data:
+				liked.append(data)
 				
-			outData['data'] = [authored, liked, request.user.username]
+		outData['data'] = [authored, liked, request.user.username]
 
-			return render(request, 'user.html', context={'value': outData})
+		return render(request, 'user.html', context={'value': outData})
 	
 	else:
-			return HttpResponse("trying to peek at other acounts ar ya ?")
+		return HttpResponse("nop")
 
-'''
-@ensure_csrf_cookie		
-def Login(request):
-		
-	if request.method == "POST":
-		
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentPage = request.POST.get('currentPage')
-		verPassword = request.POST.get('Verify password')
-		validated = request.POST.get('validated')	
-								
-		request.session['isSignUp'] = False
-		user = authenticate(username=uname, password=password)
-		
-		if not user:
-			request.session['isAuth'] = False
-			request.session['signInFailure'] = True
-		else:
-			login(request, user)
-			request.session['isAuth'] = True
-			request.session['signInFailure'] = False
-		
-		# after unauth user clicks new and registers
-		if request.session.get('isNew') and request.user.is_authenticated:
-			request.session['isNew'] = False
-			request.session['signInFailure'] = False
-			return redirect('/new')
-		
-		return redirect(currentPage)
-
-	# this should never happen
-	frame = getframeinfo(currentframe())
-	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('/')
-'''
 @ensure_csrf_cookie
 def Login(request):
 	outData = {
@@ -450,38 +441,63 @@ def SignUp(request):
 
 def submitLogIn(request):
 	
-	if request.method == 'POST':
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentUrl = request.session.get('currentUrl', '/')
-		
-		user = authenticate(username=uname, password=password)
-		if user is not None:
-			login(request, user)
-			request.session['isAuth'] = True
-			return redirect(currentUrl)
-		else:
-			return HttpResponse('could not login')	
+	# input: {'uname': str, 'password': str}
+	# output: {'url': str - wher to send user after login}
 
-	return redirect(currentUrl)
+	body = json.loads(request.body.decode("utf-8"))
+
+	uname = body.get('uname')
+	password = body.get('password')
+	currentUrl = request.session.get('currentUrl', '/')
+
+	user = authenticate(username=uname, password=password)
+	if user is not None:
+		login(request, user)
+		request.session['isAuth'] = True
+		return JsonResponse({'url': currentUrl})
+	else:
+		return JsonResponse({'error': "could not log in ..."})
 
 def submitSignUp(request):
 	
-	if request.method == 'POST':
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentUrl = request.session.get('currentUrl', '/')
-		
+	# input: {'uname': str, 'password': str}
+	# output: {'url': str - wher to send user after login}
+
+	body = json.loads(request.body.decode("utf-8"))
+	
+	uname = body.get('uname')
+	password = body.get('password')
+	currentUrl = request.session.get('currentUrl', '/')
+	
+	# SQL - is uname unique
+	
+	try:
+		cur.execute('''
+			select username from auth_user
+		''')
+	except err:
+		return JsonResponse({"error": "could not create user ..."})
+
+	inData = [i[0] for i in cur.fetchall()]
+
+	if uname in inData:
+		return JsonResponse({"error": 'user name taken, try another one.'})
+
+	# END_SQL
+
+	try:
 		user = User.objects.create_user(
 			uname, '', password
 		)
 		if not user:
-			return HttpResponse('could not create user')
+			return JsonResponse({'error': "could not create user ..."})
 		else:
 			login(request, user)
 			request.session['isAuth'] = True
-		
-	return redirect(currentUrl)
+	except:
+		return JsonResponse({'error': "could not create user ..."})
+	
+	return JsonResponse({'success': 0})
 
 @ensure_csrf_cookie
 def LogOut(request):
@@ -490,71 +506,107 @@ def LogOut(request):
 	# this is ok
 	return redirect("/")
 
-# TODO - delete this comment when auth is stable
-'''
-@ensure_csrf_cookie		
-def SignUp(request):
-	
-	if request.method == "POST":
-		
-		uname = request.POST.get('uname')
-		password = request.POST.get('password')
-		currentPage = request.POST.get('currentPage')
-		verPassword = request.POST.get('Verify password')
-		validated = request.POST.get('validated')	
-		
-		request.session['signInFailure'] = True
-		request.session['isSignUp'] = True
-		request.session['isAuth'] = False
-		
-		if validated == 'false':
-			return redirect(currentPage)
-			
-		elif password != verPassword:
-			return redirect(currentPage)
-			
-		user = User.objects.create_user(
-			uname, '', password
-		)
-		if not user:
-			return redirect(currentPage)
-		else:
-			login(request, user)
-			request.session['isAuth'] = True
-			request.session['signInFailure'] = False
-			
-		return redirect(currentPage)
-
-	# this should never happen
-	frame = getframeinfo(currentframe())
-	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('/')
-'''
-
-@xframe_options_exempt
 @ensure_csrf_cookie
 def Like(request):
-		
-	if request.method == "POST":
-		id = request.POST['chalangeId']
+	
+	# only post request, otherwise error
+	
+	# POST data (key : value)
+	# chalangeId: chalange id (int),
+	# like: 'True' or 'False' (str), // this is a string for debbuging purposes
+	# user: user id (int)
 
-		if request.POST['like'] in ('true', True, 1):
-			cur.execute('update auth_user set liked=array_append(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-			cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
-
-		else:
-			cur.execute('update auth_user set liked=array_remove(liked, \''+str(id)+'\') where id=\''+str(request.user.id)+'\'')
-			cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(id)+'\'')
-
-		conn.commit()
+	# return values:
+	# {'result': 0} - success
+	# {'result': str} - str is the error
 				
-		return(HttpResponse('all good'))
+	if request.method == "POST":
+
+		body = json.loads(request.body.decode("utf-8"))
 		
-	else:
-		return(HttpResponse('this should never happen'))
+		chalangeId = body.get('chalangeId', None)
+		like = body.get('like', None) # string for debbuging purposes
+		user = body.get('user', None)
+		
+		# PERROR
+		if not chalangeId or not like or not user:
+			return JsonResponse({'result':'ERROR - missing information'})
+
+		# SQL
+		try:
+
+			if like == 'True':
+				cur.execute('update auth_user set liked=array_append(liked, \''+str(chalangeId)+'\') where id=\''+str(request.user.id)+'\'')
+				cur.execute('update chalanges set rating=array_append(rating, \''+str(request.user.id)+'\') where id=\''+str(chalangeId)+'\'')#
+			
+			else:
+				cur.execute('update auth_user set liked=array_remove(liked, \''+str(chalangeId)+'\') where id=\''+str(request.user.id)+'\'')
+				cur.execute('update chalanges set rating=array_remove(rating, \''+str(request.user.id)+'\') where id=\''+str(chalangeId)+'\'')#
+		
+		except err:
+			return JsonResponse({'result':'ERROR - sql error\n'+err})
+	
+		conn.commit()
+		return JsonResponse({'result':0}) # success
+	
+	# not a POST request	
+	return JsonResponse({'result':'ERROR - not a POST request'})
+
+def Message2user(request):
+
+	# only post request, otherwise error
+	
+	# POST data (key : value)
+	# chalangeId: chalange id (int),
+	# sender: user sending id (int),
+	# receiver: user receiving id (int),
+	# message: message (str)
+
+	# return values:
+	# {'result': 0} - success
+	# {'result': str} - str is the error
+				
+	if request.method == "POST":
+
+		body = json.loads(request.body.decode("utf-8"))
+
+		chalangeId = body.get('chalangeId', None)
+		sender = body.get('sender', None)
+		receiver = body.get('receiver', None)
+		message = body.get('message', None)
+
+		# PERROR
+		if (not chalangeId 
+			or not sender
+			or not receiver
+			or not message):
+			return JsonResponse({'result':'ERROR - missing information'})
+		
+		message = message.replace("'", "''")
+
+		# SQL
+		try:
+			cur.execute('''
+				insert into messages(
+					chalangeId, 
+					sender, 
+					receiver, 
+					message
+				)
+				values('%s','%s','%s','%s')
+			'''%(chalangeId, sender, receiver, message))
+		except err:
+			return JsonResponse({'result':'ERROR - sql error\n'+err})
+
+		return JsonResponse({'result':0}) # success
+	
+	# not a POST request	
+	return JsonResponse({'result':'ERROR - not a POST request'})
 
 @ensure_csrf_cookie		
 def New(request, isSourceNav=False):
+
+	request.session['currentUrl'] = '/new'
 
 	if request.user.is_authenticated:
 
@@ -819,7 +871,7 @@ def NewSubmited(request):
 					'''%(exercise, answer, hints, title, tagIds, explain, now, latexp, exerciseId)
 					)
 				except Exception as err:
-					print("POOP", err)
+					print(err)
 
 				conn.commit()
 
@@ -868,7 +920,7 @@ def NewSubmited(request):
 				explain, 
 				'svg',
 			]
-			outData['chalange'] = { k:v for (k,v) in zip(SQLDataKeys, inData) }
+			outData['chalange'] = { k:v for (k,v) in zip(sql_chalange, inData) }
 
 			file_json = os.path.join(dir_users, str(request.user.id), '.json')
 			
@@ -887,8 +939,13 @@ def NewSubmited(request):
 	# this should never happen
 	frame = getframeinfo(currentframe())
 	print('ERROR: this should never happen\nin: ', frame.filename, frame.lineno)
-	return redirect('./../../../../../../../')
+	return redirect('/')
 
+
+def Test(request):
+	body = json.loads(request.body.decode("utf-8"))
+	print(body)
+	return JsonResponse({"test":0})
 
 
 urlpatterns = [
@@ -899,19 +956,21 @@ urlpatterns = [
 	path('<int:id>/', Chalange),
 	path('browse/<str:sterm>/', Browse),
 	
-	path('like/', Like),
 	path('browse/', Browse),
 	path('login/', Login),
 	path('logout/', LogOut),
 	path('signup/', SignUp),
-	path('submitLogIn/', submitLogIn),
-	path('submitSignUp/', submitSignUp),
 	path('newSubmit/', NewSubmited),
 	path('user/<int:userid>/', Profile),
 	
+	# fetch request
+	path('like/', Like),
 	path('test/', UpdateLatex),
 	path('delete/', DeleteChalange),
 	path('addtag/', AddTag),
-
+	path('message2user/',Message2user),
+	path('deleteMessage/', DeleteMessage),
+	path('submitLogIn/', submitLogIn),
+	path('submitSignUp/', submitSignUp),
 	path('testNameUnique/', testNameUnique),
 ]

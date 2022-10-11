@@ -114,7 +114,7 @@ function New(props){
 				temp_latexp_local = temp_latexp_local ? temp_latexp_local : '';
 
 				if(!window.is_debug) {
-					sendData('test', [ ref[2] , ref[0].current, temp_latexp_local ])
+					sendData('updateLatex', { 'target':ref[2] , 'latexList':ref[0].current, 'pacages':temp_latexp_local })
 				} else {
 					console.log([ ref[2] , ref[0].current, temp_latexp_local ])
 				}

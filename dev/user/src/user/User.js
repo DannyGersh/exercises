@@ -24,24 +24,16 @@ function Message(props) {
     		return false;
     	}
 		
-    	sendData('deleteMessage',
-    		{'messageId': props.messageId})
-    	.then((res)=>res.json())
+    	sendData('deleteMessage', {'messageId': props.messageId})
     	.then((data)=>{
     		
-    		// data: 
-    		// {'result': 0} - success
-    		// {'result': str} - str is the error
-    		
-    		if(data['result']) { 
-    			// error acured
-    			window.alert(data['result'])
-    		} else {
+    		if(!data['error']) {
     			// success
     			let temp = props.messages[0];
     			temp = temp.filter(e=>e[0]!=props.messageId);
     			props.messages[1](temp);
     		}
+
     	})
     }
 
@@ -157,12 +149,11 @@ function User(){
 		selectMenue(menueSelection[0]).map( (item, index) =>
 			<Exercise
 				narrowWindow={window.nrw}
+				userId={window.jsonData['userid']}
 				key={index}
 				identifier={index}
-				isUser={menueSelection[0]===tabs[0] ? true : false}
 				url={'/' + item['id']} 
 				chalange={item}
-				userid={window.jsonData['userid']}
 				isOptions={menueSelection[0]===tabs[0] ? true : false}
 				forceRenderDummyState={menueSelection}
 			/>

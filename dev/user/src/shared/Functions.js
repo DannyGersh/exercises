@@ -75,10 +75,10 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-export {getCookie}
+export {getCookie};
 
 //'http://www.ididthisforu.com/test/': 'http://localhost/test/'
-async function sendData(url, data, methode='POST') {
+async function raw_sendData(url, data, methode='POST') {
 	
 	if(url[0] === '/') {
 		url = url.slice(1,url.length)
@@ -113,8 +113,53 @@ async function sendData(url, data, methode='POST') {
 	}
 
 }
-export {sendData}
+export {raw_sendData};
 
+async function sendData(url, data, methode='POST'){
+	
+	// send data to server
+
+	// args:
+	// url - string
+	// data - object to send
+
+	// return: promise, resolves to object
+
+	if(methode === 'GET') {
+
+		return raw_sendData(url, data, 'GET')
+
+	} else if(methode === 'POST') {
+
+		return raw_sendData(url, data)
+			
+			// client side
+			.then((res)=>{
+				
+				if(res['status']===200) {
+					return new Promise(function(resolve, reject) {
+						resolve(res.json())
+					})
+				} else {
+					window.alert('an error has accurred ...');
+				}
+
+			})
+			// server side
+			.then((data)=>{
+				// here, error is not nesseseraly software failure
+				// it could be username not unique for example
+				if(data['error']) {
+					window.alert(data['error'])
+				} else {
+					return new Promise(function(resolve, reject) {
+						resolve(data)
+					})
+				}
+			});
+	}
+}
+export {sendData};
 
 
 function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
@@ -157,9 +202,7 @@ function mainText2html(identifier_exercise, chalange, formFile_latex, target) {
 	}
 	return textList.join('');
 }
-export {mainText2html}
-
-
+export {mainText2html};
 
 
 

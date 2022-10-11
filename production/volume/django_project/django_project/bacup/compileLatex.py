@@ -82,8 +82,8 @@ def gen_svg(latex, user, identifier, pacages):
 
 	# dangere zone
 	res = 0
-	def run(strList):
-		return subprocess.run(strList, timeout=2).returncode
+	#def run(strList):
+	#	return subprocess.run(strList, timeout=2).returncode
 	
 	try:
 		subprocess.Popen([

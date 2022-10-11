@@ -16,7 +16,7 @@ function App() {
     "signInFailure": false,
     "isSignUp": false,
     "isAuth": null,
-    "userid": null,
+    "userid": 1,
     "latest": [],
     "hotest": [
         {
@@ -27,7 +27,7 @@ function App() {
             "author": 1,
             "creationdate": "09/10/2022 - 10:47",
             "title": "aaaaaaaaaaa\n",
-            "rating": [],
+            "rating": [1,2,3],
             "tags": [],
             "explain": "a",
             "latex": "166280682532676",

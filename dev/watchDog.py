@@ -10,7 +10,6 @@ import os
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-   
 
 class Monitor:
     
@@ -27,10 +26,11 @@ class Monitor:
                 if event.is_directory:
                     return None
                 elif event.event_type == 'modified':
-                    os.system(''
+                    os.system(
                         'pleasebuild %s.jsx > %s.js && echo successfully built %s.js'
                         %(self.file_main, self.file_main, self.file_main)
                     )
+
                     
         self.observer.schedule(Handler(), self.file_main+'.jsx', recursive = False)
         self.observer.schedule(Handler(), self.file_jsx+'.jsx', recursive = False)
@@ -45,5 +45,7 @@ class Monitor:
         self.observer.join()
   
   
-watch = Monitor('./chalange/src/chalange/Chalange', './chalange/src/chalange/jsx')
+watch = Monitor('./chalange/src/chalange/Chalange', 
+    './chalange/src/chalange/jsx')
+
 watch.run()
