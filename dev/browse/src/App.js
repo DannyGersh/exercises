@@ -99,7 +99,7 @@ function App() {
   <>
     <Nav 
       narrowWindow = { window.nrw } 
-      currentPage = { './../../../../../../browse/' + searchTerm }
+      currentPage = { '/browse/' + searchTerm }
       signInFailure = { signInFailure } 
       isSignUp = { isSignUp }
 			isAuth = { isAuth }

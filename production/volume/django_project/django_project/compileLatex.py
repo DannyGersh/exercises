@@ -92,8 +92,7 @@ def gen_svg(latex, user, identifier, pacages):
 			identifier,
 		])
 	except Exception as exp:
-		# print(exp)
-		pass
+		print(exp)
 
 	''' TODO - remove when stable
 	if not res:

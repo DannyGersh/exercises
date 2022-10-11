@@ -30,7 +30,6 @@ function Home(props) {
 					isUser={true}
 					url={'/' + item['id']} 
 					chalange={item}
-					userid={window.jsonData['userid']}
 					isOptions={false}
 					forceRenderDummyState={ms}
 				/>
@@ -42,8 +41,3 @@ function Home(props) {
 	)
 }
 export default Home;
-
-// title={item['title']} 
-// paragraph={item['question']} 
-// likes={item['rating'].length} 
-// tags={item['tags']}
