@@ -1,0 +1,15 @@
+#! /bin/bash
+
+cd /etc/nginx/sites-enabled/
+ln -s /volume/server/django_project
+
+cd /volume/
+
+. venv/bin/activate
+
+cd server
+
+gunicorn -c gunicorn_config.py backend.wsgi &
+
+service nginx start
+
