@@ -3,7 +3,7 @@ import Card from '../card/Card'
 import BtnRound from '../../shared/buttons/BtnRound'
 import Tag from '../../shared/tag/Tag'
 import BtnMenue from '../../shared/buttons/BtnMenue'
-import {mainText2html, sendData} from '../../shared/Functions'
+import {mainText2html, sendData} from '../../shared/functions'
 import {useState, useEffect} from 'react'
 import CSRFToken from '../../shared/csrftoken'
 

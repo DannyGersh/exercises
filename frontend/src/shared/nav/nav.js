@@ -31,8 +31,8 @@ function Nav(props) {
   }
 
   // nav buttons handlers
-  function LogInHandle(){
-  	window.location = '/login/'
+  function registerHandle(){
+  	window.location = '/register/'
   }
   function homeHandle(){
   	window.location = '/';
@@ -62,7 +62,7 @@ function Nav(props) {
 	  <BtnMenue onClick={homeHandle}>Home</BtnMenue>
 	  { !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
 	  { dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
-	  <BtnMenue onClick={props.userid ? logOutHandle: LogInHandle}>{props.userid ? 'Log out': 'Log in'}</BtnMenue>	
+	  <BtnMenue onClick={props.userid ? logOutHandle: registerHandle}>{props.userid ? 'Log out': 'Log in'}</BtnMenue>	
 	  <BtnMenue onClick={contactHandle}>Contact</BtnMenue>		
 
 		{/* search buttons on narrowWindow */}

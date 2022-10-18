@@ -4,13 +4,7 @@ import Nav from './shared/nav/nav'
 import useWindowResize from './shared/functions'
 import './shared/global.css'
 
-function A() {
-  return <h1>A</h1>
-}
-function B() {
-  return <h1>B</h1>
-}
-
+import Register from './pages/register/register'
 
 function Slug() {
   let { slug } = useParams();
@@ -27,16 +21,20 @@ function App() {
   
   const narrowWindow = useWindowResize();
   window.isdebug = true;
+  
+  if(window.isdebug) {
+    window.jsonData = {
+      userid:1,
+    };
+  }
 
   return (
     <>
-    <Nav narrowWindow={narrowWindow[0]} userid={1}/>
+    <Nav narrowWindow={narrowWindow[0]} userid={window.jsonData}/>
     <BrowserRouter>
       <Routes>
         <Route path="" element={<Home/>}/>
-        <Route path="a" element={<A/>}/>
-        <Route path="b" element={<B/>}/>
-        <Route path="profile/:slug" element={<Slug/>}/>
+        <Route path="register" element={<Register/>}/>        <Route path="profile/:slug" element={<Slug/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>

@@ -26,7 +26,28 @@ SECRET_KEY = 'django-insecure-r5h0)-lfid5aw-(s3bs=m9l^%fxq36%=m(#p66(&v$*p3an!fj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    '127.0.0.1', 
+    'localhost', 
+    'localhost:3000'
+]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000/register/', 
+    'http://localhost', 
+    'http://127.0.0.1', 
+    'http://localhost:3000',
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+CORS_ALLOW_METHODS = [
+    'GET','POST'
+]
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -51,10 +72,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -134,7 +151,3 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost',
-]
