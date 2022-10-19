@@ -7,18 +7,8 @@ import {useState, useRef, useEffect} from 'react'
 
 function Login(props) {
 	
-	const inData = useState(false);
+	const inData = [{userid:window.jsonData.userid}];
 
-	useEffect(()=>{
-		if(!inData[0]) {
-			sendData('fetch/register_debug')
-			.then(data=>{
-				inData[1](data);
-				console.log(data)
-			})
-		}
-	},[inData])
-	
 	const ref_cap = useRef(window.isdebug)
 	const ref_terms = useRef(window.isdebug)
 	const ref_uname = useRef('');
@@ -49,7 +39,7 @@ function Login(props) {
 	  	}
 	  	
 	  	// signup
-	  	else if(!inData.isLogin) { 
+	  	else if(!props.isLogin) { 
 
 	  		// passwords dont match
 	  		if(ref_password.current.value !== ref_confirm_password.current.value) {
@@ -88,7 +78,7 @@ function Login(props) {
 		})
 	  	*/
   		sendData('fetch/register_submit', 'POST', {
-  			'isLogin': inData.isLogin,
+  			'isLogin': props.isLogin,
 			'uname': ref_uname.current.value,
 			'password': ref_password.current.value,
 		})
@@ -101,7 +91,7 @@ function Login(props) {
 	return(
 	<center style={{margin:'1rem'}}>
 
-    { inData.isLogin && 
+    { props.isLogin && 
 		<>
 
 		<p>Display name:</p>
@@ -110,12 +100,12 @@ function Login(props) {
     	<input ref={ref_password} name='password' type='password'/>
 
     	<br/><br/>
- 		<BtnMenue className='green' onClick={submitMain} type='button'>{inData.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>{props.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
  		<br/><br/>
  		<a href='/signup/'>Sign Up here</a>
     	</>
     }
-    { !inData.isLogin &&
+    { !props.isLogin &&
     	<>
 
     	<p>Display name:</p>

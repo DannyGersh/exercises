@@ -12,6 +12,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.models import User
+
 from . settings import DEBUG
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
@@ -156,17 +159,57 @@ def fetch_register_debug(request):
     
     return JsonResponse(outData)
 
+@csrf_exempt_if_debug
 def fetch_register_submit(request):
 
-    inData = json.loads(request.body.decode("utf-8"))
-    print("AAAAAAAAAAAAAAAAAAAA", inData)
+    body = json.loads(request.body.decode("utf-8"))
 
-    outData = {
-        'isLogIn': True,
-        'userid': str(request.user.id),
-    }
+    isLogin = body.get('isLogin')
+    uname = body.get('uname')
+    password = body.get('password')
+
+    if isLogin:
+
+        user = authenticate(username=uname, password=password)
     
-    return JsonResponse(outData)
+        print("YAYA", user, isLogin, uname, password)
+        if user is not None:
+            login(request, user)
+            request.session['isAuth'] = True
+            return JsonResponse({'url': 'currentUrl'})
+        else:
+           return JsonResponse({'error': "could not log in ..."})
+
+    else:
+        try:
+            cur.execute('''
+                select username from auth_user
+            ''')
+            inData = [i[0] for i in cur.fetchall()]
+            
+            if uname in inData:
+                return JsonResponse({"error": 'user name taken, try another one.'})
+            else:
+                user = User.objects.create_user(
+                    uname, '', password
+                )
+                if not user:
+                    return JsonResponse({'error': "could not create user ..."})
+                else:
+                    login(request, user)
+                    print(user)
+
+        except err:
+            return JsonResponse({"error": "could not create user ..."})
+
+    return JsonResponse({'error': "aaaaaaaaaaaaa"})
+
+
+def fetch_logout(request):
+    #logout(request.user.id)
+    print("YAYAYAYAYAYA", request.user.is_authenticated)
+    return JsonResponse({'bbb':'bbb'})
+
 
 
 
@@ -183,7 +226,6 @@ def fetch_test(request):
     inData = json.loads(request.body.decode("utf-8"))
     print("AAAAAAAAAAAAAAAAAAAA", inData)
     return JsonResponse({'bbb':'bbb'})
-
 
 @ensure_csrf_cookie
 def home(request):
@@ -206,8 +248,8 @@ urlpatterns = [
 
     path('fetch/test123/', fetch_test),
     path('fetch/home/', fetch_home),
-    path('fetch/register/', fetch_register_submit),
+    path('fetch/logout/', fetch_logout),
+    path('fetch/register_submit/', fetch_register_submit),
 
     path('fetch/register_debug/', fetch_register_debug),
-
 ]

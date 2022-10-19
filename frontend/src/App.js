@@ -24,17 +24,19 @@ function App() {
   
   if(window.isdebug) {
     window.jsonData = {
-      userid:1,
+      userid:null,
     };
   }
 
   return (
     <>
-    <Nav narrowWindow={narrowWindow[0]} userid={window.jsonData}/>
+    <Nav narrowWindow={narrowWindow[0]}/>
     <BrowserRouter>
       <Routes>
         <Route path="" element={<Home/>}/>
-        <Route path="register" element={<Register/>}/>        <Route path="profile/:slug" element={<Slug/>}/>
+        <Route path="login" element={<Register isLogin={true}/>}/>
+        <Route path="signup" element={<Register isLogin={false}/>}/>
+        <Route path="profile/:slug" element={<Slug/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
