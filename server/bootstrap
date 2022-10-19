@@ -1,15 +1,30 @@
 #! /bin/bash
 
+dir_origin = $PWD
+
 cd /etc/nginx/sites-enabled/
 ln -s /volume/server/django_project
 
-cd /volume/
+cp /volume/server/pg_hba.conf /etc/postgresql/14/main/
 
-. venv/bin/activate
+service nginx restart
+service postgresql restart
 
-cd server
+cd /volume/backend/
+python3 manage.py makemigrations
+python3 manage.py migrate
 
-gunicorn -c gunicorn_config.py backend.wsgi &
+cd /volume/server/SQL
+psql -U postgres -a -f createUser.sql
+psql -U postgres -a -f createDatabase.sql
+psql -U postgres -a -f createTableChalanges.sql
+psql -U postgres -a -f createTableTags.sql
+psql -U postgres -a -f createTableMessages.sql
+psql -U postgres -a -f updateTableAuthUser.sql
 
-service nginx start
+# gunicorn -c /volume/conf/gunicorn_config.py django_project.wsgi &
 
+service nginx restart
+service postgresql restart
+
+cd $dir_origin

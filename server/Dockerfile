@@ -10,6 +10,6 @@ nginx nano \
 libpq-dev \ 
 python3-pip && \
 
-pip3 install django gunicorn django-cors-headers
+pip3 install psycopg2 django gunicorn django-cors-headers
 
 cmd ["/bin/bash"]
