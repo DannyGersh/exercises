@@ -1,14 +1,11 @@
 import '../../shared/global.css'
-//import CSRFToken from "../shared/csrftoken";
 //import ReCAPTCHA from "react-google-recaptcha";
 import BtnMenue from '../../shared/buttons/BtnMenue'
 import {sendData} from '../../shared/functions'
-import {useState, useRef, useEffect} from 'react'
+import {useState, useRef} from 'react'
 
 function Login(props) {
 	
-	const inData = [{userid:window.jsonData.userid}];
-
 	const ref_cap = useRef(window.isdebug)
 	const ref_terms = useRef(window.isdebug)
 	const ref_uname = useRef('');
@@ -64,28 +61,19 @@ function Login(props) {
 	  		// dont convert last "else if" to "else".
 	  		// this is to ensure the script keeps on going.
 	  	}
-	  	/*
-  		sendData('fetch/register', 'POST', {
-  			'isLogin': inData.isLogin,
-			'uname': ref_uname.current.value,
-			'password': ref_password.current.value,
-		})
-		.then(data=>{
-			if(!inData.isLogin && !data['error']) {
-				window.alert('Thank you for signing up!');
-			}
-			window.location = '/'
-		})
-	  	*/
+
   		sendData('fetch/register_submit', 'POST', {
   			'isLogin': props.isLogin,
 			'uname': ref_uname.current.value,
 			'password': ref_password.current.value,
 		})
 		.then(data=>{
-			console.log(data)
+			console.log(window.isdebug)
+			console.log(window.jsonData)
+			console.log(data, window.jsonData.userid )
+			window.jsonData['userid'] = data['userid'];
 		})
-	  }
+	}
 	
 
 	return(
@@ -137,7 +125,7 @@ function Login(props) {
   		</div>  
 
     	<br/>
- 		<BtnMenue className='green' onClick={submitMain} type='button'>{inData.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>{props.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
 
 		</>
     }

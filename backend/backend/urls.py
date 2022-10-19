@@ -1,21 +1,21 @@
-from django.contrib import admin
-from django.urls import path
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
-import json
-
 import json
 import psycopg2
 import os
 
+from django.contrib import admin
+from django.urls import path
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 
 from . settings import DEBUG
+
+from . constants import *
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 conn.set_session(autocommit=True)
@@ -24,47 +24,24 @@ cur.execute('SELECT version()')
 db_version = cur.fetchone()
 print(db_version)
 
-sql_chalange = [
-    'id',           # serial primary key not null 
-    'exercise',     # varchar(4000) not null
-    'answer',       # varchar(4000) not null
-    'hints',        # varchar(4000)
-    'author',       # varchar(100)
-    'creationdate', # timestamp default current_timestamp
-    'title',        # varchar(400) not null
-    'rating',       # integer[] not null default '{}'
-    'tags',         # varchar(100)[] not null default '{}'
-    'explain',      # varchar(4000)
-    'latex',        # varchar(30)[] not null default '{}'
-    'latexp',       # varchar(400)
-]
-sql_auth = [
-    'authored', # integer[] default '{}'
-    'liked',    # integer[] default '{}'
-    'answered'  # integer[] default '{}'
-]
-sql_tags = [
-    'id',   # serial primary key not null
-    'name', # varchar(100) not null unique
-]
-sql_messages = [
-    'id'            # serial            primary key not null,
-    'chalangeId'    # serial            not null            ,
-    'sender'        # serial            not null            ,
-    'receiver'      # serial            not null            ,
-    'message'       # varchar(4000)     not null
-]
-
-dir_users = os.path.join('/','volume','static','users')
-
-reg_latex = r'$$___latex$$'
-reg_latex_search = r'\$\$(.+?)\$\$'
 
 def csrf_exempt_if_debug(func):
     if DEBUG: 
         return csrf_exempt(func)
     else:
         return func
+
+def getSQL(sqlCall, outData):
+
+    try:
+        cur.execute(sqlCall)
+        outData['SQL'] = cur.fetchall()
+        return False
+    
+    except Exception as err:
+        outData['ERR'] = err
+        cur.execute( "insert into errors(error, type) values('%s','%s')"%(str(err), "SQL") )            
+        return True
 
 
 #@ensure_csrf_cookie
@@ -93,7 +70,7 @@ def getChalange(id):
     if inData:
 
         outData = { k:v for (k,v) in zip(sql_chalange, inData) }
-        outData['authorName'] = inData[-1]
+        #outData['authorName'] = inData[-1]
         
         dir_exercise = os.path.join(dir_users, str(outData['author']), outData['latex'])
         file_json = os.path.join(dir_exercise, '.json')
@@ -115,49 +92,40 @@ def getChalange(id):
 
     return outData
 
+
+
 def fetch_home(request):
 
     outData = {}
     # outData['isAuth'] = request.session.get('isAuth')
     outData['userid'] = request.user.id
     request.session['currentUrl'] = '/'
-    
-    # TODO - make one SQL quary insted of many
-    cur.execute("select id from chalanges order by creationdate desc limit 10")
-    in_latest = cur.fetchall()  
-    for i in range(len(in_latest)):
-        in_latest[i] = getChalange(in_latest[i][0])
+
+    in_hotest = []
+    in_latest = []
+
+    # in production, while loop always has 1 iteration
+    # this is not true for debug build
+    while not len(in_hotest) or not len(in_latest):
+
+        if getSQL(sql_get_hotest, outData):
+            pass
+        else:
+            in_hotest = [{ k:v for (k,v) in zip(sql_chalange, index) } for index in outData['SQL']]
         
-    # TODO - make one SQL quary insted of many
-    cur.execute("select id from chalanges order by cardinality(rating) desc limit 10")
-    in_hotest = cur.fetchall()  
-    for i in range(len(in_hotest)):
-        in_hotest[i] = getChalange(in_hotest[i][0])
-        
-    outData['latest'] = in_latest
-    outData['hotest'] = in_hotest
-    q = getChalange(53)
-    
+        if getSQL(sql_get_latest, outData):
+            pass
+        else:
+            in_latest = [{ k:v for (k,v) in zip(sql_chalange, index) } for index in outData['SQL']]
+
     output = {
         "userid": request.user.id,
+        "hotest": in_hotest,
         "latest": in_latest,
-        "hotest": in_hotest
     } 
 
     return JsonResponse(output)
 
-@csrf_exempt_if_debug
-def fetch_register_debug(request):
-
-    #inData = json.loads(request.body.decode("utf-8"))
-    #print("AAAAAAAAAAAAAAAAAAAA", inData)
-
-    outData = {
-        'isLogIn': True,
-        'userid': str(request.user.id),
-    }
-    
-    return JsonResponse(outData)
 
 @csrf_exempt_if_debug
 def fetch_register_submit(request):
@@ -172,22 +140,22 @@ def fetch_register_submit(request):
 
         user = authenticate(username=uname, password=password)
     
-        print("YAYA", user, isLogin, uname, password)
         if user is not None:
             login(request, user)
-            request.session['isAuth'] = True
-            return JsonResponse({'url': 'currentUrl'})
+            return JsonResponse({'userid': request.user.id})
         else:
            return JsonResponse({'error': "could not log in ..."})
 
     else:
-        try:
-            cur.execute('''
-                select username from auth_user
-            ''')
-            inData = [i[0] for i in cur.fetchall()]
-            
-            if uname in inData:
+        
+        res = {}
+        
+        if getSQL('select username from auth_user', res):
+            return JsonResponse({"error": "could not create user ..."})
+        
+        else:
+            names = [i[0] for i in res['SQL']]
+            if uname in names:
                 return JsonResponse({"error": 'user name taken, try another one.'})
             else:
                 user = User.objects.create_user(
@@ -197,18 +165,13 @@ def fetch_register_submit(request):
                     return JsonResponse({'error': "could not create user ..."})
                 else:
                     login(request, user)
-                    print(user)
-
-        except err:
-            return JsonResponse({"error": "could not create user ..."})
-
-    return JsonResponse({'error': "aaaaaaaaaaaaa"})
+  
+    return JsonResponse({"success": 0})
 
 
 def fetch_logout(request):
-    #logout(request.user.id)
-    print("YAYAYAYAYAYA", request.user.is_authenticated)
-    return JsonResponse({'bbb':'bbb'})
+    logout(request)
+    return JsonResponse({'success':0})
 
 
 
@@ -250,6 +213,4 @@ urlpatterns = [
     path('fetch/home/', fetch_home),
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
-
-    path('fetch/register_debug/', fetch_register_debug),
 ]

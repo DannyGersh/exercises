@@ -90,7 +90,8 @@ async function raw_sendData(url, methode='GET', data={} ) {
 	if(window.isdebug) {
 		url = 'http://localhost/' + url
 	} else {
-		url = 'https://www.ididthisforu.com/' + url
+		//url = 'https://www.ididthisforu.com/' + url
+		url = 'http://localhost/' + url
 	}
 
 	if(methode==='POST') {

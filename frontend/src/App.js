@@ -19,14 +19,17 @@ function NotFound() {
 
 function App() {
   
+  window.isdebug = false;
   const narrowWindow = useWindowResize();
-  window.isdebug = true;
-  
+
+  // window.jsonData is not available at port 3000
   if(window.isdebug) {
     window.jsonData = {
-      userid:null,
-    };
+      userid: null,
+    }
   }
+
+  console.log(window.jsonData, window.isdebug);
 
   return (
     <>
