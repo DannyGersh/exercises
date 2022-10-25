@@ -3,6 +3,9 @@ import CSRFToken from "../csrftoken";
 import { useState } from "react";
 import BtnMenue from '../buttons/BtnMenue'
 import {sendData} from '../functions'
+import '../buttons/BtnMenue.css'
+
+import { useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 function Nav(props) {
 
@@ -10,7 +13,7 @@ function Nav(props) {
 	// narrowWindow - true if window is narrow
 	// userid = user id
 
-	const userid = window.jsonData.userid;
+	const userid = window.userid[0];
 
 	// dropDownActive - true if nav searchBar is expended
 	const dropDownActive = useState(false);
@@ -32,27 +35,15 @@ function Nav(props) {
     	);
 	}
 
-	// nav buttons handlers
-	function loginHandle(){
-		window.location = '/login/'
-	}
-	function homeHandle(){
-		window.location = '/';
-	}
-	function newHandle(){
-		window.location = '/new/';
-	}
 	function logOutHandle(){
 		sendData('/fetch/logout')
-		.then(data=>console.log(data))
-		//window.location = '/';
+		.then(data=>{
+			window.userid[1](null);
+		})
 	}
 	function profileHandle(){
 		let temp = '/profile/' + String(userid);
 		userid ? window.location = temp : window.location = '/login/';
-	}
-	function contactHandle(){
-		window.location='/contact/'
 	}
 
 	const dspProfileBtn = userid && !/profile\/\d/.test(window.location);
@@ -63,11 +54,25 @@ function Nav(props) {
 	<div className="nav">
 
 		{/* menue buttons */}
-		<BtnMenue onClick={homeHandle}>Home</BtnMenue>
-		{ !dspNewBtn && <BtnMenue onClick={newHandle}>New</BtnMenue>}
-		{ dspProfileBtn && <BtnMenue onClick={profileHandle} >Profile</BtnMenue>}			
-		<BtnMenue onClick={userid ? logOutHandle: loginHandle}>{userid ? 'Log out': 'Log in'}</BtnMenue>	
-		<BtnMenue onClick={contactHandle}>Contact</BtnMenue>		
+		<Link to='/'>
+		<BtnMenue>Home</BtnMenue>
+		</Link>
+
+		<Link to='/new'>
+		{window.userid[0] && <BtnMenue>New</BtnMenue>}
+		</Link>
+
+		<Link to={'/profile/'+userid}>
+		{window.userid[0] && <BtnMenue>Profile</BtnMenue>}			
+		</Link>
+
+		<Link to={window.userid[0] ? '/' : '/login'}>
+		<BtnMenue onClick={logOutHandle}>{window.userid[0] ? 'Log out' : 'Log in'}</BtnMenue>	
+		</Link>
+
+		<Link to='/contact'>
+		<BtnMenue>Contact</BtnMenue>		
+		</Link>
 
 		{/* search buttons on narrowWindow */}
 		{ props.narrowWindow &&

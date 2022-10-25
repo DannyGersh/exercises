@@ -4,10 +4,13 @@ import BtnMenue from '../../shared/buttons/BtnMenue'
 import {sendData} from '../../shared/functions'
 import {useState, useRef} from 'react'
 
+import { Link, Navigate } from "react-router-dom";
+
+
 function Login(props) {
 	
-	const ref_cap = useRef(window.isdebug)
-	const ref_terms = useRef(window.isdebug)
+	const ref_cap = useRef(true)
+	const ref_terms = useRef(true)
 	const ref_uname = useRef('');
 	const ref_password = useRef('');
 	const ref_confirm_password = useRef('');
@@ -68,10 +71,7 @@ function Login(props) {
 			'password': ref_password.current.value,
 		})
 		.then(data=>{
-			console.log(window.isdebug)
-			console.log(window.jsonData)
-			console.log(data, window.jsonData.userid )
-			window.jsonData['userid'] = data['userid'];
+			window.userid[1](data.userid);
 		})
 	}
 	
@@ -88,9 +88,13 @@ function Login(props) {
     	<input ref={ref_password} name='password' type='password'/>
 
     	<br/><br/>
- 		<BtnMenue className='green' onClick={submitMain} type='button'>{props.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
+
+    	<Link to='/'>
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>Log in</BtnMenue>
+ 		</Link>
+
  		<br/><br/>
- 		<a href='/signup/'>Sign Up here</a>
+ 		<Link to='/signup/'>Sign Up here</Link>
     	</>
     }
     { !props.isLogin &&
@@ -125,8 +129,10 @@ function Login(props) {
   		</div>  
 
     	<br/>
- 		<BtnMenue className='green' onClick={submitMain} type='button'>{props.isLogin ? 'Log in': 'Sign up'}</BtnMenue>
 
+
+ 		<BtnMenue className='green' onClick={submitMain} type='button'>Sign up</BtnMenue>
+ 		{window.userid[0] && <Navigate to='/'/>}
 		</>
     }
     

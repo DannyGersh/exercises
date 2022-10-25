@@ -1,6 +1,7 @@
 import json
 import psycopg2
 import os
+import pathlib
 
 from django.contrib import admin
 from django.urls import path
@@ -13,9 +14,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 
+from django.contrib.sessions.backends.db import SessionStore
+
 from . settings import DEBUG
 
 from . constants import *
+
+from . compileLatex import gen_svg
+
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 conn.set_session(autocommit=True)
@@ -43,8 +49,6 @@ def getSQL(sqlCall, outData):
         cur.execute( "insert into errors(error, type) values('%s','%s')"%(str(err), "SQL") )            
         return True
 
-
-#@ensure_csrf_cookie
 def getChalange(id):
     
     cur.execute('''
@@ -93,7 +97,6 @@ def getChalange(id):
     return outData
 
 
-
 def fetch_home(request):
 
     outData = {}
@@ -106,7 +109,12 @@ def fetch_home(request):
 
     # in production, while loop always has 1 iteration
     # this is not true for debug build
+    count = 0
     while not len(in_hotest) or not len(in_latest):
+
+        count += 1
+        if count == 10:
+            break
 
         if getSQL(sql_get_hotest, outData):
             pass
@@ -125,7 +133,6 @@ def fetch_home(request):
     } 
 
     return JsonResponse(output)
-
 
 @csrf_exempt_if_debug
 def fetch_register_submit(request):
@@ -165,30 +172,48 @@ def fetch_register_submit(request):
                     return JsonResponse({'error': "could not create user ..."})
                 else:
                     login(request, user)
+                    return JsonResponse({"userid": user.id})
   
-    return JsonResponse({"success": 0})
-
-
 def fetch_logout(request):
     logout(request)
     return JsonResponse({'success':0})
-
-
-
-
-def conditional_decorator(dec, condition):
-    def decorator(func):
-        if not condition:
-            # Return the function unchanged, not decorated.
-            return func
-        return dec(func)
-    return decorator
 
 @csrf_exempt_if_debug
 def fetch_test(request):
     inData = json.loads(request.body.decode("utf-8"))
     print("AAAAAAAAAAAAAAAAAAAA", inData)
-    return JsonResponse({'bbb':'bbb'})
+    print("AAAAAAAAAAAAAAAAAAAA", request.user.id)
+    print(request.user)
+    return JsonResponse({'userid':request.user.id})
+
+@csrf_exempt_if_debug
+def fetch_addLatex(request):
+    inData = json.loads(request.body.decode("utf-8"))
+    print("POOP IN:", inData)
+
+    dir_target = DIR_USERS / str(inData['userid']) / inData['exercise'] / inData['target']
+    dir_target.mkdir(parents=True, exist_ok=True)
+
+    file_svg = dir_target / (str(inData['latexid'])+'.svg')        
+
+    res = gen_svg(inData['latex'], inData['latexid'], dir_target, '')
+    
+    if(res):
+        return JsonResponse({'error':'could not compile latex'})
+    
+    return JsonResponse({'success':0})
+
+@csrf_exempt_if_debug
+def fetch_deleteLatex(request):
+    inData = json.loads(request.body.decode("utf-8"))
+    print("POOP IN:", inData)
+    print("POOP USER:", request.user.id)
+    print(request.user)
+    return JsonResponse({'userid':request.user.id})
+
+
+
+
 
 @ensure_csrf_cookie
 def home(request):
@@ -213,4 +238,6 @@ urlpatterns = [
     path('fetch/home/', fetch_home),
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
+    path('fetch/addLatex/', fetch_addLatex),
+    path('fetch/deleteLatex/', fetch_deleteLatex)
 ]

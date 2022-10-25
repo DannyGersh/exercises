@@ -4,7 +4,7 @@ import {useState} from 'react'
 // window.isdebug == false - for final production stage - site upload
 
 window.is_debug = (process.env.NODE_ENV === 'development')
-window.isdebug = true
+window.isdebug = false
 
 /*
 windowBp - window break point

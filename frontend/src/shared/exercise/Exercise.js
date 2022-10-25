@@ -11,7 +11,7 @@ function Exercise(props){
   
 	let identifier_latex = props.chalange['latex'];
 	let fromFile_latex = props.chalange['list_latex'];
-	
+
 	const htmlTitle = '<h4>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'title')+'</h4>';
 	const htmlExercise = '<p>'+mainText2html(identifier_latex, props.chalange, fromFile_latex, 'exercise')+'</p>';
 	

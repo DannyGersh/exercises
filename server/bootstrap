@@ -17,6 +17,7 @@ psql -U postgres -a -f createTableChalanges.sql
 psql -U postgres -a -f createTableTags.sql
 psql -U postgres -a -f createTableMessages.sql
 psql -U postgres -a -f updateTableAuthUser.sql
+psql -U postgres -a -f createTableErrors.sql 
 
 cd /volume/backend/
 python3 manage.py makemigrations

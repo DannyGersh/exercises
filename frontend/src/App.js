@@ -1,10 +1,14 @@
-import { useParams, BrowserRouter, Routes, Route } from "react-router-dom";
+import { useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from './pages/home/home'
+import New from './pages/new/New'
+
 import Nav from './shared/nav/nav'
-import useWindowResize from './shared/functions'
+import useWindowResize, {sendData} from './shared/functions'
 import './shared/global.css'
 
 import Register from './pages/register/register'
+
+import {useEffect, useState} from 'react'
 
 function Slug() {
   let { slug } = useParams();
@@ -19,28 +23,27 @@ function NotFound() {
 
 function App() {
   
-  window.isdebug = false;
+  window.isdebug = true;
   const narrowWindow = useWindowResize();
+  window.userid = useState(false);
 
-  // window.jsonData is not available at port 3000
-  if(window.isdebug) {
-    window.jsonData = {
-      userid: null,
-    }
+  useEffect(()=>{
+  if(!window.jsonData) {
+    window.userid[1](null)
   }
-
-  console.log(window.jsonData, window.isdebug);
+  },[])
 
   return (
     <>
-    <Nav narrowWindow={narrowWindow[0]}/>
     <BrowserRouter>
+      <Nav narrowWindow={narrowWindow[0]}/>
       <Routes>
-        <Route path="" element={<Home/>}/>
-        <Route path="login" element={<Register isLogin={true}/>}/>
-        <Route path="signup" element={<Register isLogin={false}/>}/>
-        <Route path="profile/:slug" element={<Slug/>}/>
-        <Route path="*" element={<NotFound/>}/>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/new" element={<New isEdit={false} exercise={null}/>}/>
+        <Route path="/login" element={<Register isLogin={true}/>}/>
+        <Route path="/signup" element={<Register isLogin={false}/>}/>
+        <Route path="/profile/:slug" element={<Slug/>}/>
+        <Route path="/*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
     </>
