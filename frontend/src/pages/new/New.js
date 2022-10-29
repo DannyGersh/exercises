@@ -24,19 +24,18 @@ function compileLatex(target, refs, text, exercise='temp') {
 
 	new Set(Object.entries(old_latex)).forEach(i=>{
 		if(!new_latex.includes(i[1])) {
-			console.log("DELETE")
 			sendData('fetch/deleteLatex', 'POST', {
 				userid : window.userid[0],
 				exercise : exercise,
 				target : target,
-				latexid : i[0]
+				latexid : i[0],
+				packages: localStorage.getItem('latexp'),
 			})
 			delete refs.current[target][3][i[0]];
 		} 
 	})
 	new Set(new_latex).forEach(i=>{
 		if(!Object.values(old_latex).includes(i)) {
-			console.log("ADD")
 			let new_id = 0;
 			if(Object.keys(old_latex).length) {
 				new_id = Math.max(...Object.keys(old_latex))+1;
@@ -46,7 +45,8 @@ function compileLatex(target, refs, text, exercise='temp') {
 				exercise : exercise,
 				target : target,
 				latexid : new_id,
-				latex : i
+				latex : i,
+				packages: localStorage.getItem('latexp'),
 			})
 			refs.current[target][3][new_id] = i
 		} 
@@ -56,26 +56,23 @@ function compileLatex(target, refs, text, exercise='temp') {
 		const reg = RegExp(`(?<=\\$\\$)${i[1]}(?=\\$\\$)`,'gms');
 		text = text.replace(reg, i[0]);
 	})
-	
-	//console.log(text)
-	//console.log(refs.current[target][3])
-	
+
 	refs.current[target][1] = text;
 }
 
-window.updateRefs = (target, refs, text) => {
+function updateRefs(target, refs, text) {
 	
 	clearTimeout(refs.current[target][1]);
 		
-	refs.current[target][1] = (
+	refs.current[target][2] = (
 		setTimeout(()=>{
 			localStorage.setItem(target, text)
 			refs.current[target][0] = text;
 			compileLatex(target, refs, text)
-		}, 2000)
+		}, 500)
 	);
 }
-				
+	
 function New(props){
 	
 	if(props.isEdit && !localStorage.getItem('editInProgress')) {
@@ -102,6 +99,7 @@ function New(props){
 		answer 	 : ['', '', '', {}],
 		hints 	 : ['', '', '', {}],
 		explain  : ['', '', '', {}],
+		update   : updateRefs,
 	})
 
 	// bmt - bottom menue tab - str representing which tab is currently selected
@@ -116,15 +114,16 @@ function New(props){
 	}
 	
 	function submit() {
+		
+		let latexp = localStorage.getItem('latexp')
+		let title = localStorage.getItem('title')
+		let exercise = localStorage.getItem('exercise')
+		let answer = localStorage.getItem('answer')
+		let hints = localStorage.getItem('hints')
+		let explain = localStorage.getItem('Explanation')
+		let tags = JSON.parse(localStorage.getItem('tags'))
 
-		let temp_title = localStorage.getItem('title')
-		let temp_exercise = localStorage.getItem('exercise')
-		let temp_answer = localStorage.getItem('answer')
-		let temp_hints = localStorage.getItem('hints')
-		let temp_explain = localStorage.getItem('Explanation')
-		let temp_tags = JSON.parse(localStorage.getItem('tags'))
-
-		// NOTE - input validation
+		// PERROR - input validation
 		function valin(str) { 
 			// valin - validate input
 			const q = str ? str.match(/<.*\/.*>/gms): '';
@@ -132,18 +131,18 @@ function New(props){
 		}
 
 		if(
-			valin(temp_title) ||
-			valin(temp_exercise) ||
-			valin(temp_answer) ||
-			valin(temp_hints) ||
-			valin(temp_explain)
+			valin(title) ||
+			valin(exercise) ||
+			valin(answer) ||
+			valin(hints) ||
+			valin(explain)
 		) {
 			window.alert("invalid input")
 			return
 		}
-		// NOTE
+		// PERROR
 
-		if( temp_title && temp_answer ) {
+		if( title && answer ) {
 			
 			// clean local storage on submit
 			//if(isSubmit[0]==='submit') {
@@ -156,12 +155,75 @@ function New(props){
 			//	localStorage.removeItem('tags');
 			//	localStorage.removeItem('bmt');
 			//}
+			updateRefs('title', refs, title)
+			updateRefs('exercise', refs, exercise)
+			updateRefs('answer', refs, answer)
+			updateRefs('hints', refs, hints)
+			updateRefs('explain', refs, explain)
+
+			const submit_exercise = { 
+				
+				userid: window.userid[0],
+				latexp: latexp,
+
+				title: [
+					refs.current['title'][1],
+					refs.current['title'][3],
+				],
+				exercise: [
+					refs.current['exercise'][1],
+					refs.current['exercise'][3],
+				],
+				answer: [
+					refs.current['answer'][1],
+					refs.current['answer'][3],
+				],
+				hints: [
+					refs.current['hints'][1],
+					refs.current['hints'][3],
+				],
+				explain: [
+					refs.current['explain'][1],
+					refs.current['explain'][3],
+				],
+			}
+
+			sendData('fetch/submit_exercise', 'POST', submit_exercise)
+			.then(data=>{ 
+				if(!data['error']) {
+					let count = 0;
+					const intervalId = setInterval(()=>{
+						if(data['notReady'] && count < 5) {
+							count++;
+							submit_exercise['new_latex_dir'] = data['new_latex_dir'];
+							submit_exercise['dir_user'] = data['dir_user'];
+							sendData('fetch/validateExercise', 'POST', submit_exercise)
+							.then(data2=>{
+								console.log(data2);
+								data['notReady'] = data2['notReady'];
+							})
+						} else if(count >= 5) {
+							clearInterval(intervalId);
+							window.alert('could not submit. check if all latex is valid.')
+						} else {
+							clearInterval(intervalId);
+							sendData('fetch/submitExerciseSql', 'POST', {
+								'a': 'a1'
+							})
+							.then(data3=>{
+								!data3['error'] && window.alert('successfully uploaded exercise.');
+							})
+						}
+					}, 1000)
+				}  
+				
+			})
 
 		} else {
 
 			let str = 'You are missing:\n';
-			if(!temp_title) { str += '* title (in the exercise tab)\n' }
-			if(!temp_answer) { str += '* answer\n' }
+			if(!title) { str += '* title (in the exercise tab)\n' }
+			if(!answer) { str += '* answer\n' }
 			window.alert(str)
 
 		}
@@ -170,14 +232,17 @@ function New(props){
 	return(
 	<>
 		{bmt[0]==='Exercise' && <Exercise refs={refs}/>}
-		
+		{bmt[0]==='Hints' && <Hints refs={refs}/>}
+		{bmt[0]==='Explanation' && <Explain refs={refs}/>}
+		{bmt[0]==='Tags' && <TagList refs={refs}/>}
+
 		<div className='bottomMenue'>
 			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Exercise'    && 'green'}`}>Exercise</BtnMenue>
 			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints'       && 'green'}`}>Hints</BtnMenue>
 			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Explanation' && 'green'}`}>Explanation</BtnMenue>
 			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Tags'        && 'green'}`}>Tags</BtnMenue>
-			<BtnMenue type='button' className='btnSubmit'>Preview</BtnMenue>
-			<BtnMenue type='button' className='btnSubmit'>Submit</BtnMenue>
+			<BtnMenue type='button' onClick={submit} className='btnSubmit'>Preview</BtnMenue>
+			<BtnMenue type='button' onClick={submit} className='btnSubmit'>Submit</BtnMenue>
 		</div>
 	</>
 	) 

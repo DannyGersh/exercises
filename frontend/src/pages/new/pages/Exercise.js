@@ -4,6 +4,8 @@ import {useEffect, useRef} from 'react'
 
 function Exercise(props){
 	
+	const updateRefs = props.refs.current.update;
+
 	if(!localStorage.getItem('title')) {
 		localStorage.setItem('title', '');
 	}
@@ -42,7 +44,7 @@ function Exercise(props){
 		<label>title *</label>
 		<input
 			id='title'
-			onChange={(v)=>window.updateRefs('title', props.refs, v.target.value)}
+			onChange={(v)=>updateRefs('title', props.refs, v.target.value)}
 			defaultValue={localStorage.getItem('title')}
 			style={{width:'100%'}}
 			type="text" 
@@ -53,7 +55,7 @@ function Exercise(props){
 		<label>Exercise bodie</label>
 		<textarea 
 			id='exercise'
-			onChange={(v)=>window.updateRefs('exercise', props.refs, v.target.value)}
+			onChange={(v)=>updateRefs('exercise', props.refs, v.target.value)}
 			rows='6' 
 			className='ExerciseTextArea' 
 			required
@@ -62,7 +64,7 @@ function Exercise(props){
 		<label>answer *</label>
 		<textarea
 			id='answer'
-			onChange={(v)=>window.updateRefs('answer', props.refs, v.target.value)}
+			onChange={(v)=>updateRefs('answer', props.refs, v.target.value)}
 			defaultValue={localStorage.getItem('answer')}
 			rows='6' 
 			className='ExerciseTextArea' 

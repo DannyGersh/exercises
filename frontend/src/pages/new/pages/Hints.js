@@ -2,30 +2,19 @@ import {useEffect} from 'react'
 
 function Hints(props){
 		
+	const updateRefs = props.refs.current.update;
+
 	if(!localStorage.getItem('hints')){
 		localStorage.setItem('hints', '');
 	}
-	
-	function onHintsChange(text){
-		localStorage.setItem('hints', text.target.value);
-		props.ref_hints[1].current = text.target.value;
-	}
-	
-	useEffect(()=>{
-		if(props.isEdit && !window.jsonData['EditInProgress']) {
-			document.getElementById('hints').value = window.jsonData['chalange']['hints'];
-		} else {
-			document.getElementById('hints').value = localStorage.getItem('hints');
-		}
-	},[])
-	
+
 	return(
 		<div className='Exercise'>
 		<label htmlFor="HintsTextArea">Hints bodie</label>
 		
 		<textarea 
 			id='hints'
-			onChange={(v)=>onHintsChange(v)} 
+			onChange={(v)=>updateRefs('hints', props.refs, v.target.value)} 
 			defaultValue={localStorage.getItem('hints')} 
 			rows='6' 
 			className='ExerciseTextArea' 

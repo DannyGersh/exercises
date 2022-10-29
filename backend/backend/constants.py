@@ -63,33 +63,92 @@ reg_latex_search = r'\$\$(.+?)\$\$'
 
 
 sql_get_hotest = '''
-select 
+    select  
 
-a.id, a.exercise, a.answer, a.hints, 
-a.author, 
-to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
-array(select name from tags where id in (select * from unnest(a.tags)) ), 
-a.explain, a.latex, a.latexp, b.username
+    a.id, a.exercise, a.answer, a.hints, 
+    a.author, 
+    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
+    array(select name from tags where id in (select * from unnest(a.tags)) ), 
+    a.explain, a.latex, a.latexp, b.username    
 
-from chalanges as a
-inner join auth_user as b
-on a.author = b.id
+    from chalanges as a
+    inner join auth_user as b
+    on a.author = b.id  
 
-order by cardinality(rating)
+    order by cardinality(rating)
 '''
 
 sql_get_latest = '''
-select 
+    select  
 
-a.id, a.exercise, a.answer, a.hints, 
-a.author, 
-to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
-array(select name from tags where id in (select * from unnest(a.tags)) ), 
-a.explain, a.latex, a.latexp, b.username
+    a.id, a.exercise, a.answer, a.hints, 
+    a.author, 
+    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
+    array(select name from tags where id in (select * from unnest(a.tags)) ), 
+    a.explain, a.latex, a.latexp, b.username    
 
-from chalanges as a
-inner join auth_user as b
-on a.author = b.id
+    from chalanges as a
+    inner join auth_user as b
+    on a.author = b.id  
 
-order by creationdate desc limit 10
+    order by creationdate desc limit 10
 '''
+
+sql_insert_exercise =  '''
+insert into exercises(
+    author,       
+    latex_dir,       
+    title,
+    exercise,
+    answer, 
+    hints,
+    explain,         
+    latex_title,     
+    latex_exercise,  
+    latex_answer,    
+    latex_hints,     
+    latex_explain
+) values (
+    {author}, 
+    {latex_dir}, 
+    {title}, 
+    {exercise}, 
+    {answer},
+    {hints}, 
+    {explain}, 
+    {latex_title}, 
+    {latex_exercise}, 
+    {latex_answer}, 
+    {latex_hints}, 
+    {latex_explain}
+) 
+'''
+
+sql_get_hotest2 = '''
+select
+
+    author,
+    rating,
+    tags,
+    latex_dir,
+
+    title,
+    exercise,
+
+    latex_title,
+    latex_exercise
+
+from exercises order by cardinality(rating) limit 10 
+'''
+sql_get_hotest2_elements = [
+    'author',
+    'rating',
+    'tags',
+    'latex_dir',
+
+    'title',
+    'exercise',
+
+    'latex_title',
+    'latex_exercise'
+]

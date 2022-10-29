@@ -41,13 +41,16 @@ forbiden = (
 
 command_gen_pdf = 'pdflatex -interaction batchmode -parse-first-line -no-shell-escape -file-line-error '
 
-def gen_svg(latex, latexid, dir_svg, pacages):
+def gen_svg(latex, latexid, dir_svg, packages):
 
 	# PERROR - validate input
-	# TODO - add to error database
+	# TODO - add to errors database
 	for i in forbiden:
 		if i in latex:
 			return -1
+
+	packages = ['\n%s\n'%i.strip() for i in packages.split(',,')]
+	packages = ''.join(packages)
 
 	dir_original = os.getcwd()
 	os.chdir(dir_svg)
@@ -55,8 +58,8 @@ def gen_svg(latex, latexid, dir_svg, pacages):
 	file_name = str(latexid)
 
 	with open(file_name + '.tex', 'w') as f:
-		# print(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
-		f.write(latex_a + pacages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
+		# print(latex_a + packages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
+		f.write(latex_a + packages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 
 	res = 0
 	try:

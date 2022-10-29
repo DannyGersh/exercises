@@ -1,10 +1,9 @@
 import {useState} from 'react'
-
+import StackTrace from 'stacktrace-js'
 // window.is_debug == true - for "npm start" react development
 // window.isdebug == false - for final production stage - site upload
 
-window.is_debug = (process.env.NODE_ENV === 'development')
-window.isdebug = false
+window.isdebug = true
 
 /*
 windowBp - window break point
@@ -117,6 +116,25 @@ async function raw_sendData(url, methode='GET', data={} ) {
 }
 export {raw_sendData};
 
+function getStackTrace() {
+
+	StackTrace.get()
+    .then(data=>{
+		const frames = data.filter(e=>{
+    		return(
+    			!/react/g.test(e.fileName) && 
+    			!/index.js/g.test(e.fileName) &&
+    			!/webpack/g.test(e.fileName) &&
+    			!/bundle.js/g.test(e.fileName)
+    		)
+    	})
+    	let res = '';
+    	for( const i of frames ) {
+    		res += `${i.fileName} ${i.lineNumber}\n`
+    	}
+    	console.log(res)
+	})
+}
 async function sendData(url, methode='GET', data={}){
 
 	// send data to server
@@ -137,7 +155,23 @@ async function sendData(url, methode='GET', data={}){
 				})
 			} else {
 				window.alert('an error has accurred ...');
-				throw(res)
+				
+				const objFromRes = {
+					type:res.type, url:res.url, 
+					redirect:res.redirect, 
+					status:res.status, 
+					ok:res.ok, 
+					statusText:res.statusText, 
+					headers:res.headers, 
+					body:res.json(), 
+					bodyUsed:res.bodyUsed,
+					type: 'failed to fetch',
+					stackTrace: JSON.stringify(data),
+				}
+				getStackTrace()
+				sendData('fetch/submitErrorSql', 'POST', objFromRes)
+    			
+    			throw(res)
 			}
 		})
 		// server side
