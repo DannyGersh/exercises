@@ -38,16 +38,16 @@ def csrf_exempt_if_debug(func):
 
 def getStackTrace():
     stackTrace = traceback.format_list(traceback.extract_stack(limit=10))
-    return ''.join(stackTrace)
+    return ''.join(stackTrace) + traceback.format_exc()
 
 def printError(msg):
-    print("\n-------ERROR-------")
-    print(traceback.format_exc(), ' -- message:', msg)
-    print('-------END ERROR-------\n')
+    print("\n-------ERROR-------\n")
+    print(getStackTrace(), ' -- message:', msg)
+    print('\n-------END ERROR-------\n')
 
 def sql_post_error(message, errorType, stackTrace=None):
 
-    if DEBUG: printError(errorType, message) # force stackTrace
+    if DEBUG: printError(message) # force stackTrace
 
     message = message.replace("'", "''")
     errorType = errorType.replace("'","''")
@@ -75,10 +75,12 @@ def try_except(func):
 
 def safe_fetch(func):
     
-    @try_except
     @csrf_exempt_if_debug
+    @try_except
     def wraper(*args, **kwargs):
         return func(*args, **kwargs)
+
+    return wraper
 
 
 @try_except
@@ -106,7 +108,7 @@ def genResponse(protocall, data, errorMessage='an error hase occurred.'):
     error = JsonResponse({'error': errorMessage})
 
     if len(protocall) != len(data):
-        sql_post_error('protocall and data not equal', 'type error')
+        sql_post_error('protocall and data not matching', 'type error')
         return error
 
     for i in range(len(data)):
@@ -200,8 +202,7 @@ def fetch_exercisePage(request):
     protocall = protocall_fetch_exercise_page;
     data = [int(inData['exerciseId'])];
 
-    print("QQQQQQQQQQ", genResponse(protocall, data))
-    return JsonResponse({'a':'a'})
+    return genResponse(protocall, data)
 
 @safe_fetch
 def fetch_addLatex(request):
