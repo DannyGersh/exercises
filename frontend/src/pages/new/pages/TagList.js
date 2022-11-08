@@ -2,7 +2,7 @@ import Tag from '../../../shared/tag/Tag'
 import BtnMenue from '../../../shared/buttons/BtnMenue'
 import './Shared.css'
 import {createRef, useEffect, useState} from 'react'
-import {sendData} from '../../../shared/functions'
+import {sendData} from '../../../shared/Functions'
 
 class Tags { // convenience class for localStorage manipulation
 		

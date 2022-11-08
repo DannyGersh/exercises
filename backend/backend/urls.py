@@ -3,6 +3,7 @@ import psycopg2
 import os
 import pathlib
 import subprocess
+import traceback
 
 from django.contrib import admin
 from django.urls import path
@@ -14,13 +15,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
-
 from django.contrib.sessions.backends.db import SessionStore
 
 from . settings import DEBUG
-
 from . constants import *
-
 from . compileLatex import gen_svg
 
 
@@ -38,132 +36,119 @@ def csrf_exempt_if_debug(func):
     else:
         return func
 
-def comSQL(sqlCall, outData, POST=False):
+def getStackTrace():
+    stackTrace = traceback.format_list(traceback.extract_stack(limit=10))
+    return ''.join(stackTrace)
 
-    # comunicate with SQL database
+def printError(msg):
+    print("\n-------ERROR-------")
+    print(traceback.format_exc(), ' -- message:', msg)
+    print('-------END ERROR-------\n')
 
-    try:
-        cur.execute(sqlCall)
-        
-        if not POST:
-            outData['SQL'] = cur.fetchall()
+def sql_post_error(message, errorType, stackTrace=None):
 
-        return False
+    if DEBUG: printError(errorType, message) # force stackTrace
+
+    message = message.replace("'", "''")
+    errorType = errorType.replace("'","''")
     
-    except Exception as err:
-        outData['error'] = str(err)
-        cur.execute( "insert into errors(error, type) values('%s','%s')"%(str(err), "SQL") )            
-        return True
-
-def getChalange(id):
+    if not stackTrace:
+        stackTrace = getStackTrace()
     
-    cur.execute('''
-    select 
-        a.id, a.exercise, a.answer, a.hints, 
-        
-        a.author, 
-        
-        to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
-        
-        array(select name from tags where id in (select * from unnest(a.tags)) ), 
-        
-        a.explain, a.latex, a.latexp, b.username
-        
-        from chalanges as a
-        inner join auth_user as b
-        on a.author = b.id
-        
-        where a.id=''' + str(id)
-    )
-    inData = cur.fetchone() 
+    stackTrace = stackTrace.replace("'", "''")
+
+    cur.execute("insert into errors(error, type, stackTrace) values('%s', '%s', '%s')"%(message, errorType, stackTrace))            
+
+def try_except(func):
+
+    def wraper(*args, **kwargs):
+        try:
+
+            return func(*args, **kwargs)
+
+        except Exception as exp:
+            
+            if DEBUG: printError(exp)
+            sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
+
+    return wraper
+
+def safe_fetch(func):
     
-    if inData:
-
-        outData = { k:v for (k,v) in zip(sql_chalange, inData) }
-        #outData['authorName'] = inData[-1]
-        
-        dir_exercise = os.path.join(dir_users, str(outData['author']), outData['latex'])
-        file_json = os.path.join(dir_exercise, '.json')
-        
-        if not os.path.exists(dir_exercise):
-            os.makedirs(dir_exercise)
-        
-        if not os.path.exists(file_json):
-            with open(file_json, 'w') as f:
-                f.write(json.dumps({"title": [], "exercise": [], "answer": [], "hints": [], "explain": []}))
-
-        with open(file_json, 'r') as f:
-            identifiers = json.loads(f.read())
-
-        outData['list_latex'] = identifiers
-        
-    else:
-        outData = None
+    @try_except
+    @csrf_exempt_if_debug
+    def wraper(*args, **kwargs):
+        return func(*args, **kwargs)
 
 
-@csrf_exempt_if_debug
+@try_except
+def execSQL(methode, directive):
+
+    res = []    
+    sql = None
+
+    if methode not in ['GET', 'POST']:
+        sql_post_error('methode not GET nor POST', 'type')
+        return None
+
+    cur.execute(directive[0])
+    sql = cur.fetchall() if methode == 'GET' else conn.commit()
+
+    if sql:
+        for i in sql:
+            res.append({k:v for (k,v) in zip(directive[1],i)})
+    
+    return res
+
+@try_except
+def genResponse(protocall, data, errorMessage='an error hase occurred.'):
+
+    error = JsonResponse({'error': errorMessage})
+
+    if len(protocall) != len(data):
+        sql_post_error('protocall and data not equal', 'type error')
+        return error
+
+    for i in range(len(data)):
+        if type(data[i]) != protocall[i][1]:
+            jsonError = json.dumps({'expected': str(protocall[i][1]), 'but got':str(type(data[i]))})
+            sql_post_error(jsonError, 'type error')
+            return error
+    
+    output = {k:v for (k,v) in zip([i[0] for i in protocall], data)}
+    
+    return JsonResponse(output)
+
+
+@safe_fetch
 def fetch_test(request):
+    
     inData = json.loads(request.body.decode("utf-8"))
     print("inData", inData)
     print("request.user.id", request.user.id)
     print("request.user", request.user)
     return JsonResponse({'test123':'test123'})
 
-@csrf_exempt_if_debug
+@safe_fetch
 def fetch_submitErrorSql(request):
+    
     inData = json.loads(request.body.decode("utf-8"))
-    error = json.dumps(inData)
-    errorType = inData['type'] 
-    comSQL(
-        "insert into errors(error, type) values('%s','%s')"%(error, errorType), {}, True
-    )
 
     return JsonResponse({'success':0})
 
+@safe_fetch
 def fetch_home(request):
 
-    outData = {}
-    # outData['isAuth'] = request.session.get('isAuth')
-    outData['userid'] = request.user.id
-    request.session['currentUrl'] = '/'
+    userid = request.user.id if request.user.id else 0
+    hotest = execSQL('GET', sql_get_hotest)
+    latest = execSQL('GET', sql_get_latest)
 
-    in_hotest = []
-    in_latest = []
+    protocall = protocall_fetch_home
+    data = (userid, hotest, latest)
 
-    # in production, while loop always has 1 iteration
-    # this is not true for debug build
-    count = 0
-    while not len(in_hotest) or not len(in_latest):
+    return genResponse(protocall, data)
 
-        count += 1
-        if count == 10:
-            break
-
-        if comSQL(sql_get_hotest, outData):
-            pass
-        else:
-            in_hotest = [{ k:v for (k,v) in zip(sql_chalange, index) } for index in outData['SQL']]
-        
-        if comSQL(sql_get_latest, outData):
-            pass
-        else:
-            in_latest = [{ k:v for (k,v) in zip(sql_chalange, index) } for index in outData['SQL']]
-
-    output = {
-        "userid": request.user.id,
-        "hotest": in_hotest,
-        "latest": in_latest,
-    } 
-
-    poop = {}
-    if comSQL(sql_get_hotest2, poop):
-        print(poop['error'])
-    else:
-        print(dict(zip(sql_get_hotest2_elements, poop['SQL'][0])))
-
-    return JsonResponse(output)
-
-@csrf_exempt_if_debug
+@safe_fetch
 def fetch_register_submit(request):
 
     body = json.loads(request.body.decode("utf-8"))
@@ -202,12 +187,23 @@ def fetch_register_submit(request):
                     login(request, user)
                     return JsonResponse({"userid": user.id})
   
+@safe_fetch
 def fetch_logout(request):
     logout(request)
     return JsonResponse({'success':0})
 
+@safe_fetch
+def fetch_exercisePage(request):
 
-@csrf_exempt_if_debug
+    inData = json.loads(request.body.decode("utf-8"))
+
+    protocall = protocall_fetch_exercise_page;
+    data = [int(inData['exerciseId'])];
+
+    print("QQQQQQQQQQ", genResponse(protocall, data))
+    return JsonResponse({'a':'a'})
+
+@safe_fetch
 def fetch_addLatex(request):
     
     inData = json.loads(request.body.decode("utf-8"))
@@ -226,7 +222,7 @@ def fetch_addLatex(request):
     
     return JsonResponse({'success':0})
 
-@csrf_exempt_if_debug
+@safe_fetch
 def fetch_deleteLatex(request):
     inData = json.loads(request.body.decode("utf-8"))
 
@@ -237,97 +233,72 @@ def fetch_deleteLatex(request):
     file_svg = dir_target / (str(inData['latexid'])+'.svg')        
 
     try:
-        subprocess.Popen([
-            'rm', file_svg,
-        ])
+        subprocess.Popen(['rm', file_svg])
     except Exception as exp:
         # TODO - add to errors database
         return JsonResponse({'error':'could not compile latex'})
 
     return JsonResponse({'success':0})
 
-@csrf_exempt_if_debug
-def fetch_validateExercise(request):
-    
-    inData = json.loads(request.body.decode("utf-8"))
-
-    new_latex_dir = inData['new_latex_dir']
-    dir_user = pathlib.Path(inData['dir_user'])
-
-    dir_temp = dir_user / 'temp'
-    dir_new_exercise = dir_user / str(new_latex_dir)
-
-    temp_inData = inData.copy()
-    temp_inData.pop('userid')
-    temp_inData.pop('latexp')
-    temp_inData.pop('new_latex_dir')
-    temp_inData.pop('dir_user')
-
-    for i in temp_inData:
-        temp_dir = dir_temp / i
-        if not os.path.exists(temp_dir):
-            os.mkdir(temp_dir)
-
-        temp_ready = [i.split('.')[0] for i in os.listdir(temp_dir)]
-        print(i, list(temp_inData[i][1].keys()), temp_ready)
-        if list(temp_inData[i][1].keys()) != temp_ready:
-            return JsonResponse({
-                'notReady':True, 
-                'dir_user':str(dir_user), 
-                'new_latex_dir': new_latex_dir
-            })
-
-    return JsonResponse({'notReady':False})
-
-@csrf_exempt_if_debug
+@safe_fetch
 def fetch_submit_exercise(request):
     
     inData = json.loads(request.body.decode("utf-8"))
 
+    # when user is undefined, then this is debug
+    # in that case userid must be 0
     if not inData['userid']:
         inData['userid'] = 0
 
     dir_user = DIR_USERS / str(inData['userid']) 
-    subprocess.run(['mkdir', dir_user])
+    dir_temp = dir_user / 'temp' 
+    dir_temp.mkdir(parents=True, exist_ok=True)
 
+    # delete all directories that are
+    # not 'temp' or numeric
     for i in os.listdir(dir_user):
         if i != 'temp' and not os.path.basename(i).isnumeric():
             subprocess.run(['rm', '-r', dir_user / i,])
 
-    new_latex_dir = 0
-    filenames = os.listdir(dir_user)
-    if 'temp' in filenames:
-        filenames.remove('temp')
-    filenames = [int(os.path.basename(i)) for i in filenames]
-    
-    if filenames:
-        new_latex_dir = max(filenames) + 1
-
-    dir_temp = dir_user / 'temp'
-    dir_new_exercise = dir_user / str(new_latex_dir)
+    # BEGIN validation
 
     temp_inData = inData.copy()
-    temp_inData.pop('userid')
-    temp_inData.pop('latexp')
-    for i in temp_inData:
-        temp_dir = dir_temp / i
-        if not os.path.exists(temp_dir):
-            os.mkdir(temp_dir)
 
-        temp_ready = [i.split('.')[0] for i in os.listdir(temp_dir)]
-        print(i, list(temp_inData[i][1].keys()), temp_ready)
-        if list(temp_inData[i][1].keys()) != temp_ready:
-            return JsonResponse({
-                'notReady':True, 
-                'dir_user':str(dir_user), 
-                'new_latex_dir': new_latex_dir
-            })
+    for i in inData:
+        if i not in latex_targets:
+            temp_inData.pop(i)
+    
+    for i in latex_targets:
+        dir_target = dir_temp / i
+        dir_target.mkdir(parents=True, exist_ok=True)
+
+        ready = [i.split('.')[0] for i in os.listdir(dir_target)]
+        expected = list(temp_inData[i][1].keys())
+
+        if expected != ready:
+            return JsonResponse({'error': 'cant submit, check your latex.'})
+
+    # END validation
+
+    # create new unique exercise directorie
+    # unicue per user
+    new_exercise_dir = 0
+    listDir = os.listdir(dir_user)
+    if 'temp' in listDir:
+        listDir.remove('temp')
+    listDir = [int(os.path.basename(i)) for i in listDir]
+    
+    if listDir:
+        new_exercise_dir = max(listDir) + 1
+
+    dir_new_exercise = dir_user / str(new_exercise_dir)
 
     subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
 
+    # SQL
     sql_args = {
         'author' : repr(str(inData['userid'])),          
-        'latex_dir' : repr(new_latex_dir),       
+        'latex_dir' : repr(new_exercise_dir),       
         'latex_pkg' : repr(inData['latexp']),        
 
         'title' : repr(inData['title'][0]),          
@@ -343,44 +314,10 @@ def fetch_submit_exercise(request):
         'latex_explain' : repr(json.dumps(inData['explain'][1])),   
     }
 
-    outData = {}
     res = sql_insert_exercise.format(**sql_args)
     
-    if comSQL(res, outData, True):
-        return JsonResponse({'error':outData['error']})
-    
-    return JsonResponse({'success':0})
-
-@csrf_exempt_if_debug
-def fetch_submit_exercise_SQL(request):
-
-    inData = json.loads(request.body.decode("utf-8"))
-
-    subprocess.run(['cp', '-r', inData['dir_temp'], inData['dir_new_exercise']])
-
-    sql_args = {
-        'author' : repr(str(inData['userid'])),          
-        'latex_dir' : repr(inData['new_latex_dir']),       
-        'latex_pkg' : repr(inData['latexp']),        
-
-        'title' : repr(inData['title'][0]),          
-        'exercise' : repr(inData['exercise'][0]),        
-        'answer' : repr(inData['answer'][0]),          
-        'hints' : repr(inData['hints'][0]),            
-        'explain' : repr(inData['explain'][0]),          
-
-        'latex_title' : repr(json.dumps(inData['title'][1])),     
-        'latex_exercise' : repr(json.dumps(inData['exercise'][1])),  
-        'latex_answer' : repr(json.dumps(inData['answer'][1])),    
-        'latex_hints' : repr(json.dumps(inData['hints'][1])),     
-        'latex_explain' : repr(json.dumps(inData['explain'][1])),   
-    }
-
-    outData = {}
-    res = sql_insert_exercise.format(**sql_args)
-    
-    if comSQL(res, outData, True):
-        return JsonResponse({'error':outData['error']})
+    if comSQL(res, {}, True):
+        return JsonResponse({'error': 'submition failed.'})
     
     return JsonResponse({'success':0})
 
@@ -388,11 +325,15 @@ def fetch_submit_exercise_SQL(request):
 @ensure_csrf_cookie
 def home(request):
     outData={'userid':request.user.id}
+    
     return render(request, 'index.html', context={'value':outData})
 
 @ensure_csrf_cookie
 def nonHome(request, id):
+
     return render(request, 'index.html')
+
+
 
 # routing is done in react - see App.js
 # home() is the home page
@@ -409,8 +350,9 @@ urlpatterns = [
     path('fetch/home/', fetch_home),
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
+    path('fetch/exercisePage/', fetch_exercisePage),
+
     path('fetch/addLatex/', fetch_addLatex),
     path('fetch/deleteLatex/', fetch_deleteLatex),
-    path('fetch/submit_exercise/', fetch_submit_exercise),
-    path('fetch/validateExercise/', fetch_validateExercise),
+    path('fetch/submitExercise/', fetch_submit_exercise),
 ]

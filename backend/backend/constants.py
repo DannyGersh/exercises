@@ -1,7 +1,22 @@
 import os
 import pathlib
 
-sql_exercises = [
+
+DIR_USERS = pathlib.Path('/volume/static/users')
+
+reg_latex = r'$$___latex$$'
+reg_latex_search = r'\$\$(.+?)\$\$'
+
+
+latex_targets = (
+    'title',
+    'exercise',
+    'answer',
+    'hints',
+    'explain',
+)
+
+sql_exercises = (
     'id',              #serial primary key not null, 
     'author',          #integer not null,
     'creationdate',    #timestamp default current_timestamp,
@@ -21,8 +36,8 @@ sql_exercises = [
     'latex_answer',    #varchar(4000)[] default '{}',
     'latex_hints',     #varchar(4000)[] default '{}',
     'latex_explain',   #varchar(4000)[] default '{}'
-]
-sql_chalange = [
+)
+sql_chalange = (
     'id',           # serial primary key not null 
     'exercise',     # varchar(4000) not null
     'answer',       # varchar(4000) not null
@@ -37,65 +52,85 @@ sql_chalange = [
     'latexp',       # varchar(400)
 
     'authorName',   # IMPORTANT - not in database
-]
-sql_auth = [
+)
+sql_auth = (
     'authored', # integer[] default '{}'
     'liked',    # integer[] default '{}'
     'answered'  # integer[] default '{}'
-]
-sql_tags = [
+)
+sql_tags = (
     'id',   # serial primary key not null
     'name', # varchar(100) not null unique
-]
-sql_messages = [
+)
+sql_messages = (
     'id'            # serial            primary key not null,
     'chalangeId'    # serial            not null            ,
     'sender'        # serial            not null            ,
     'receiver'      # serial            not null            ,
     'message'       # varchar(4000)     not null
-]
+)
 
 
-DIR_USERS = pathlib.Path('/volume/static/users')
+sql_get_hotest = (
+    '''
+    select
+    rating, tags, latex_dir, author,
+    title,exercise,
+    latex_title, latex_exercise
 
-reg_latex = r'$$___latex$$'
-reg_latex_search = r'\$\$(.+?)\$\$'
-
-
-sql_get_hotest = '''
-    select  
-
-    a.id, a.exercise, a.answer, a.hints, 
-    a.author, 
-    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
-    array(select name from tags where id in (select * from unnest(a.tags)) ), 
-    a.explain, a.latex, a.latexp, b.username    
-
-    from chalanges as a
-    inner join auth_user as b
-    on a.author = b.id  
-
+    from exercises
     order by cardinality(rating)
+    limit 10
+    '''
+    ,
+
+    (
+    'rating', 'tags', 'latex_dir', 'author',
+    'title', 'exercise',
+    'latex_title', 'latex_exercise'
+    )
+)
+
+sql_get_latest = (
+    '''
+    select
+    rating, tags, latex_dir,
+    title,exercise,
+    latex_title, latex_exercise
+
+    from exercises
+    order by creationdate desc
+    limit 10
+    '''
+    ,
+    
+    (
+    'rating', 'tags', 'latex_dir',
+    'title', 'exercise',
+    'latex_title', 'latex_exercise'
+    )
+)
+
+protocall_fetch_home = (
+    ('userid', int), 
+    ('hotest', list), 
+    ('latest', list),
+)
+
+protocall_fetch_exercise_page = (
+    ('exerciseId', int),
+)
+
+sql_post_error = '''
+    insert into 
+    errors(error, type, stackTrace)
+    values({error}, {type}, {stackTrace})
 '''
 
-sql_get_latest = '''
-    select  
-
-    a.id, a.exercise, a.answer, a.hints, 
-    a.author, 
-    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'), a.title, a.rating, 
-    array(select name from tags where id in (select * from unnest(a.tags)) ), 
-    a.explain, a.latex, a.latexp, b.username    
-
-    from chalanges as a
-    inner join auth_user as b
-    on a.author = b.id  
-
-    order by creationdate desc limit 10
-'''
-
-sql_insert_exercise =  '''
-insert into exercises(
+sql_post_exercise =  '''
+    
+    insert into exercises(
+    
     author,       
     latex_dir,       
     title,
@@ -108,7 +143,9 @@ insert into exercises(
     latex_answer,    
     latex_hints,     
     latex_explain
-) values (
+
+    ) values (
+    
     {author}, 
     {latex_dir}, 
     {title}, 
@@ -121,34 +158,6 @@ insert into exercises(
     {latex_answer}, 
     {latex_hints}, 
     {latex_explain}
-) 
+    
+    ) 
 '''
-
-sql_get_hotest2 = '''
-select
-
-    author,
-    rating,
-    tags,
-    latex_dir,
-
-    title,
-    exercise,
-
-    latex_title,
-    latex_exercise
-
-from exercises order by cardinality(rating) limit 10 
-'''
-sql_get_hotest2_elements = [
-    'author',
-    'rating',
-    'tags',
-    'latex_dir',
-
-    'title',
-    'exercise',
-
-    'latex_title',
-    'latex_exercise'
-]

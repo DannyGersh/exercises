@@ -1,12 +1,12 @@
 import './New.css'
-import CSRFToken from '../../shared/csrftoken'
+import CSRFToken from '../../shared/Csrftoken'
 import BtnMenue from '../../shared/buttons/BtnMenue'
 import Exercise from './pages/Exercise'
 import Hints from './pages/Hints'
 import Explain from './pages/Explain'
 import TagList from './pages/TagList'
 import {useState, useEffect, useRef, useCallback} from 'react'
-import {compArr, sendData} from '../../shared/functions'
+import {compArr, sendData, getStackTrace, uploadError} from '../../shared/Functions'
 
 
 function compileLatex(target, refs, text, exercise='temp') {
@@ -51,7 +51,6 @@ function compileLatex(target, refs, text, exercise='temp') {
 			refs.current[target][3][new_id] = i
 		} 
 	})
-
 	Object.entries(refs.current[target][3]).forEach(i=>{
 		const reg = RegExp(`(?<=\\$\\$)${i[1]}(?=\\$\\$)`,'gms');
 		text = text.replace(reg, i[0]);
@@ -112,7 +111,7 @@ function New(props){
 		bmt[1](e.target.innerHTML);
 		localStorage.setItem('bmt', e.target.innerHTML)
 	}
-	
+
 	function submit() {
 		
 		let latexp = localStorage.getItem('latexp')
@@ -155,12 +154,7 @@ function New(props){
 			//	localStorage.removeItem('tags');
 			//	localStorage.removeItem('bmt');
 			//}
-			updateRefs('title', refs, title)
-			updateRefs('exercise', refs, exercise)
-			updateRefs('answer', refs, answer)
-			updateRefs('hints', refs, hints)
-			updateRefs('explain', refs, explain)
-
+			
 			const submit_exercise = { 
 				
 				userid: window.userid[0],
@@ -188,46 +182,33 @@ function New(props){
 				],
 			}
 
-			sendData('fetch/submit_exercise', 'POST', submit_exercise)
-			.then(data=>{ 
-				if(!data['error']) {
-					let count = 0;
-					const intervalId = setInterval(()=>{
-						if(data['notReady'] && count < 5) {
-							count++;
-							submit_exercise['new_latex_dir'] = data['new_latex_dir'];
-							submit_exercise['dir_user'] = data['dir_user'];
-							sendData('fetch/validateExercise', 'POST', submit_exercise)
-							.then(data2=>{
-								console.log(data2);
-								data['notReady'] = data2['notReady'];
-							})
-						} else if(count >= 5) {
-							clearInterval(intervalId);
-							window.alert('could not submit. check if all latex is valid.')
-						} else {
-							clearInterval(intervalId);
-							sendData('fetch/submitExerciseSql', 'POST', {
-								'a': 'a1'
-							})
-							.then(data3=>{
-								!data3['error'] && window.alert('successfully uploaded exercise.');
-							})
-						}
-					}, 1000)
-				}  
-				
+			sendData('fetch/submitExercise', 'POST', submit_exercise)
+			.then(result=>{
+				if(!result['error']) {
+					window.alert('successfully uploaded exercises.')
+				}
 			})
 
 		} else {
-
 			let str = 'You are missing:\n';
 			if(!title) { str += '* title (in the exercise tab)\n' }
 			if(!answer) { str += '* answer\n' }
 			window.alert(str)
-
 		}
 	}
+
+	useEffect(()=>{
+		let title = localStorage.getItem('title')
+		let exercise = localStorage.getItem('exercise')
+		let answer = localStorage.getItem('answer')
+		let hints = localStorage.getItem('hints')
+		let explain = localStorage.getItem('Explanation')
+		updateRefs('title', refs, title)
+		updateRefs('exercise', refs, exercise)
+		updateRefs('answer', refs, answer)
+		updateRefs('hints', refs, hints)
+		updateRefs('explain', refs, explain)
+	},[])
 
 	return(
 	<>
