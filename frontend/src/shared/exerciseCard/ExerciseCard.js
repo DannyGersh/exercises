@@ -10,7 +10,7 @@ import CSRFToken from '../../shared/Csrftoken'
 function Exercise_card(props){
   
 	const htmlTitle = '<h4>'+mainText2html(props.exercise, 'title', 'latex_title')+'</h4>';
-	const htmlExercise = '<p>'+mainText2html(props.exercise, 'title', 'latex_title')+'</p>';
+	const htmlExercise = '<p>'+mainText2html(props.exercise, 'exercise', 'latex_exercise')+'</p>';
 	
 	const isLike = props.exercise['rating'].includes(props.userId)
 	

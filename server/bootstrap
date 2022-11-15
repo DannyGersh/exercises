@@ -13,7 +13,7 @@ service postgresql restart
 cd /volume/server/SQL
 psql -U postgres -a -f createUser.sql
 psql -U postgres -a -f createDatabase.sql
-psql -U postgres -a -f createTableChalanges.sql
+psql -U postgres -a -f createTableExercises.sql
 psql -U postgres -a -f createTableTags.sql
 psql -U postgres -a -f createTableMessages.sql
 psql -U postgres -a -f updateTableAuthUser.sql

@@ -111,6 +111,16 @@ sql_get_latest = (
     )
 )
 
+sql_get_userId = (
+    '''
+    select id from auth_user where username = '{userName}'
+    '''
+    ,
+    (
+    'userId',    
+    )
+)
+
 protocall_fetch_home = (
     ('userid', int), 
     ('hotest', list), 

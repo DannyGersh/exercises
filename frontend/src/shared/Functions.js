@@ -221,7 +221,7 @@ function mainText2html(exercise, target, latex_target) {
 
 			const index = textList[i].match(/\d+/gms)[0]
 			const path = [
-				'/volume/static/users', 
+				'http://localhost/static/users', 
 				exercise['author'],
 				exercise['latex_dir'],
 				target,

@@ -181,7 +181,7 @@ def fetch_register_submit(request):
 
     else:
         # check if username is unique
-        if execSQL('GET', sql_get_userId, {'username': uname}):
+        if getSQL(sql_get_userId, {'userName': uname}):
             return JsonResponse({'error': 'username taken, try another one.'})
 
         user = User.objects.create_user(

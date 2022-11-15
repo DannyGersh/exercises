@@ -6,7 +6,7 @@ server {
 		proxy_pass http://localhost:8000;
 	}
 	location /static/ {
-		alias /volume/frontend/build/static/;
+		alias /volume/static/;
 	}
 }
 
