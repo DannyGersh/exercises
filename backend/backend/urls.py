@@ -70,6 +70,7 @@ def try_except(func):
             
             if DEBUG: printError(exp)
             sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
+            return 'error'
 
     return wraper
 
@@ -84,23 +85,33 @@ def safe_fetch(func):
 
 
 @try_except
-def execSQL(methode, directive):
+def getSQL(directive, args=None):
 
     res = []    
     sql = None
+    command = directive[0]
+    protocall = directive[1]
 
-    if methode not in ['GET', 'POST']:
-        sql_post_error('methode not GET nor POST', 'type')
-        return None
+    if args:
+        command = command.format(**args)
 
-    cur.execute(directive[0])
-    sql = cur.fetchall() if methode == 'GET' else conn.commit()
+    cur.execute(command)
+    sql = cur.fetchall()
 
     if sql:
         for i in sql:
-            res.append({k:v for (k,v) in zip(directive[1],i)})
-    
+            res.append({k:v for (k, v) in zip(protocall, i)})
+
     return res
+
+@try_except
+def postSQL(command, args=None):
+
+    if args:
+        command = command.format(**args)
+
+    cur.execute(command)
+
 
 @try_except
 def genResponse(protocall, data, errorMessage='an error hase occurred.'):
@@ -142,8 +153,8 @@ def fetch_submitErrorSql(request):
 def fetch_home(request):
 
     userid = request.user.id if request.user.id else 0
-    hotest = execSQL('GET', sql_get_hotest)
-    latest = execSQL('GET', sql_get_latest)
+    hotest = getSQL(sql_get_hotest)
+    latest = getSQL(sql_get_latest)
 
     protocall = protocall_fetch_home
     data = (userid, hotest, latest)
@@ -169,26 +180,19 @@ def fetch_register_submit(request):
            return JsonResponse({'error': "could not log in ..."})
 
     else:
-        
-        res = {}
-        
-        if comSQL('select username from auth_user', res):
-            return JsonResponse({"error": "could not create user ..."})
-        
+        # check if username is unique
+        if execSQL('GET', sql_get_userId, {'username': uname}):
+            return JsonResponse({'error': 'username taken, try another one.'})
+
+        user = User.objects.create_user(
+            uname, '', password
+        )
+        if not user:
+            return JsonResponse({'error': "could not create user ..."})
         else:
-            names = [i[0] for i in res['SQL']]
-            if uname in names:
-                return JsonResponse({"error": 'user name taken, try another one.'})
-            else:
-                user = User.objects.create_user(
-                    uname, '', password
-                )
-                if not user:
-                    return JsonResponse({'error': "could not create user ..."})
-                else:
-                    login(request, user)
-                    return JsonResponse({"userid": user.id})
-  
+            login(request, user)
+            return JsonResponse({"userid": user.id})
+   
 @safe_fetch
 def fetch_logout(request):
     logout(request)
@@ -265,15 +269,28 @@ def fetch_submit_exercise(request):
 
     temp_inData = inData.copy()
 
+    '''
+        filter input to
+        only contain the
+        target keys and their values
+    '''
     for i in inData:
         if i not in latex_targets:
             temp_inData.pop(i)
     
+    '''
+        per each target,
+        check if the latex directory
+        has the exact same latex
+        as in the inputs in the html
+        'texput.log' is a latex compilation thing
+        and is ignored
+    '''
     for i in latex_targets:
         dir_target = dir_temp / i
         dir_target.mkdir(parents=True, exist_ok=True)
 
-        ready = [i.split('.')[0] for i in os.listdir(dir_target)]
+        ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
         expected = list(temp_inData[i][1].keys())
 
         if expected != ready:
@@ -281,8 +298,18 @@ def fetch_submit_exercise(request):
 
     # END validation
 
-    # create new unique exercise directorie
-    # unicue per user
+    '''
+        create new unique 
+        exercise directory
+        it is unique per user
+
+        all exercise dirs hase
+        numeric names except 
+        'temp' dir, so we 
+        get the max dir name and
+        the new exercise 
+        is this number + 1
+    '''
     new_exercise_dir = 0
     listDir = os.listdir(dir_user)
     if 'temp' in listDir:
@@ -294,6 +321,10 @@ def fetch_submit_exercise(request):
 
     dir_new_exercise = dir_user / str(new_exercise_dir)
 
+    '''
+        copy temp to its permenant 
+        location with its new name
+    '''
     subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
 
     # SQL
@@ -314,13 +345,20 @@ def fetch_submit_exercise(request):
         'latex_hints' : repr(json.dumps(inData['hints'][1])),     
         'latex_explain' : repr(json.dumps(inData['explain'][1])),   
     }
+    
+    res = postSQL(sql_post_exercise, sql_args)
+    if res == 'error':
+        return JsonResponse({'error': "can't post exercises."})
 
-    res = sql_insert_exercise.format(**sql_args)
-    
-    if comSQL(res, {}, True):
-        return JsonResponse({'error': 'submition failed.'})
-    
     return JsonResponse({'success':0})
+
+@safe_fetch
+def fetch_addTag(request):
+
+    inData = json.loads(request.body.decode("utf-8"))
+    
+    return JsonResponse({succe})
+
 
 
 @ensure_csrf_cookie
@@ -348,12 +386,16 @@ urlpatterns = [
 
     path('fetch/test123/', fetch_test),
     path('fetch/submitErrorSql/', fetch_submitErrorSql),
+    
     path('fetch/home/', fetch_home),
+    path('fetch/exercisePage/', fetch_exercisePage),
+    
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
-    path('fetch/exercisePage/', fetch_exercisePage),
+    path('fetch/submitExercise/', fetch_submit_exercise),
 
     path('fetch/addLatex/', fetch_addLatex),
     path('fetch/deleteLatex/', fetch_deleteLatex),
-    path('fetch/submitExercise/', fetch_submit_exercise),
+
+    path('fetch/addTag/', fetch_addTag),
 ]
