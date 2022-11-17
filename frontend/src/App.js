@@ -11,34 +11,25 @@ import Register from './pages/register/Register'
 
 import {useEffect, useState} from 'react'
 
+
 function Slug() {
   let { slug } = useParams();
 
   return <h1>slug {slug}</h1>
 }
 
-
 function NotFound() {
   return <h1>NotFound</h1>
 }
 
-function App() {
-  
-  const narrowWindow = useWindowResize();
-  window.userid = useState(false);
 
-  useEffect(()=>{
-    if(!window.jsonData) {
-      window.userid[1](null)
-    }
-  },[])
+function App() {
+ 
+  const narrowWindow = useWindowResize();
+  window.userid = useState(null);
 
   return (
     <>
-    <img src="/danny/current/exercises/Before-Sunrise.jpg"/>
-    <img src="/volume/Before-Sunrise.jpg"/>
-    <img src="/Before-Sunrise.jpg"/>
-
     <BrowserRouter>
       <Nav narrowWindow={narrowWindow[0]}/>
       <Routes>

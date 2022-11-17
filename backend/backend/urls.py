@@ -117,9 +117,10 @@ def postSQL(command, args=None):
 def genResponse(protocall, data, errorMessage='an error hase occurred.'):
 
     error = JsonResponse({'error': errorMessage})
+    data = list(data)
 
     if len(protocall) != len(data):
-        sql_post_error('protocall and data not matching', 'type error')
+        sql_post_error('len(protocall) != len(data)', 'type error')
         return error
 
     for i in range(len(data)):
@@ -203,8 +204,11 @@ def fetch_exercisePage(request):
 
     inData = json.loads(request.body.decode("utf-8"))
 
-    protocall = protocall_fetch_exercise_page;
-    data = [int(inData['exerciseId'])];
+    exerciseId = int(inData['exerciseId']);
+    exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})[0]
+
+    protocall = protocall_fetch_exercise;
+    data = exercise.values()
 
     return genResponse(protocall, data)
 

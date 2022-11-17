@@ -210,7 +210,7 @@ function uploadError(type, error) {
 }
 export {uploadError}
 
-function mainText2html(exercise, target, latex_target) {
+function mainText2html(exercise, target) {
 
 	const reg_latex = /(\$\$\d+\$\$)/gms
 	let textList = exercise[target].split(reg_latex)
@@ -227,16 +227,9 @@ function mainText2html(exercise, target, latex_target) {
 				target,
 				index
 			].join('/')
-			const a = '/danny/current/exercises/static/users/0/2/title/0.svg'
 			textList[i] = `<img src="${path}.svg">`
-			//volume/static/users/0/2/title/      
-			//volume/static/users/0/2/title
-			//console.log(textList[i])
-			//console.log(exercise['latex_title'])
-			//console.log(exercise['latex_title'][i])
 		}
 	}
-	//console.log("PPOOP", textList.join(''))
 	return textList.join('');
 }
 export {mainText2html};

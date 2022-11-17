@@ -94,7 +94,7 @@ sql_get_hotest = (
 sql_get_latest = (
     '''
     select
-    rating, tags, latex_dir,
+    rating, tags, latex_dir, author,
     title,exercise,
     latex_title, latex_exercise
 
@@ -105,7 +105,7 @@ sql_get_latest = (
     ,
     
     (
-    'rating', 'tags', 'latex_dir',
+    'rating', 'tags', 'latex_dir', 'author',
     'title', 'exercise',
     'latex_title', 'latex_exercise'
     )
@@ -119,6 +119,86 @@ sql_get_userId = (
     (
     'userId',    
     )
+)
+
+sql_get_exercise = (
+    '''
+    select
+
+    a.id                ,
+    a.author            ,
+    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'),
+    a.rating            ,
+    a.tags              ,
+    a.latex_dir         ,
+
+    a.title             ,
+    a.exercise          ,
+    a.answer            ,
+    a.hints             ,
+    a.explain           ,
+
+    a.latex_title       ,
+    a.latex_exercise    ,
+    a.latex_answer      ,
+    a.latex_hints       ,
+    a.latex_explain     ,
+
+    b.username
+
+    from exercises as a
+    inner join auth_user as b
+    on a.author = b.id
+        
+    where a.id='{exerciseId}'
+    '''
+    ,
+    (
+    'exerciseId'        ,
+    'author'            ,
+    'creationdate'      ,
+    'rating'            ,
+    'tags'              ,
+    'latex_dir'         ,
+
+    'title'             ,
+    'exercise'          ,
+    'answer'            ,
+    'hints'             ,
+    'explain'           ,  
+
+    'latex_title'       ,
+    'latex_exercise'    ,
+    'latex_answer'      ,
+    'latex_hints'       ,
+    'latex_explain'     ,
+
+    'username'          ,
+    )
+)
+
+protocall_fetch_exercise = (
+    
+    ('exerciseId', int),
+    ('author', int),
+    ('creationdate', str), 
+    ('rating', list),
+    ('tags', list),
+    ('latex_dir', str), 
+
+    ('title', str),
+    ('exercise', str), 
+    ('answer', str),
+    ('hints', str),
+    ('explain', str),
+
+    ('latex_title', dict),
+    ('latex_exercise', dict),
+    ('latex_answer', dict),
+    ('latex_hints', dict),
+    ('latex_explain', dict),
+
+    ('username', str),
 )
 
 protocall_fetch_home = (
