@@ -27,7 +27,7 @@ conn.set_session(autocommit=True)
 cur = conn.cursor()
 cur.execute('SELECT version()')
 db_version = cur.fetchone()
-print(db_version)
+# print(db_version)
 
 
 def csrf_exempt_if_debug(func):
@@ -59,6 +59,10 @@ def sql_post_error(message, errorType, stackTrace=None):
 
     cur.execute("insert into errors(error, type, stackTrace) values('%s', '%s', '%s')"%(message, errorType, stackTrace))            
 
+def genError(message, errorType, stackTrace=None):
+	printError(message)
+	sql_post_error(message, errorType)
+	
 def try_except(func):
 
     def wraper(*args, **kwargs):
@@ -70,7 +74,7 @@ def try_except(func):
             
             if DEBUG: printError(exp)
             sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
-            return 'error'
+            return JsonResponse({'error': 'an error has accured ...'})
 
     return wraper
 
@@ -116,18 +120,17 @@ def postSQL(command, args=None):
 @try_except
 def genResponse(protocall, data, errorMessage='an error hase occurred.'):
 
-    error = JsonResponse({'error': errorMessage})
     data = list(data)
 
     if len(protocall) != len(data):
         sql_post_error('len(protocall) != len(data)', 'type error')
-        return error
+        return JsonError
 
     for i in range(len(data)):
         if type(data[i]) != protocall[i][1]:
             jsonError = json.dumps({'expected': str(protocall[i][1]), 'but got':str(type(data[i]))})
             sql_post_error(jsonError, 'type error')
-            return error
+            return JsonError
     
     output = {k:v for (k,v) in zip([i[0] for i in protocall], data)}
     
@@ -202,16 +205,21 @@ def fetch_logout(request):
 @safe_fetch
 def fetch_exercisePage(request):
 
-    inData = json.loads(request.body.decode("utf-8"))
+	inData = json.loads(request.body.decode("utf-8"))
+	
+	exerciseId = int(inData['exerciseId'])
+	exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})[0]
+	
+	if exercise:
+		protocall = protocall_fetch_exercise
+		data = exercise.values()
+		return genResponse(protocall, data)
+		
+	else:
+		genError('cant get exercise %s'%exerciseId, 'SQL')
+		return JsonError
 
-    exerciseId = int(inData['exerciseId']);
-    exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})[0]
-
-    protocall = protocall_fetch_exercise;
-    data = exercise.values()
-
-    return genResponse(protocall, data)
-
+		
 @safe_fetch
 def fetch_addLatex(request):
     

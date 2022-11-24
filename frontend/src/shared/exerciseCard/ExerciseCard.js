@@ -1,11 +1,13 @@
 import './ExerciseCard.css'
-import Card from '../card/Card'
-import BtnRound from '../../shared/buttons/BtnRound'
-import Tag from '../../shared/tag/Tag'
-import BtnMenue from '../../shared/buttons/BtnMenue'
 import {mainText2html, sendData} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
 import CSRFToken from '../../shared/Csrftoken'
+
+import BtnMenue from '../../shared/buttons/BtnMenue'
+import BtnOnOf from '../../shared/buttons/BtnOnOf'
+import Card from '../card/Card'
+import Tag from '../../shared/tag/Tag'
+
 
 function Exercise_card(props){
   
@@ -84,9 +86,9 @@ function Exercise_card(props){
 	
 	{/* likes */}		
 	<div className='bottomRight'>
-		<BtnRound style={{backgroundColor: isLike ? 'var(--DKgreen)' : 'var(--UNblue)'}}>
+		<BtnOnOf style={{backgroundColor: isLike ? 'var(--DKgreen)' : 'var(--UNblue)'}}>
 		{props.exercise['rating'].length}<br/>Likes
-		</BtnRound>
+		</BtnOnOf>
 	</div>
 
 	{/* title, exercise */}

@@ -5,14 +5,15 @@
   --champagne: #fad6a5;
   --champagne_hover: #eac695;
   --champagne_active: #dab685;
-  --UNblue: #5b92e5;
-  --UNblue_hover: #6ba2f5;
-  --DKgreen: #8fbc8f;
-  --DKgreen_hover: #9fcc9f;
-  --brown: #F1AF86;
+  
   --red: #ff7676;
+  --green: #8fbc8f;
+  --blue: #5b92e5;
+  --brown: #F1AF86;
   --red_hover: #ff8686;
-
+  --green_hover: #9fcc9f;
+  --blue_hover: #6ba2f5;
+ 
   --cardHeight: 15rem;
 }
 
@@ -38,13 +39,13 @@ body{
 
 
 .green{
-	background-color: var(--DKgreen) !important;
+	background-color: var(--green) !important;
 }
 .green:hover{
-	background-color: var(--DKgreen_hover) !important;
+	background-color: var(--green_hover) !important;
 }
 .green:active{
-	background-color: var(--DKgreen) !important;
+	background-color: var(--green) !important;
 }
 
 .red{
@@ -58,13 +59,13 @@ body{
 }
 
 .blue{
-	background-color: var(--UNblue) !important;
+	background-color: var(--blue) !important;
 }
 .blue:hover{
-	background-color: var(--UNblue_hover) !important;
+	background-color: var(--blue_hover) !important;
 }
 .blue:active{
-	background-color: var(--UNblue) !important;
+	background-color: var(--blue) !important;
 }
 
 
@@ -73,6 +74,21 @@ body{
 	border-radius: 0.3rem; 
 	padding: 0.3rem; 
 	background-color: var(--apricot); 
+}
+
+
+
+.btnRound{
+	white-space: pre-wrap;
+	vertical-align: middle;
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	background-color: var(--blue);
+	color: white;
+	border: none;
+	height: 3rem;
+	width: 3rem;
+	border-radius: 50%;
 }
 
 

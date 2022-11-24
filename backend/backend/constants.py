@@ -1,11 +1,14 @@
 import os
 import pathlib
+from django.http import JsonResponse
 
 
 DIR_USERS = pathlib.Path('/volume/static/users')
 
 reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
+
+JsonError = JsonResponse({'error': 'an error hase occurred.'})
 
 
 latex_targets = (
@@ -176,6 +179,7 @@ sql_get_exercise = (
     'username'          ,
     )
 )
+
 
 protocall_fetch_exercise = (
     

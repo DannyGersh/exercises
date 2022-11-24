@@ -26,7 +26,7 @@ function NotFound() {
 function App() {
  
   const narrowWindow = useWindowResize();
-  window.userid = useState(null);
+  window.userId = useState(1);
 
   return (
     <>

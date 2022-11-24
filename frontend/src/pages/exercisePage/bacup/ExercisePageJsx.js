@@ -1,13 +1,19 @@
+
 import './ExercisePage.css'
 import Tag from '../../shared/tag/Tag'
 import BtnRound from '../../shared/buttons/BtnRound'
 import ToolTip from '../../shared/tooltip/ToolTip'
-
+import {useState, useEffect} from 'react'
 
 function ExerciseBody(props) {
 	
-	const a = props.a;
+	const ctx = props.r_ctx.current;
 
+	const s_hae = useState(ctx.current.rs_hae);
+	useEffect(()=>{
+		s_hae[1]()
+	},[r_ctx.current.rs_hae])
+	
 	return(
 	
 	<div className='hscroll' style={{height:'calc(100vh - 7rem)'}}>
@@ -15,29 +21,25 @@ function ExerciseBody(props) {
 		<div 
 			id='title' 
 			className='textWithLatex'
-			style={{visibility: a.dspHae[0]==='Exercise' ? 'visible' : 'hidden'}}
+			style={{visibility: ctx.hae==='Exercise' ? 'visible' : 'hidden'}}
 		/>
 		<div 
 			id='exercise' 
 			className='textWithLatex' 
-			ref={a.ref_exercise}
-			style={{visibility: a.dspHae[0]==='Exercise' ? 'visible' : 'hidden'}}
+			style={{visibility: ctx.hae==='Exercise' ? 'visible' : 'hidden'}}
 		/>	
 
 		<div id='answer'
-			ref={a.ref_answer} 
 			style={{visibility: a.dspHae[0]==='Answer' ? 'visible' : 'hidden'}}
 			className='textWithLatex clientBody'
 		/>	
 
 		<div id='hints' 
-			ref={a.ref_hints} 
 			style={{visibility: a.dspHae[0]==='Hints' ? 'visible' : 'hidden' }}
 			className='textWithLatex clientBody'
 		/>
 
 		<div id='explain' 
-			ref = {a.ref_explain}
 			style={{visibility: a.dspHae[0]==='Explain' ? 'visible' : 'hidden'}}
 			className='textWithLatex clientBody'
 		/>

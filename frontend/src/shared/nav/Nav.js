@@ -13,7 +13,7 @@ function Nav(props) {
 	// narrowWindow - true if window is narrow
 	// userid = user id
 
-	const userid = window.userid[0];
+	const userid = window.userId[0];
 
 	// dropDownActive - true if nav searchBar is expended
 	const dropDownActive = useState(false);
@@ -38,7 +38,7 @@ function Nav(props) {
 	function logOutHandle(){
 		sendData('/fetch/logout')
 		.then(data=>{
-			window.userid[1](null);
+			window.userId[1](null);
 		})
 	}
 	function profileHandle(){
@@ -59,15 +59,15 @@ function Nav(props) {
 		</Link>
 
 		<Link to='/new'>
-		{window.userid[0] && <BtnMenue>New</BtnMenue>}
+		{window.userId[0] && <BtnMenue>New</BtnMenue>}
 		</Link>
 
 		<Link to={'/profile/'+userid}>
-		{window.userid[0] && <BtnMenue>Profile</BtnMenue>}			
+		{window.userId[0] && <BtnMenue>Profile</BtnMenue>}			
 		</Link>
 
-		<Link to={window.userid[0] ? '/' : '/login'}>
-		<BtnMenue onClick={logOutHandle}>{window.userid[0] ? 'Log out' : 'Log in'}</BtnMenue>	
+		<Link to={window.userId[0] ? '/' : '/login'}>
+		<BtnMenue onClick={logOutHandle}>{window.userId[0] ? 'Log out' : 'Log in'}</BtnMenue>	
 		</Link>
 
 		<Link to='/contact'>

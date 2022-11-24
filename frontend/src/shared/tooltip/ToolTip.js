@@ -41,7 +41,7 @@ function ToolTip(props) {
 			
 			// when tooltip goes outside window
 			if(rect.right > width) {
-				const fin_width = (width - rect.left).toString() + 'px';
+				const fin_width = (width - rect.left - 50).toString() + 'px';
 				ref.current.style.width = fin_width;
 				ref.current.style.whiteSpace = 'unset';
 				rect = elm2.getBoundingClientRect();

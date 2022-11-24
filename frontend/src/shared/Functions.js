@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import StackTrace from 'stacktrace-js'
 // window.is_debug == true - for "npm start" react development
 // window.isdebug == false - for final production stage - site upload
@@ -235,4 +235,27 @@ function mainText2html(exercise, target) {
 export {mainText2html};
 
 
+function useController(val) {
+	
+	const ref = useRef(val);
+	const callbacks = {};
+	
+	function getRef() {
+		return ref.current;
+	}
+	
+	function setRef(val) {
+		ref.current = val;
+		for (let key in callbacks) {
+			callbacks[key] && callbacks[key]();
+		}
+	}
+	
+	function addCallback(identifier, func) {
+		callbacks[identifier] = func;
+	}
+	
+	return [getRef, setRef, addCallback, callbacks];
+}
+export {useController};
 
