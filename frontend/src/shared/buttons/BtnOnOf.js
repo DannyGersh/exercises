@@ -23,7 +23,8 @@ function BtnOnOf(props){
 			className={classNameStr}
 			onClick={props.onClick} 
 		>
-		{props.r_text.current}
+		{props.r_text && props.r_text.current}
+		{props.text && props.text}
 		</button>
     )
     

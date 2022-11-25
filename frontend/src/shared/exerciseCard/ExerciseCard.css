@@ -5,7 +5,7 @@
 	margin: 0.6rem;
 	width: calc(100% - 5rem);
 }
-.bottomRight{
+.bottomRightExerciseCard{
 	position: absolute;
 	bottom: 0px;
 	right: 0px;
@@ -17,3 +17,4 @@
 	right: 0px;
 	margin: 0.6rem;
 }
+

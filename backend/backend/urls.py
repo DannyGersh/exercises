@@ -61,7 +61,7 @@ def sql_post_error(message, errorType, stackTrace=None):
 
 def genError(message, errorType, stackTrace=None):
 	printError(message)
-	sql_post_error(message, errorType)
+	sql_post_error(message, errorType, stackTrace)
 	
 def try_except(func):
 
@@ -110,11 +110,13 @@ def getSQL(directive, args=None):
 
 @try_except
 def postSQL(command, args=None):
-
-    if args:
-        command = command.format(**args)
-
-    cur.execute(command)
+	
+	if args:
+		for i in args:
+			args[i] = "'%s'"%str(args[i]).replace("'", "''")
+		command = command.format(**args)
+			
+	cur.execute(command)
 
 
 @try_except
@@ -148,10 +150,12 @@ def fetch_test(request):
 
 @safe_fetch
 def fetch_submitErrorSql(request):
-    
-    inData = json.loads(request.body.decode("utf-8"))
-
-    return JsonResponse({'success':0})
+	
+	inData = json.loads(request.body.decode("utf-8"))
+	
+	genError(inData['error'], inData['type'], inData['stackTrace']);
+	
+	return JsonResponse({'success':0})
 
 @safe_fetch
 def fetch_home(request):
@@ -369,10 +373,38 @@ def fetch_addTag(request):
 
     inData = json.loads(request.body.decode("utf-8"))
     
-    return JsonResponse({succe})
+    return JsonResponse({'success': True})
 
+@safe_fetch
+def fetch_sendMsg(request):
+	
+	inData = json.loads(request.body.decode("utf-8"))
 
+	command = sql_post_sendMSG
+	args = {
+		'exerciseId': inData['exerciseId'],
+		'sender':     inData['sender'],
+		'receiver':   inData['receiver'],
+		'message':    inData['message'],
+	}
+	postSQL(command, args) 
+	
+	return JsonResponse({'success': True})
+	
+@safe_fetch
+def fetch_like(request):
 
+	inData = json.loads(request.body.decode("utf-8"))
+	
+	command = sql_post_like
+	args = {
+		'exerciseId': inData['exerciseId'],
+		'userId': inData['userId'],	
+	}
+	postSQL(command, args) 
+	
+	return JsonResponse({'success': True})
+	
 @ensure_csrf_cookie
 def home(request):
     outData={'userid':request.user.id}
@@ -405,6 +437,8 @@ urlpatterns = [
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
     path('fetch/submitExercise/', fetch_submit_exercise),
+    path('fetch/sendMsg/', fetch_sendMsg),
+    path('fetch/like/', fetch_like),
 
     path('fetch/addLatex/', fetch_addLatex),
     path('fetch/deleteLatex/', fetch_deleteLatex),

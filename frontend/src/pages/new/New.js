@@ -25,7 +25,7 @@ function compileLatex(target, refs, text, exercise='temp') {
 	new Set(Object.entries(old_latex)).forEach(i=>{
 		if(!new_latex.includes(i[1])) {
 			sendData('fetch/deleteLatex', 'POST', {
-				userid : window.userid[0],
+				userid : window.userId[0],
 				exercise : exercise,
 				target : target,
 				latexid : i[0],
@@ -41,7 +41,7 @@ function compileLatex(target, refs, text, exercise='temp') {
 				new_id = Math.max(...Object.keys(old_latex))+1;
 			}
 			sendData('fetch/addLatex', 'POST', {
-				userid : window.userid[0],
+				userid : window.userId[0],
 				exercise : exercise,
 				target : target,
 				latexid : new_id,
@@ -157,7 +157,7 @@ function New(props){
 			
 			const submit_exercise = { 
 				
-				userid: window.userid[0],
+				userid: window.userId[0],
 				latexp: latexp,
 
 				title: [

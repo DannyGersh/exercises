@@ -8,17 +8,40 @@ import BtnOnOf from '../../shared/buttons/BtnOnOf'
 import Card from '../card/Card'
 import Tag from '../../shared/tag/Tag'
 
+import './ExerciseCard.css'
 
 function Exercise_card(props){
+
+	const isLike = props.exercise['rating'].includes(window.userId[0]);
   
-	const htmlTitle = `<h4>${mainText2html(props.exercise, 'title')}</h4>`;
-	const htmlExercise = `<p>${mainText2html(props.exercise, 'exercise')}</p>`;
-	
-	const isLike = props.exercise['rating'].includes(props.userId)
+	const rawTitle = mainText2html(props.exercise, 'title');
+	const rawExercise = mainText2html(props.exercise, 'exercise');
+	const htmlTitle = `<h4>${rawTitle}</h4>`;
+	const htmlExercise = `<p>${rawExercise}</p>`;
+
+	const exerciseId = props.identifier.toString();	
+	const id_title = `title_${exerciseId}`;
+	const id_exercise = `exercise_${exerciseId}`;
+	let n_title = null;
+	let n_exercise = null;
+
+	const style_text = {
+		whiteSpace: 'break-spaces', 
+		overflow:'hidden',
+	}
+	const style_btnEditDelete = {
+		marginRight:'0.5rem',
+		width:'4rem', 
+	}
+	const style_btnLike = {
+		backgroundColor: isLike ? 'var(--green)' : 'var(--blue)'
+	}
 	
 	useEffect(()=>{
-		document.getElementById('title_'+props.identifier.toString()).innerHTML = htmlTitle;
-		document.getElementById('exercise_'+props.identifier.toString()).innerHTML = htmlExercise;
+		n_title = document.getElementById(id_title);
+		n_title.innerHTML = htmlTitle;
+		n_exercise = document.getElementById(id_exercise);
+		n_exercise.innerHTML = htmlExercise;
 	},[props.renderWhenChange])
 	
 	const dspOptions = useState(false);
@@ -35,6 +58,7 @@ function Exercise_card(props){
 		
 		evt.stopPropagation();
 		
+		/*
 		if(window.confirm("Delete this exercise ?")) {
 			sendData(
 				'delete', 
@@ -46,6 +70,7 @@ function Exercise_card(props){
 			await new Promise(r => setTimeout(r, 200));
 			window.location.reload()
 		}
+		*/
 
 	}
 	
@@ -73,41 +98,32 @@ function Exercise_card(props){
 		
 		<div style={{display:'flex'}}>
 					
-		<form name='Edit' action={'/new/'} method='POST'>
-			<CSRFToken/>
-			<input type="hidden" name="id_exercise" value={	props.exercise['id'] } />
-			<BtnMenue onClick={(evt)=>onEdit(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Edit</BtnMenue>
-		</form>
+		<BtnMenue 
+			onClick={(evt)=>onEdit(evt)} 
+			style={style_btnEditDelete}
+		>Edit</BtnMenue>
 
-		<BtnMenue onClick={(evt)=>onDelete(evt)} style={{width:'4rem', marginRight:'0.5rem'}}>Delete</BtnMenue>
+		<BtnMenue 
+			onClick={(evt)=>onDelete(evt)} 
+			style={style_btnEditDelete}
+		>Delete</BtnMenue>
+		
 		</div>
 
 	}
 	
 	{/* likes */}		
-	<div className='bottomRight'>
-		<BtnOnOf style={{backgroundColor: isLike ? 'var(--DKgreen)' : 'var(--UNblue)'}}>
-		{props.exercise['rating'].length}<br/>Likes
-		</BtnOnOf>
-	</div>
+	<BtnOnOf 
+		style={style_btnLike}
+		text={`${props.exercise['rating'].length}\nLikes`}
+		className='btnRound bottomRightExerciseCard'
+	/>
 
 	{/* title, exercise */}
 	<div style={{maxHeight: '12rem', overflow:'hidden'}}>
-		<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'title_'+props.identifier.toString()}></div>
-		<div style={{whiteSpace: 'break-spaces', overflow:'hidden'}} id={'exercise_'+props.identifier.toString()}></div>
+		<div id={id_title} style={style_text}/>
+		<div id={id_exercise} style={style_text}/>
 	</div>
-	
-	{/* tags */}		
-	<div style={{height:'3rem'}}/>
-			
-	    <div className="vscroll bottomLeft">
-	    { 
-			props.exercise['tags'].map((i) => 
-				<Tag key={i} url={'/browse/'+i}>{i}</Tag>
-			)
-		}
-    
-    </div>
 		    
     </Card>
   </>

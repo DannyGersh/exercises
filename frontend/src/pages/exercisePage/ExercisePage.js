@@ -102,29 +102,25 @@ function BottomRightMenue(props) {
 
 	const ctx = props.ctx;
 
-	const likes = useRef(ctx.r_exercise.current['rating'].length);
-	const r_btn_like_text = useRef(`${likes.current}\nLikes`)
-
 	function h_like() { // user clicked like btn
 		
 		if(window.userId[0]) {
 			
 			if( ctx.c_isLike[0]() ) {
-				likes.current-=1;
-				r_btn_like_text.current = `${likes.current}\nLikes`;
+				ctx.r_likes.current-=1;
+				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
 				ctx.c_isLike[1](false);
 			} else {
-				likes.current+=1;
-				r_btn_like_text.current = `${likes.current}\nLikes`;
+				ctx.r_likes.current+=1;
+				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
 				ctx.c_isLike[1](true);
 			}
 			
-			/*
 			sendData('fetch/like', 'POST', {
-				exerciseId: ctx.exercise['id'],
-				userId: window.userId[0]
+				exerciseId: ctx.r_exercise.current['exerciseId'],
+				userId: window.userId[0],
 			})
-			*/
+			
 		}
 	}
 	
@@ -166,13 +162,13 @@ function BottomRightMenue(props) {
 				<BtnOnOf 
 					className='btnRound'
 					c_isOn={ctx.c_isLike} 
-					r_text={r_btn_like_text}
+					r_text={ctx.r_btn_like_text}
 					onClick={h_like}
 				/>
 				: 
 				<BtnOnOf 
 					className='btnRound'
-					r_text={r_btn_like_text}
+					r_text={ctx.r_btn_like_text}
 				/>
 			}
 					
@@ -186,6 +182,22 @@ function SendMessage(props) {
 
 	const ctx = props.ctx;
 	const dspSendMsg = useState(false);
+
+	const id_sendMsg = 'id_sendMsg';
+	
+	function h_sendMsg() {
+		
+		const message = document.getElementById(id_sendMsg).value;
+
+		sendData('fetch/sendMsg', 'POST', {
+			'exerciseId': ctx.r_exercise.current['exerciseId'], 
+			'sender': window.userId[0], 
+			'receiver': ctx.r_exercise.current['author'], 
+			'message': message,
+		})
+		
+		dspSendMsg[1](false);
+	}
 	
 	return (
 	<>
@@ -210,9 +222,9 @@ function SendMessage(props) {
 
 	  { dspSendMsg[0] &&
 		<>
-		  <textarea id='sendMessage' rows='4' type='textarea'/>
+		  <textarea id={id_sendMsg} rows='4' type='textarea'/>
 		  <br/>
-		  <button onClick={()=>{}}>Send</button>
+		  <button onClick={h_sendMsg}>Send</button>
 		</>
 		}	
 
@@ -228,6 +240,7 @@ function PopupMenue(props) {
 	
 	ctx.c_isPopup[2]('c_isPopup', ()=>{
 		s_render[1](!s_render[0]);
+		dspReport[1](false);
 	})
 	
 	const jsx = <>	
@@ -240,7 +253,7 @@ function PopupMenue(props) {
 	
 			<p>
 				Created by 
-				{ctx.r_exercise.current['author']} 
+				{` ${ctx.r_exercise.current['username']}`} 
 				<br/> 
 				{ctx.r_exercise.current['creationdate']}
 				<br/>
@@ -309,6 +322,9 @@ function ExercisePage(props){
 		c_isLike:	useController(null),
 		c_isPopup:	useController(false),
 		
+		r_likes: useRef(0),
+		r_btn_like_text: useRef(`0\nLikes`),
+	
 		r_exercise: useRef({
 			
 			id          : exerciseId,
@@ -342,7 +358,10 @@ function ExercisePage(props){
 			e['hints'] = mainText2html(e, 'hints');
 			e['explain'] = mainText2html(e, 'explain');
 			
+			ctx.r_likes.current = e['rating'].length;
+			ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
 			ctx.c_isLike[1](e['rating'].includes(window.userId[0]));
+			
 			ctx.r_exercise.current = e;
 			
 			const n_title = document.getElementById(BTM_TARGETS.title);
@@ -358,95 +377,10 @@ function ExercisePage(props){
 			n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
 			
 			// reload page after fetch exercise
-			ctx.s_finLoad[1](!ctx.s_finLoad[0]);
+			ctx.s_finLoad[1](true);
 		
 		})
 	},[])
-	
-/*
-	const a = {
-
-		// server data
-		chalange 	: window.jsonData.chalange,
-		userid		: window.jsonData.userid,
-
-	// states
-		dspLike 						: useState(window.jsonData.chalange.rating.includes(window.jsonData.userid)),
-		likes								: useState(0),
-		dspHints						: useState(false),
-		dspAnswer						: useState(false),
-		dspAdditionalMenue	: useState(false),
-		dspReport						: useState(false),
-	dspExplain					: useState(false),
-	dspSendMessage			: useState(false),
-	dspHae							: useState('Exercise'), // Hinst, Anser, Explain. default - Exercise
-
-	// functions and handles:
-
-	sendMessage: ()=> {
-
-			if(a.isAuth) {
-				let message = document.getElementById('sendMessage').value;
-				
-				if(message.length > 800) {
-				window.alert('over 800 characters not allowed.');
-				return;
-			}
-			if(message.length < 5) {
-				window.alert('less then 5 characters not allowed.');
-				return;
-			}
-
-				sendData('message2user', {
-					chalangeId: a.chalange['id'],
-					sender: a.userid,
-					receiver: window.jsonData['chalange']['author'],
-					message: message
-				})
-				.then((data) => {
-					if(!data['error']) {
-						window.alert('message sent successfully.');
-						a.dspSendMessage[1](false);
-						a.dspReport[1](false);
-						a.dspAdditionalMenue[1](false);
-					}
-				});
-			}
-		},
-		likeHandle: ()=> { 
-			
-			// determine like number
-			a.dspLike[0] ? a.likes[1](a.likes[0]-1) : a.likes[1](a.likes[0]+1);
-			
-			// send like
-			if(a.isAuth && !window.is_debug) {
-				sendData('like', {
-					chalangeId: a.chalange['id'],
-					user: a.userid
-				})
-			}
-		},
-		additionalMenueHandler: ()=> {
-		a.dspAdditionalMenue[1](!a.dspAdditionalMenue[0]);
-		},
-		sendMessageHandle: ()=> {
-			a.dspSendMessage[1](!a.dspSendMessage[0]);
-			a.dspReport[1](false)
-		},
-		reportHandle: ()=> {
-			a.dspSendMessage[1](false);
-			a.dspReport[1](!a.dspReport[0])
-		},
-		haeHandle: (target)=> {
-			if(a.dspHae[0] === target) {
-				a.dspHae[1]('Exercise')
-			} else {
-				a.dspHae[1](target)
-			}
-		}
-
-	}
-*/
 	
 	return(<MainBodie ctx={ctx}/>)
 

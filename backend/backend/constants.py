@@ -255,3 +255,55 @@ sql_post_exercise =  '''
     
     ) 
 '''
+
+sql_post_sendMSG = '''
+
+	insert into messages(
+	
+	exerciseId, 
+	sender, 
+	receiver, 
+	message
+		
+	) values (
+	
+	{exerciseId}, 
+	{sender}, 
+	{receiver}, 
+	{message}
+		
+	)
+
+
+'''
+
+# need to set exerciseId, userId
+sql_post_like = '''
+	
+	update exercises 
+	set rating = (
+		select array(
+			select distinct a from unnest(rating) as a
+		) from exercises where id = {exerciseId}
+	) 
+	where id = {exerciseId};
+	
+	update exercises set rating = 
+	case when {userId} = any(rating) 
+		then array_remove(rating, {userId})
+		else array_append(rating, {userId})
+	end
+	where id={exerciseId};
+	
+	update auth_user 
+	set liked = array(select distinct a from unnest(liked) as a) 
+	where id={userId};
+
+	update auth_user set liked = 
+	case when {exerciseId} = any(liked) 
+		then array_remove(liked, {exerciseId})
+		else array_append(liked, {exerciseId})
+	end
+	where id={userId};
+	
+'''
