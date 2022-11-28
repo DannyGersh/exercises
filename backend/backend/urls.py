@@ -223,6 +223,41 @@ def fetch_exercisePage(request):
 		genError('cant get exercise %s'%exerciseId, 'SQL')
 		return JsonError
 
+
+
+def decodeFetch(request, decode_protocall):
+
+	inData = json.loads(request.body.decode("utf-8"))
+	for i in inData:
+
+		if i not in decode_protocall.keys() and i != 'stackTrace':
+			errStr = '"%s" key not in protocall keys: %s'%(i, list(decode_protocall.keys()))
+
+			genError(errStr, 'protocall error')
+			
+			return 0
+			
+		if i != 'stackTrace' and type(inData[i]) != decode_protocall[i]:
+			genError(
+				'typeof "%s" (%s) != %s'%(inData[i], type(inData[i]), decode_protocall[i]),
+				'protocall error'
+			)
+			return 0
+		
+	return inData
+	
+@safe_fetch
+def fetch_profile(request):
+	
+	inData = decodeFetch(request, decode_protocall_fetch_profile)
+	if not inData: return JsonResponse({'error':True}, status=500)
+		
+	print("QQQQQQQQQ", inData)
+	
+	return JsonResponse({'success':True})
+
+
+
 		
 @safe_fetch
 def fetch_addLatex(request):
@@ -433,7 +468,8 @@ urlpatterns = [
     
     path('fetch/home/', fetch_home),
     path('fetch/exercisePage/', fetch_exercisePage),
-    
+    path('fetch/profile/', fetch_profile),
+
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
     path('fetch/submitExercise/', fetch_submit_exercise),

@@ -1,7 +1,5 @@
 import {useState, useRef} from 'react'
 import StackTrace from 'stacktrace-js'
-// window.is_debug == true - for "npm start" react development
-// window.isdebug == false - for final production stage - site upload
 
 /*
 windowBp - window break point
@@ -74,7 +72,30 @@ function getCookie(name) {
 }
 export {getCookie};
 
-//'http://www.ididthisforu.com/test/': 'http://localhost/test/'
+
+async function getStackTrace() {
+
+	let frames = await StackTrace.get()
+    
+    frames = frames.filter(e=>{
+		return(
+			!/react/g.test(e.fileName) && 
+			!/index.js/g.test(e.fileName) &&
+			!/webpack/g.test(e.fileName) &&
+			!/bundle.js/g.test(e.fileName) &&
+			!/node_modules/g.test(e.fileName)
+		)
+	})
+
+	let res = [];
+	for( const i of frames ) {
+		res.push(`${i.fileName} ${i.lineNumber}`)
+	}
+
+	return res;
+}
+export {getStackTrace}
+
 async function raw_sendData(url, methode='GET', data={} ) {
 
 	if(url[0] === '/') {
@@ -114,30 +135,6 @@ async function raw_sendData(url, methode='GET', data={} ) {
 }
 export {raw_sendData};
 
-async function getStackTrace() {
-
-	let frames = await StackTrace.get()
-    
-    frames = frames.filter(e=>{
-		return(
-			!/react/g.test(e.fileName) && 
-			!/index.js/g.test(e.fileName) &&
-			!/webpack/g.test(e.fileName) &&
-			!/bundle.js/g.test(e.fileName) &&
-			!/node_modules/g.test(e.fileName)
-		)
-	})
-
-	let res = [];
-	for( const i of frames ) {
-		res.push(`${i.fileName} ${i.lineNumber}`)
-	}
-
-	return res;
-}
-
-export {getStackTrace}
-
 async function sendData(url, methode='GET', data={}){
 
 	// send data to server
@@ -158,8 +155,6 @@ async function sendData(url, methode='GET', data={}){
 				})
 			} else {
 				
-				window.alert('an error has accurred ...');
-				
 				getStackTrace()
 				.then(result=>{
 					const error = {
@@ -179,6 +174,7 @@ async function sendData(url, methode='GET', data={}){
 						stackTrace: JSON.stringify(result)
 					}
 					sendData('fetch/submitErrorSql', 'POST', fin)
+					window.alert('an error has accurred ...');
 				})		
     			throw(res)
 			}

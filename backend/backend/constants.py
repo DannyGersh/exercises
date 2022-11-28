@@ -180,6 +180,44 @@ sql_get_exercise = (
     )
 )
 
+sql_get_liked = {
+	'''
+	
+	select
+
+    id                ,
+    author            ,
+    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'),
+    rating            ,
+    tags              ,
+    latex_dir         ,
+
+    title             ,
+    exercise          ,
+    answer            ,
+    hints             ,
+    explain           ,
+
+    latex_title       ,
+    latex_exercise    ,
+    latex_answer      ,
+    latex_hints       ,
+    latex_explain     ,
+
+	
+	'''
+}
+
+sql_get_author_name = {
+	'''
+	
+	select username from auth_user where id={userId}
+	
+	''',
+	(
+	'userName',
+	)
+}
 
 protocall_fetch_exercise = (
     
@@ -214,6 +252,12 @@ protocall_fetch_home = (
 protocall_fetch_exercise_page = (
     ('exerciseId', int),
 )
+
+
+decode_protocall_fetch_profile = {
+	'userId': int,
+}
+
 
 sql_post_error = '''
     insert into 

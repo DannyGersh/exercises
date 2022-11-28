@@ -2,21 +2,15 @@ import { useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom"
 import Home from './pages/home/Home'
 import New from './pages/new/New'
 import ExercisePage from './pages/exercisePage/ExercisePage'
+import Profile from './pages/profile/Profile'
+import Register from './pages/register/Register'
 
 import Nav from './shared/nav/Nav'
 import useWindowResize, {sendData} from './shared/Functions'
 import './shared/Global.css'
 
-import Register from './pages/register/Register'
-
 import {useEffect, useState} from 'react'
 
-
-function Slug() {
-  let { slug } = useParams();
-
-  return <h1>slug {slug}</h1>
-}
 
 function NotFound() {
   return <h1>NotFound</h1>
@@ -37,7 +31,7 @@ function App() {
         <Route path="/new" element={<New isEdit={false} exercise={null}/>}/>
         <Route path="/login" element={<Register isLogin={true}/>}/>
         <Route path="/signup" element={<Register isLogin={false}/>}/>
-        <Route path="/profile/:slug" element={<Slug/>}/>
+        <Route path="/profile/:userId" element={<Profile/>}/>
         <Route path="/exercise/:exerciseId" element={<ExercisePage/>}/>
         <Route path="/*" element={<NotFound/>}/>
       </Routes>
