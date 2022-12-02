@@ -8,11 +8,6 @@ venv/**
 **/*.eslintcache
 **/django_secret_key.py
 
-dev/chalange/src/shared/**
-dev/browse/src/shared/**
-dev/user/src/shared/**
-dev/home/src/shared/**
-
-production/volume/static/users/**
+static/**
 
 **/__pycache__/**
