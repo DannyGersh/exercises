@@ -166,7 +166,8 @@ async function sendData(url, methode='GET', data={}){
 						headers:res.headers, 
 						body:res.json(), 
 						bodyUsed:res.bodyUsed,	
-						description: 'failed to fetch'							
+						description: 'failed to fetch, status != 200',						
+						stackTrace: JSON.stringify(result),
 					}
 					const fin = {
 						type:res.type,

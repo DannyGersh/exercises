@@ -8,6 +8,8 @@ import TagList from './pages/TagList'
 import {useState, useEffect, useRef, useCallback} from 'react'
 import {compArr, sendData, getStackTrace, uploadError} from '../../shared/Functions'
 
+import regex_escape from '../../shared/regex_escape'
+
 
 function compileLatex(target, refs, text, exercise='temp') {
 	
@@ -18,17 +20,17 @@ function compileLatex(target, refs, text, exercise='temp') {
 
 	let temp = text.match(/(\$\$.+?\$\$)/gms);
 	if(!temp) temp=[];
-	
+
 	let old_latex = refs.current[target][3];
 	let new_latex = temp.map(i=>i.substring(2,i.length-2)); // remove $$
 
 	new Set(Object.entries(old_latex)).forEach(i=>{
 		if(!new_latex.includes(i[1])) {
 			sendData('fetch/deleteLatex', 'POST', {
-				userid : window.userId[0],
+				userId : window.userId[0],
 				exercise : exercise,
 				target : target,
-				latexid : i[0],
+				latexId : parseInt(i[0]),
 				packages: localStorage.getItem('latexp'),
 			})
 			delete refs.current[target][3][i[0]];
@@ -41,10 +43,10 @@ function compileLatex(target, refs, text, exercise='temp') {
 				new_id = Math.max(...Object.keys(old_latex))+1;
 			}
 			sendData('fetch/addLatex', 'POST', {
-				userid : window.userId[0],
+				userId : window.userId[0],
 				exercise : exercise,
 				target : target,
-				latexid : new_id,
+				latexId : new_id,
 				latex : i,
 				packages: localStorage.getItem('latexp'),
 			})
@@ -52,23 +54,22 @@ function compileLatex(target, refs, text, exercise='temp') {
 		} 
 	})
 	Object.entries(refs.current[target][3]).forEach(i=>{
-		const reg = RegExp(`(?<=\\$\\$)${i[1]}(?=\\$\\$)`,'gms');
+		const reg = regex_escape(i[1]);
 		text = text.replace(reg, i[0]);
 	})
-
 	refs.current[target][1] = text;
 }
 
 function updateRefs(target, refs, text) {
-	
-	clearTimeout(refs.current[target][1]);
-		
+
+	clearTimeout(refs.current[target][2]);
+
 	refs.current[target][2] = (
 		setTimeout(()=>{
 			localStorage.setItem(target, text)
 			refs.current[target][0] = text;
 			compileLatex(target, refs, text)
-		}, 500)
+		}, 2000)
 	);
 }
 	
@@ -157,7 +158,7 @@ function New(props){
 			
 			const submit_exercise = { 
 				
-				userid: window.userId[0],
+				userId: window.userId[0],
 				latexp: latexp,
 
 				title: [
@@ -181,7 +182,6 @@ function New(props){
 					refs.current['explain'][3],
 				],
 			}
-
 			sendData('fetch/submitExercise', 'POST', submit_exercise)
 			.then(result=>{
 				if(!result['error']) {

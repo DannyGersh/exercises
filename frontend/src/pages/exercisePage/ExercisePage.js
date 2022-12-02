@@ -312,7 +312,8 @@ function MainBodie(props) {
 
 function ExercisePage(props){
 
-	let { exerciseId } = useParams();
+	const params = useParams();
+	const exerciseId = parseInt(params['exerciseId']);
 
 	const ctx = {
 		
@@ -345,11 +346,9 @@ function ExercisePage(props){
 	}
 
 	useEffect(()=>{
-		sendData(
-			'fetch/exercisePage', 
-			'POST', 
-			{'exerciseId':exerciseId}
-		)
+		sendData('fetch/exercisePage', 'POST', {
+			'exerciseId': exerciseId
+		})
 		.then(e=>{ // e == exercise
 
 			e['title'] = mainText2html(e, 'title');

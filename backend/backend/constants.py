@@ -4,12 +4,10 @@ from django.http import JsonResponse
 
 
 DIR_USERS = pathlib.Path('/volume/static/users')
-
-reg_latex = r'$$___latex$$'
 reg_latex_search = r'\$\$(.+?)\$\$'
-
-JsonError = JsonResponse({'error': 'an error hase occurred.'})
-
+JsonError = JsonResponse({'error': 'an error hase occurred.'}, status=500)
+JsonSuccess = JsonResponse({'success':0}, status=200)
+ERROR = 'unique error string'
 
 latex_targets = (
     'title',
@@ -82,7 +80,7 @@ sql_get_hotest = (
     latex_title, latex_exercise
 
     from exercises
-    order by cardinality(rating)
+    order by cardinality(rating) desc
     limit 10
     '''
     ,
@@ -180,35 +178,7 @@ sql_get_exercise = (
     )
 )
 
-sql_get_liked = {
-	'''
-	
-	select
-
-    id                ,
-    author            ,
-    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'),
-    rating            ,
-    tags              ,
-    latex_dir         ,
-
-    title             ,
-    exercise          ,
-    answer            ,
-    hints             ,
-    explain           ,
-
-    latex_title       ,
-    latex_exercise    ,
-    latex_answer      ,
-    latex_hints       ,
-    latex_explain     ,
-
-	
-	'''
-}
-
-sql_get_author_name = {
+sql_get_user_name = (
 	'''
 	
 	select username from auth_user where id={userId}
@@ -217,46 +187,164 @@ sql_get_author_name = {
 	(
 	'userName',
 	)
-}
+)
 
-protocall_fetch_exercise = (
+sql_get_profile_liked = (
+    '''
+    select
     
-    ('exerciseId', int),
-    ('author', int),
-    ('creationdate', str), 
-    ('rating', list),
-    ('tags', list),
-    ('latex_dir', str), 
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
 
-    ('title', str),
-    ('exercise', str), 
-    ('answer', str),
-    ('hints', str),
-    ('explain', str),
+    from exercises
+    where {userId}=any(rating)
+    order by cardinality(rating) desc
+    limit 10
+    '''
+    ,
 
-    ('latex_title', dict),
-    ('latex_exercise', dict),
-    ('latex_answer', dict),
-    ('latex_hints', dict),
-    ('latex_explain', dict),
-
-    ('username', str),
+    (
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title', 
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise'
+    )
 )
 
-protocall_fetch_home = (
-    ('userid', int), 
-    ('hotest', list), 
-    ('latest', list),
+sql_get_profile_authored = (
+    '''
+    select
+    
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
+
+    from exercises
+    where {userId}=author
+    order by cardinality(rating) desc
+    limit 10
+    '''
+    ,
+
+    (
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title', 
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise'
+    )
 )
 
-protocall_fetch_exercise_page = (
-    ('exerciseId', int),
-)
 
-
-decode_protocall_fetch_profile = {
-	'userId': int,
+protocall_fetch_home = {
+	'in': {},
+	'out': {
+		'hotest': list, 
+		'latest': list,
+	}
 }
+
+protocall_fetch_profile = {
+	'in': {
+		'userId': int
+	},
+	'out': {
+		'liked': list,
+		'authored': list,
+	},
+}
+
+protocall_fetch_exercisePage = {
+	'in': {
+		'exerciseId': int,
+	},
+	'out': {
+		'exerciseId': int,
+		'author': int,
+		'creationdate': str, 
+		'rating': list,
+		'tags': list,
+		'latex_dir': str, 
+		
+		'title': str,
+		'exercise': str, 
+		'answer': str,
+		'hints': str,
+		'explain': str,
+		
+		'latex_title': dict,
+		'latex_exercise': dict,
+		'latex_answer': dict,
+		'latex_hints': dict,
+		'latex_explain': dict,
+		
+		'username': str,	
+	}
+}
+
+protocall_fetch_submit_exercise = {
+	'in': {
+		'userId': int,
+		'latexp': str,
+
+		'title': list,
+		'exercise': list,
+		'answer': list,
+		'hints': list,
+		'explain': list,	
+	},
+	'out': {},
+}
+
+protocall_fetch_addLatex = {
+	'in': {
+		'userId' : int,
+		'exercise' : str,
+		'target' : str,
+		'latexId' : int,
+		'latex' : str,
+		'packages': str,
+	},
+	'out': {},
+}
+
+protocall_fetch_deleteLatex = {
+	'in': {
+		'userId' : int,
+		'exercise' : str,
+		'target' : str,
+		'latexId' : int,
+		'packages': str,
+	},
+	'out': {},
+}
+
 
 
 sql_post_error = '''
@@ -351,3 +439,12 @@ sql_post_like = '''
 	where id={userId};
 	
 '''
+
+
+
+
+
+
+
+
+

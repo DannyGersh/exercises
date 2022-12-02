@@ -62,8 +62,12 @@ def sql_post_error(message, errorType, stackTrace=None):
 def genError(message, errorType, stackTrace=None):
 	printError(message)
 	sql_post_error(message, errorType, stackTrace)
+
+def genJsonError(message='an error hase occurred.'):
+	return JsonResponse({ERROR: message}, status=500)	
 	
-def try_except(func):
+	
+def fetch_try_except(func):
 
     def wraper(*args, **kwargs):
         try:
@@ -74,21 +78,36 @@ def try_except(func):
             
             if DEBUG: printError(exp)
             sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
-            return JsonResponse({'error': 'an error has accured ...'})
+            return JsonError
+
+    return wraper
+
+def sql_try_except(func):
+
+    def wraper(*args, **kwargs):
+        try:
+
+            return func(*args, **kwargs)
+
+        except Exception as exp:
+            
+            if DEBUG: printError(exp)
+            sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
+            return ERROR
 
     return wraper
 
 def safe_fetch(func):
     
     @csrf_exempt_if_debug
-    @try_except
+    @fetch_try_except
     def wraper(*args, **kwargs):
         return func(*args, **kwargs)
 
     return wraper
 
 
-@try_except
+@sql_try_except
 def getSQL(directive, args=None):
 
     res = []    
@@ -108,7 +127,7 @@ def getSQL(directive, args=None):
 
     return res
 
-@try_except
+@sql_try_except
 def postSQL(command, args=None):
 	
 	if args:
@@ -119,24 +138,49 @@ def postSQL(command, args=None):
 	cur.execute(command)
 
 
-@try_except
-def genResponse(protocall, data, errorMessage='an error hase occurred.'):
+@fetch_try_except
+def fetch_in(request, protocall):
 
-    data = list(data)
+	protocall = protocall['in']
+	
+	inData = json.loads(request.body.decode("utf-8"))
+	
+	for i in inData:
 
+		if i not in protocall.keys():
+			errStr = '"%s" key not in protocall keys: %s'%(i, list(protocall.keys()))
+			genError(errStr, 'protocall error')			
+			return ERROR
+			
+		if type(inData[i]) != protocall[i]:
+			genError(
+				'{%s: %s} the value of the key "%s" is of type %s but is expected to be of type %s'%(i, inData[i], i, type(inData[i]), protocall[i]),
+				'protocall error'
+			)
+			return ERROR
+		
+	return inData
+	
+@fetch_try_except
+def fetch_out(request, protocall, data):
+
+    protocall = protocall['out']
+    
     if len(protocall) != len(data):
-        sql_post_error('len(protocall) != len(data)', 'type error')
+        genError('len(protocall) != len(data)', 'type error')
         return JsonError
 
-    for i in range(len(data)):
-        if type(data[i]) != protocall[i][1]:
-            jsonError = json.dumps({'expected': str(protocall[i][1]), 'but got':str(type(data[i]))})
-            sql_post_error(jsonError, 'type error')
+    for i in data:
+        if type(data[i]) != protocall[i]:
+            error = "expected %s, but got %s"%( protocall[i], type(data[i]) )
+            genError(error, 'type error')
             return JsonError
     
-    output = {k:v for (k,v) in zip([i[0] for i in protocall], data)}
-    
-    return JsonResponse(output)
+    data['userId'] = request.user.id if request.user.id else 0
+ 
+    return JsonResponse(data)
+
+
 
 
 @safe_fetch
@@ -157,251 +201,261 @@ def fetch_submitErrorSql(request):
 	
 	return JsonResponse({'success':0})
 
+
 @safe_fetch
 def fetch_home(request):
 
-    userid = request.user.id if request.user.id else 0
-    hotest = getSQL(sql_get_hotest)
-    latest = getSQL(sql_get_latest)
+	protocall = protocall_fetch_home
+    
+	hotest = getSQL(sql_get_hotest)
+	latest = getSQL(sql_get_latest)
+	if latest == ERROR: return JsonError
+	if hotest == ERROR: return JsonError
 
-    protocall = protocall_fetch_home
-    data = (userid, hotest, latest)
+	data = {
+		'hotest': hotest, 
+		'latest': latest,
+	}
 
-    return genResponse(protocall, data)
+	return fetch_out(request, protocall, data)
 
 @safe_fetch
 def fetch_register_submit(request):
 
-    body = json.loads(request.body.decode("utf-8"))
-
-    isLogin = body.get('isLogin')
-    uname = body.get('uname')
-    password = body.get('password')
-
-    if isLogin:
-
-        user = authenticate(username=uname, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'userid': request.user.id})
-        else:
-           return JsonResponse({'error': "could not log in ..."})
-
-    else:
-        # check if username is unique
-        if getSQL(sql_get_userId, {'userName': uname}):
-            return JsonResponse({'error': 'username taken, try another one.'})
-
-        user = User.objects.create_user(
-            uname, '', password
-        )
-        if not user:
-            return JsonResponse({'error': "could not create user ..."})
-        else:
-            login(request, user)
-            return JsonResponse({"userid": user.id})
+	protocall = protocall_fetch_register_submit
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	uname = inData['uname']
+	password = inData['password']
+	
+	if isLogin:
+		
+		user = authenticate(username=uname, password=password)
+		if user is not None:
+			login(request, user)
+			return fetch_out(request, protocall, {'userId': user.id})
+		else:
+			return genJsonError('could not log in ...')
+			
+	else:
+		# check if username is unique
+		if getSQL(sql_get_userId, {'userName': uname}):
+			return genJsonError('username taken, try another one.')
+			
+		user = User.objects.create_user(
+			uname, '', password
+		)
+		if not user:
+			return genJsonError('could not create user ...')
+		else:
+			login(request, user)
+			return fetch_out(request, protocall, {'userId': user.id})
    
 @safe_fetch
 def fetch_logout(request):
     logout(request)
-    return JsonResponse({'success':0})
+    return JsonSuccess
 
 @safe_fetch
 def fetch_exercisePage(request):
 
-	inData = json.loads(request.body.decode("utf-8"))
-	
+	protocall = protocall_fetch_exercisePage
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+
 	exerciseId = int(inData['exerciseId'])
 	exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})[0]
 	
 	if exercise:
-		protocall = protocall_fetch_exercise
-		data = exercise.values()
-		return genResponse(protocall, data)
+		return fetch_out(request, protocall, exercise)
 		
 	else:
 		genError('cant get exercise %s'%exerciseId, 'SQL')
 		return JsonError
 
-
-
-def decodeFetch(request, decode_protocall):
-
-	inData = json.loads(request.body.decode("utf-8"))
-	for i in inData:
-
-		if i not in decode_protocall.keys() and i != 'stackTrace':
-			errStr = '"%s" key not in protocall keys: %s'%(i, list(decode_protocall.keys()))
-
-			genError(errStr, 'protocall error')
-			
-			return 0
-			
-		if i != 'stackTrace' and type(inData[i]) != decode_protocall[i]:
-			genError(
-				'typeof "%s" (%s) != %s'%(inData[i], type(inData[i]), decode_protocall[i]),
-				'protocall error'
-			)
-			return 0
-		
-	return inData
-	
 @safe_fetch
 def fetch_profile(request):
 	
-	inData = decodeFetch(request, decode_protocall_fetch_profile)
-	if not inData: return JsonResponse({'error':True}, status=500)
-		
-	print("QQQQQQQQQ", inData)
+	protocall = protocall_fetch_profile
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
 	
-	return JsonResponse({'success':True})
-
-
-
+	args = {'userId': inData['userId']}
+	
+	rawUname = getSQL(sql_get_user_name, args)
+	if rawUname == ERROR or not rawUname: 
+		genError('cant find user name', 'SQL')
+		return JsonError
 		
+	userName = rawUname[0]['userName']
+	liked = getSQL(sql_get_profile_liked, args)
+	authored = getSQL(sql_get_profile_authored, args)
+
+	if liked == ERROR: return JsonError
+	if authored == ERROR: return JsonError
+	
+	data = {
+		'liked': liked,
+		'authored': authored,
+	}
+	
+	return fetch_out(request, protocall, data)
+
+
+
 @safe_fetch
 def fetch_addLatex(request):
     
-    inData = json.loads(request.body.decode("utf-8"))
+	protocall = protocall_fetch_addLatex
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
 
-    if not inData['userid']:
-        inData['userid'] = 0
+	if not inData['userId']:
+		inData['userId'] = 0
 
-    dir_target = DIR_USERS / str(inData['userid']) / inData['exercise'] / inData['target']
-    dir_target.mkdir(parents=True, exist_ok=True)
-
-    file_svg = dir_target / (str(inData['latexid'])+'.svg')        
-    res = gen_svg(inData['latex'], inData['latexid'], dir_target, inData['packages'])
+	dir_target = DIR_USERS / str(inData['userId']) / inData['exercise'] / inData['target']
+	dir_target.mkdir(parents=True, exist_ok=True)
+	
+	file_svg = dir_target / (str(inData['latexId'])+'.svg')        
+	res = gen_svg(inData['latex'], inData['latexId'], dir_target, inData['packages'])
+	
+	if(res):
+		return genJsonError('could not compile latex')
     
-    if(res):
-        return JsonResponse({'error':'could not compile latex'})
-    
-    return JsonResponse({'success':0})
+	return JsonSuccess
 
 @safe_fetch
 def fetch_deleteLatex(request):
-    inData = json.loads(request.body.decode("utf-8"))
 
-    if not inData['userid']:
-        inData['userid'] = 0
-
-    dir_target = DIR_USERS / str(inData['userid']) / inData['exercise'] / inData['target']
-    file_svg = dir_target / (str(inData['latexid'])+'.svg')        
-
-    try:
-        subprocess.Popen(['rm', file_svg])
-    except Exception as exp:
-        # TODO - add to errors database
-        return JsonResponse({'error':'could not compile latex'})
-
-    return JsonResponse({'success':0})
+	protocall = protocall_fetch_deleteLatex
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	if not inData['userId']: inData['userId'] = 0
+	
+	dir_target = DIR_USERS / str(inData['userId']) / inData['exercise'] / inData['target']
+	file_svg = dir_target / (str(inData['latexId'])+'.svg')        
+	
+	try:
+		subprocess.Popen(['rm', file_svg])
+	except Exception as exp:
+		# TODO - add to errors database
+		return genJsonError('could not compile latex')
+	
+	return JsonSuccess
 
 @safe_fetch
 def fetch_submit_exercise(request):
-    
-    inData = json.loads(request.body.decode("utf-8"))
+	
+	protocall = protocall_fetch_submit_exercise
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	# when user is undefined, then this is debug
+	# in that case userid must be 0
+	if not inData['userId']:
+		inData['userId'] = 0
 
-    # when user is undefined, then this is debug
-    # in that case userid must be 0
-    if not inData['userid']:
-        inData['userid'] = 0
+	# define relevant directories
+	dir_user = DIR_USERS / str(inData['userId']) 
+	dir_temp = dir_user / 'temp' 
+	dir_temp.mkdir(parents=True, exist_ok=True)
 
-    dir_user = DIR_USERS / str(inData['userid']) 
-    dir_temp = dir_user / 'temp' 
-    dir_temp.mkdir(parents=True, exist_ok=True)
-
-    # delete all directories that are
-    # not 'temp' or numeric
-    for i in os.listdir(dir_user):
-        if i != 'temp' and not os.path.basename(i).isnumeric():
-            subprocess.run(['rm', '-r', dir_user / i,])
+	# delete all directories that are
+	# not 'temp' or numeric
+	for i in os.listdir(dir_user):
+		if i != 'temp' and not os.path.basename(i).isnumeric():
+			subprocess.run(['rm', '-r', dir_user / i,])
 
     # BEGIN validation
 
-    temp_inData = inData.copy()
+	temp_inData = inData.copy()
 
-    '''
-        filter input to
-        only contain the
-        target keys and their values
-    '''
-    for i in inData:
-        if i not in latex_targets:
-            temp_inData.pop(i)
+	'''
+		filter input to
+		only contain the
+		target keys and their values
+	'''
+	for i in inData:
+		if i not in latex_targets:
+			temp_inData.pop(i)
     
-    '''
-        per each target,
-        check if the latex directory
-        has the exact same latex
-        as in the inputs in the html
-        'texput.log' is a latex compilation thing
-        and is ignored
-    '''
-    for i in latex_targets:
-        dir_target = dir_temp / i
-        dir_target.mkdir(parents=True, exist_ok=True)
-
-        ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
-        expected = list(temp_inData[i][1].keys())
-
-        if expected != ready:
-            return JsonResponse({'error': 'cant submit, check your latex.'})
+	'''
+		per each target,
+		check if the latex directory
+		has the exact same latex
+		as in the inputs in the html
+		'texput.log' is a latex compilation thing
+		and is ignored
+	'''
+	for i in latex_targets:
+		dir_target = dir_temp / i
+		dir_target.mkdir(parents=True, exist_ok=True)
+		
+		ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
+		expected = list(temp_inData[i][1].keys())
+		
+		if expected != ready:
+			for j in ready:
+				if j not in expected:
+					subprocess.run(['rm', dir_target/ (j+'.svg')])
+					
+			genError('js sais there should be different latex files in the server then there are', 'latex paths & files')
 
     # END validation
 
-    '''
-        create new unique 
-        exercise directory
-        it is unique per user
-
-        all exercise dirs hase
-        numeric names except 
-        'temp' dir, so we 
-        get the max dir name and
-        the new exercise 
-        is this number + 1
-    '''
-    new_exercise_dir = 0
-    listDir = os.listdir(dir_user)
-    if 'temp' in listDir:
-        listDir.remove('temp')
-    listDir = [int(os.path.basename(i)) for i in listDir]
+	'''
+		create new unique 
+		exercise directory
+		it is unique per user
+		
+		all exercise dirs hase
+		numeric names except 
+		'temp' dir, so we 
+		get the max dir name and
+		the new exercise 
+		is this number + 1
+	'''
+	new_exercise_dir = 0
+	listDir = os.listdir(dir_user)
+	if 'temp' in listDir:
+		listDir.remove('temp')
+	listDir = [int(os.path.basename(i)) for i in listDir]
     
-    if listDir:
-        new_exercise_dir = max(listDir) + 1
+	if listDir:
+		new_exercise_dir = max(listDir) + 1
 
-    dir_new_exercise = dir_user / str(new_exercise_dir)
+	dir_new_exercise = dir_user / str(new_exercise_dir)
 
-    '''
-        copy temp to its permenant 
-        location with its new name
-    '''
-    subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
+	'''
+		copy temp to its permenant 
+		location with its new name
+	'''
+	subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
 
     # SQL
-    sql_args = {
-        'author' : repr(str(inData['userid'])),          
-        'latex_dir' : repr(new_exercise_dir),       
-        'latex_pkg' : repr(inData['latexp']),        
+	sql_args = {
+		'author' : inData['userId'],          
+		'latex_dir' : new_exercise_dir,       
+		'latex_pkg' : inData['latexp'],        
+		
+		'title' : inData['title'][0],          
+		'exercise' : inData['exercise'][0],        
+		'answer' : inData['answer'][0],          
+		'hints' : inData['hints'][0],            
+		'explain' : inData['explain'][0],          
+		
+		'latex_title' : (json.dumps(inData['title'][1])),     
+		'latex_exercise' : (json.dumps(inData['exercise'][1])),  
+		'latex_answer' : (json.dumps(inData['answer'][1])),    
+		'latex_hints' : (json.dumps(inData['hints'][1])),     
+		'latex_explain' : (json.dumps(inData['explain'][1])),   
+	}
+	res = postSQL(sql_post_exercise, sql_args)
+	if res == ERROR: return JsonError
 
-        'title' : repr(inData['title'][0]),          
-        'exercise' : repr(inData['exercise'][0]),        
-        'answer' : repr(inData['answer'][0]),          
-        'hints' : repr(inData['hints'][0]),            
-        'explain' : repr(inData['explain'][0]),          
-
-        'latex_title' : repr(json.dumps(inData['title'][1])),     
-        'latex_exercise' : repr(json.dumps(inData['exercise'][1])),  
-        'latex_answer' : repr(json.dumps(inData['answer'][1])),    
-        'latex_hints' : repr(json.dumps(inData['hints'][1])),     
-        'latex_explain' : repr(json.dumps(inData['explain'][1])),   
-    }
-    
-    res = postSQL(sql_post_exercise, sql_args)
-    if res == 'error':
-        return JsonResponse({'error': "can't post exercises."})
-
-    return JsonResponse({'success':0})
+	return JsonSuccess
 
 @safe_fetch
 def fetch_addTag(request):
@@ -439,6 +493,7 @@ def fetch_like(request):
 	postSQL(command, args) 
 	
 	return JsonResponse({'success': True})
+	
 	
 @ensure_csrf_cookie
 def home(request):
