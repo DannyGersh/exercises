@@ -14,35 +14,32 @@ function Home(props) {
 	useEffect(()=>{
 		sendData('fetch/home')
 		.then(data=>{
-			latest[1](data.latest);
-			hotest[1](data.hotest);
+			latest[1](data['latest']);
+			hotest[1](data['hotest']);
 		})	
 	},[])
-		
+	
 	return(
 	<>		
 		<center>
 		<h1>www.ididthisforu.com <font color='green'>Alpha</font></h1>
 		<p style={{margin:'1rem'}}>The website for uploading and solving exercises in any field</p>
-		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'green'}`} onClick={()=>ms[1](false)}>hottest</BtnMenue>
-		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
+		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'color_btn_green'}`} onClick={()=>ms[1](false)}>hottest</BtnMenue>
+		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'color_btn_green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
 		</center>
 		
 		<div className='gridContainer'>
 		{ (ms[0] ? latest[0]: hotest[0]).map( (item,index) =>
-				<ExerciseCard
-					userId={props.userid}
-					narrowWindow={window.nrw}
-					key={index}
-					identifier={index}
-					isUser={true}
-					url={'/' + item['id']} 
-					exercise={item}
-					isOptions={false}
-					renderWhenChange={ms}
-				/>
-			)
-		}	
+			<ExerciseCard
+				userId={window.userId[0]}
+				narrowWindow={false}
+				key={index}
+				url={`/exercise/${item['id']}`} 
+				exercise={item}
+				isOptions={false}
+				renderOnChange={ms}
+			/>
+		)}	
 		</div>
 		
 	</>	

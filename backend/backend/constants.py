@@ -75,9 +75,17 @@ sql_messages = (
 sql_get_hotest = (
     '''
     select
-    rating, tags, latex_dir, author,
-    title,exercise,
-    latex_title, latex_exercise
+    
+    id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    latex_title, 
+    latex_exercise
 
     from exercises
     order by cardinality(rating) desc
@@ -86,18 +94,33 @@ sql_get_hotest = (
     ,
 
     (
-    'rating', 'tags', 'latex_dir', 'author',
-    'title', 'exercise',
-    'latex_title', 'latex_exercise'
+    'id', 
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title', 
+    'exercise',
+    'latex_title', 
+    'latex_exercise'
     )
 )
 
 sql_get_latest = (
     '''
     select
-    rating, tags, latex_dir, author,
-    title,exercise,
-    latex_title, latex_exercise
+    
+    id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    latex_title, 
+    latex_exercise
 
     from exercises
     order by creationdate desc
@@ -106,9 +129,16 @@ sql_get_latest = (
     ,
     
     (
-    'rating', 'tags', 'latex_dir', 'author',
-    'title', 'exercise',
-    'latex_title', 'latex_exercise'
+    'id',
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title', 
+    'exercise',
+    'latex_title', 
+    'latex_exercise'
     )
 )
 
@@ -185,14 +215,53 @@ sql_get_user_name = (
 	
 	''',
 	(
-	'userName',
+	'uname',
 	)
+)
+
+sql_get_profile_authored = (
+    '''
+    select
+    
+    id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
+
+    from exercises
+    where {userId}=author
+    order by creationdate desc
+    limit 10
+    '''
+    ,
+
+    (
+    'id',
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title', 
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise'
+    )
 )
 
 sql_get_profile_liked = (
     '''
     select
     
+    id,
     rating, 
     tags, 
     latex_dir, 
@@ -212,6 +281,7 @@ sql_get_profile_liked = (
     ,
 
     (
+    'id',
     'rating', 
     'tags', 
     'latex_dir', 
@@ -225,41 +295,42 @@ sql_get_profile_liked = (
     )
 )
 
-sql_get_profile_authored = (
+sql_get_profile_messages = (
     '''
     select
     
-    rating, 
-    tags, 
-    latex_dir, 
-    author,
+    m.id,
+    m.exerciseId,
+    m.sender,
+    m.receiver,
+    to_char(m.creationdate, 'MM/DD/YYYY - HH24:MI'),
+    m.message,
+    a_sender.username,
+    a_receiver.username
     
-    title,
-    exercise,
+    from messages as m
     
-    latex_title, 
-    latex_exercise
-
-    from exercises
-    where {userId}=author
-    order by cardinality(rating) desc
-    limit 10
+    inner join auth_user as a_sender
+	on a_sender.id = m.sender
+	inner join auth_user as a_receiver
+	on a_receiver.id = m.receiver
+    
+    where m.receiver='{userId}'
     '''
     ,
 
     (
-    'rating', 
-    'tags', 
-    'latex_dir', 
-    'author',
-    
-    'title', 
-    'exercise',
-    
-    'latex_title', 
-    'latex_exercise'
+    'msgId',
+	'exerciseId',
+    'sender',
+    'receiver',
+    'creationDate',
+    'message',
+    'name_sender',
+    'name_receiver',
     )
 )
+
 
 
 protocall_fetch_home = {
@@ -270,81 +341,96 @@ protocall_fetch_home = {
 	}
 }
 
+protocall_fetch_deleteExercise = {
+	'in': {
+		'exerciseId': int,
+	},
+	'out': {},
+}
+
 protocall_fetch_profile = {
 	'in': {
-		'userId': int
+		'userId'	: int
 	},
 	'out': {
-		'liked': list,
-		'authored': list,
+		'uname'		: str,
+		'authored'	: list,
+		'liked'		: list,
+		'messages'	: list,
 	},
 }
 
 protocall_fetch_exercisePage = {
 	'in': {
-		'exerciseId': int,
+		'exerciseId'	: int,
 	},
 	'out': {
-		'exerciseId': int,
-		'author': int,
-		'creationdate': str, 
-		'rating': list,
-		'tags': list,
-		'latex_dir': str, 
+		'exerciseId'	: int,
+		'author'		: int,
+		'creationdate'	: str, 
+		'rating'		: list,
+		'tags'			: list,
+		'latex_dir'		: str, 
 		
-		'title': str,
-		'exercise': str, 
-		'answer': str,
-		'hints': str,
-		'explain': str,
+		'title'			: str,
+		'exercise'		: str, 
+		'answer'		: str,
+		'hints'			: str,
+		'explain'		: str,
 		
-		'latex_title': dict,
+		'latex_title'	: dict,
 		'latex_exercise': dict,
-		'latex_answer': dict,
-		'latex_hints': dict,
-		'latex_explain': dict,
+		'latex_answer'	: dict,
+		'latex_hints'	: dict,
+		'latex_explain'	: dict,
 		
-		'username': str,	
+		'username'		: str,	
 	}
 }
 
 protocall_fetch_submit_exercise = {
 	'in': {
-		'userId': int,
-		'latexp': str,
+		'userId'	: int,
+		'latexp'	: str,
 
-		'title': list,
-		'exercise': list,
-		'answer': list,
-		'hints': list,
-		'explain': list,	
+		'title'		: list,
+		'exercise'	: list,
+		'answer'	: list,
+		'hints'		: list,
+		'explain'	: list,	
 	},
 	'out': {},
 }
 
 protocall_fetch_addLatex = {
 	'in': {
-		'userId' : int,
-		'exercise' : str,
-		'target' : str,
-		'latexId' : int,
-		'latex' : str,
-		'packages': str,
+		'userId'	: int,
+		'exercise'	: str,
+		'target'	: str,
+		'latexId'	: int,
+		'latex'		: str,
+		'packages'	: str,
 	},
 	'out': {},
 }
 
 protocall_fetch_deleteLatex = {
 	'in': {
-		'userId' : int,
-		'exercise' : str,
-		'target' : str,
-		'latexId' : int,
-		'packages': str,
+		'userId'	: int,
+		'exercise'	: str,
+		'target'	: str,
+		'latexId'	: int,
+		'packages'	: str,
 	},
 	'out': {},
 }
 
+protocall_fetch_deleteMsg = {
+	'in': {
+		'msgId': int,
+	},
+	'out': {},
+}
 
 
 sql_post_error = '''
@@ -440,8 +526,21 @@ sql_post_like = '''
 	
 '''
 
+sql_post_delete_msg = '''
 
+	delete 
+	from messages
+	where id={msgId}
 
+'''
+
+sql_post_delete_exercise = '''
+
+	delete 
+	from exercises
+	where id={exerciseId}
+
+'''
 
 
 

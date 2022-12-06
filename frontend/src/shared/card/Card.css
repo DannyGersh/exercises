@@ -1,7 +1,7 @@
 .card {
 	display: inline-block;
 	position: relative;
-	border-radius: 0.5rem;
+	border-radius: .5rem;
 	background-color: #fbceb1;
 	margin: 1rem;
 	padding: 1rem;
@@ -10,6 +10,7 @@
 	text-align: left;
 	height: var(--cardHeight);
 	overflow: hidden;
+	box-shadow: var(--shadow);
 }
 .redirect:hover {
 	cursor: pointer;

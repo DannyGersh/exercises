@@ -7,9 +7,18 @@ import Explain from './pages/Explain'
 import TagList from './pages/TagList'
 import {useState, useEffect, useRef, useCallback} from 'react'
 import {compArr, sendData, getStackTrace, uploadError} from '../../shared/Functions'
+import {useNavigate} from "react-router-dom";
 
 import regex_escape from '../../shared/regex_escape'
 
+import Btn from '../../shared/buttons/BtnOnOf'
+
+const TARGETS = {
+	exercise: 'Exercise',
+	hints: 'Hints',
+	explain: 'Explanation',
+	tags: 'Tags',	
+}
 
 function compileLatex(target, refs, text, exercise='temp') {
 	
@@ -107,13 +116,13 @@ function New(props){
 	const bmt = useState(temp ? temp : 'Exercise')
 
 	// when bottom menue tab is clicked
-	function bottomMenueHandle(e){
+	function h_btm(e){
 		
 		bmt[1](e.target.innerHTML);
 		localStorage.setItem('bmt', e.target.innerHTML)
 	}
 
-	function submit() {
+	function getLocalExercise() {
 		
 		let latexp = localStorage.getItem('latexp')
 		let title = localStorage.getItem('title')
@@ -156,39 +165,27 @@ function New(props){
 			//	localStorage.removeItem('bmt');
 			//}
 			
-			const submit_exercise = { 
+			const local_exercise = { 
 				
 				userId: window.userId[0],
 				latexp: latexp,
-
-				title: [
-					refs.current['title'][1],
-					refs.current['title'][3],
-				],
-				exercise: [
-					refs.current['exercise'][1],
-					refs.current['exercise'][3],
-				],
-				answer: [
-					refs.current['answer'][1],
-					refs.current['answer'][3],
-				],
-				hints: [
-					refs.current['hints'][1],
-					refs.current['hints'][3],
-				],
-				explain: [
-					refs.current['explain'][1],
-					refs.current['explain'][3],
-				],
+				
+				title		: refs.current['title'][1],
+				exercise	: refs.current['exercise'][1],
+				answer		: refs.current['answer'][1],
+				hints		: refs.current['hints'][1],
+				explain		: refs.current['explain'][1],
+				
+				latex_title		: refs.current['title'][3],
+				latex_exercise	: refs.current['exercise'][3],
+				latex_answer	: refs.current['answer'][3],
+				latex_hints		: refs.current['hints'][3],
+				latex_explain	: refs.current['explain'][3],
+			
 			}
-			sendData('fetch/submitExercise', 'POST', submit_exercise)
-			.then(result=>{
-				if(!result['error']) {
-					window.alert('successfully uploaded exercises.')
-				}
-			})
-
+			
+			return local_exercise;
+			
 		} else {
 			let str = 'You are missing:\n';
 			if(!title) { str += '* title (in the exercise tab)\n' }
@@ -196,7 +193,33 @@ function New(props){
 			window.alert(str)
 		}
 	}
+	
+	function h_submit() {
+		
+		const local_exercise = getLocalExercise();
+		if(local_exercise) {
+			sendData('fetch/submitExercise', 'POST', local_exercise)
+			.then(result=>{
+				if(!result['error']) {
+					window.alert('successfully uploaded exercises.')
+				}
+			})
+		}
+	}
 
+	const navigate = useNavigate();
+	function h_preview() {
+		const local_exercise = getLocalExercise();
+		if(local_exercise) {
+			return navigate('/exercise/preview', {state: local_exercise});
+		}
+	}
+	
+	function genClassName(target) {
+		const condition = bmt[0]===target;
+		return `btnMenue ${condition ? 'color_btn_green' : 'color_btn_default'}`
+	}
+		
 	useEffect(()=>{
 		let title = localStorage.getItem('title')
 		let exercise = localStorage.getItem('exercise')
@@ -218,12 +241,27 @@ function New(props){
 		{bmt[0]==='Tags' && <TagList refs={refs}/>}
 
 		<div className='bottomMenue'>
-			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Exercise'    && 'green'}`}>Exercise</BtnMenue>
-			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Hints'       && 'green'}`}>Hints</BtnMenue>
-			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Explanation' && 'green'}`}>Explanation</BtnMenue>
-			<BtnMenue type='button' onClick={bottomMenueHandle} className={`btnBottomMenue ${bmt[0]==='Tags'        && 'green'}`}>Tags</BtnMenue>
-			<BtnMenue type='button' onClick={submit} className='btnSubmit'>Preview</BtnMenue>
-			<BtnMenue type='button' onClick={submit} className='btnSubmit'>Submit</BtnMenue>
+			<Btn text={TARGETS.exercise}
+				onClick={h_btm} 
+				className={genClassName(TARGETS.exercise)}
+			/>
+			<Btn 
+				text={TARGETS.hints}
+				onClick={h_btm}
+				className={genClassName(TARGETS.hints)}
+			/>
+			<Btn 
+				text={TARGETS.explain}
+				onClick={h_btm}
+				className={genClassName(TARGETS.explain)}
+			/>
+			<Btn 
+				text={TARGETS.tags}
+				onClick={h_btm}
+				className={genClassName(TARGETS.tags)}
+			/>
+			<BtnMenue onClick={h_preview} className='color_btn_blue'>Preview</BtnMenue>
+			<BtnMenue onClick={h_submit} className='color_btn_blue'>Submit</BtnMenue>
 		</div>
 	</>
 	) 

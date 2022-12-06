@@ -19,7 +19,7 @@ function Exercise_card(props){
 	const htmlTitle = `<h4>${rawTitle}</h4>`;
 	const htmlExercise = `<p>${rawExercise}</p>`;
 
-	const exerciseId = props.identifier.toString();	
+	const exerciseId = props.exercise['id'].toString();	
 	const id_title = `title_${exerciseId}`;
 	const id_exercise = `exercise_${exerciseId}`;
 	let n_title = null;
@@ -42,7 +42,7 @@ function Exercise_card(props){
 		n_title.innerHTML = htmlTitle;
 		n_exercise = document.getElementById(id_exercise);
 		n_exercise.innerHTML = htmlExercise;
-	},[props.renderWhenChange])
+	},[props.renderOnChange])
 	
 	const dspOptions = useState(false);
 	function onOptions(evt) {
@@ -58,20 +58,18 @@ function Exercise_card(props){
 		
 		evt.stopPropagation();
 		
-		/*
 		if(window.confirm("Delete this exercise ?")) {
-			sendData(
-				'delete', 
-				[
-					props.exercise['id'],
-					props.exercise['latex'],
-				]
-			)
-			await new Promise(r => setTimeout(r, 200));
-			window.location.reload()
+			sendData('fetch/deleteExercise', 'POST', {
+				'exerciseId': props.exercise['id'],
+			})
 		}
-		*/
-
+		
+		if(props.onDelete) {
+			props.onDelete(props.exercise);
+		}
+		
+		dspOptions[1](false);
+		
 	}
 	
   return(
@@ -85,7 +83,7 @@ function Exercise_card(props){
 	>
     
     {/*Card children*/} 
-
+	
 	{/* aditional menue button - only on profile */}
 	{ props.isOptions && 
 		<div className='topRight'>

@@ -1,7 +1,7 @@
 //import MainJsx from './ExercisePageJsx.js'
 import {useCallback, useState, useEffect, useRef} from 'react'
 import {useController, sendData, mainText2html} from '../../shared/Functions'
-import { useParams } from "react-router-dom";
+import {useParams, useLocation} from "react-router-dom";
 import BtnOnOf, {BtnRadio} from '../../shared/buttons/BtnOnOf'
 import ToolTip from '../../shared/tooltip/ToolTip'
 import './ExercisePage.css'
@@ -21,11 +21,13 @@ function ExerciseBody(props) {
 	const ctx = props.ctx;
 
 	const refs = {
+		main : useRef(null),
 		exercise : useRef(null),
 		answer : useRef(null),
 		hints : useRef(null),
 		explain : useRef(null),
 	}
+	
 	
 	function setVisibility(ref, target) {
 		
@@ -33,22 +35,10 @@ function ExerciseBody(props) {
 		
 		if(ctx.c_hae[0]()[1]===target) {
 			style.visibility = 'visible';
+			refs.main.current.style.height = `${ref.current.getBoundingClientRect().height}px`;
 		} else {
 			style.visibility = 'hidden';
 		}
-			
-	}
-	
-	function setVisibilityStyle(target) {
-		
-		const condition = ctx.c_hae[0]()[1] === target;
-		
-		return {
-			visibility: condition ? 'visible' : 'hidden',
-			position: 'fixed',
-			top: '6rem',
-		}
-				
 	}
 	
 	ctx.c_hae[2]('renderMainBody', ()=>{
@@ -57,41 +47,73 @@ function ExerciseBody(props) {
 		setVisibility(refs.answer, BTM_TARGETS.answer);
 		setVisibility(refs.explain, BTM_TARGETS.explain);
 	})
-	
-	const mainStyle = {
-		height:'calc(100vh - 7rem)',
-		marginLeft: '1rem'
+		
+	function genParagraphStyle(target) {
+		
+		const condition = ctx.c_hae[0]()[1] === target;
+
+		return {
+			position: 'absolute',
+			visibility: condition ? 'visible' : 'hidden',
+		}
 	}
 
+	const mainStyle = {
+		height:'calc(100vh - 7.5rem)',
+		marginLeft: '1rem',
+		borderBottom: 'solid 1px var(--brown)',
+	}
+
+	const mainRefStyle = {
+		overflow:'hidden', 
+		backgruondColor: 'blue', 
+		position: 'relative',
+		top: '-1rem',
+	}
+	
+	if(refs.main.current && ctx.s_finLoad[0]) {
+		let id_interval = setInterval(()=>{
+			refs.main.current.style.height = `${refs.exercise.current.getBoundingClientRect().height}px`;
+		},100);
+		setTimeout(()=>{
+			clearInterval(id_interval);
+		}, 1000)
+	}
+	
 	
 	return(
 	
-	<div className='hscroll' style={mainStyle}>
+	<div className='vscroll' style={mainStyle}>
 
 		<div id={BTM_TARGETS.title} 
 			className='textWithLatex'
 		/>
+		
+		<div style={mainRefStyle} ref={refs.main}>
+		
 		<div id={BTM_TARGETS.exercise} 
 			ref={refs.exercise}
 			className='textWithLatex' 
-			style={setVisibilityStyle(BTM_TARGETS.exercise)}
+			style={genParagraphStyle(BTM_TARGETS.exercise)}
 		/>	
 		<div id={BTM_TARGETS.answer}
 			ref={refs.answer} 
-			className='textWithLatex clientBody'
-			style={setVisibilityStyle(BTM_TARGETS.answer)}
+			className='textWithLatex'
+			style={genParagraphStyle(BTM_TARGETS.answer)}
 		/>	
 		<div id={BTM_TARGETS.hints} 
 			ref={refs.hints} 
-			className='textWithLatex clientBody'
-			style={setVisibilityStyle(BTM_TARGETS.hints)}
+			className='textWithLatex'
+			style={genParagraphStyle(BTM_TARGETS.hints)}
 		/>
 		<div id={BTM_TARGETS.explain} 
 			ref={refs.explain}
-			className='textWithLatex clientBody'
-			style={setVisibilityStyle(BTM_TARGETS.explain)}
+			className='textWithLatex'
+			style={genParagraphStyle(BTM_TARGETS.explain)}
 		/>
 
+		</div>
+	
 	</div>
 	
 	)
@@ -314,7 +336,8 @@ function ExercisePage(props){
 
 	const params = useParams();
 	const exerciseId = parseInt(params['exerciseId']);
-
+	const exercise_preview = useLocation().state;
+	
 	const ctx = {
 		
 		s_finLoad: useState(false),
@@ -325,7 +348,7 @@ function ExercisePage(props){
 		
 		r_likes: useRef(0),
 		r_btn_like_text: useRef(`0\nLikes`),
-	
+		
 		r_exercise: useRef({
 			
 			id          : exerciseId,
@@ -345,40 +368,65 @@ function ExercisePage(props){
 		
 	}
 
-	useEffect(()=>{
-		sendData('fetch/exercisePage', 'POST', {
-			'exerciseId': exerciseId
-		})
-		.then(e=>{ // e == exercise
-
-			e['title'] = mainText2html(e, 'title');
-			e['exercise'] = mainText2html(e, 'exercise');
-			e['answer'] = mainText2html(e, 'answer');
-			e['hints'] = mainText2html(e, 'hints');
-			e['explain'] = mainText2html(e, 'explain');
-			
-			ctx.r_likes.current = e['rating'].length;
-			ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
-			ctx.c_isLike[1](e['rating'].includes(window.userId[0]));
-			
-			ctx.r_exercise.current = e;
-			
-			const n_title = document.getElementById(BTM_TARGETS.title);
-			const n_exercise = document.getElementById(BTM_TARGETS.exercise);
-			const n_answer = document.getElementById(BTM_TARGETS.answer);
-			const n_hints = document.getElementById(BTM_TARGETS.hints);
-			const n_explain = document.getElementById(BTM_TARGETS.explain);
-
-			n_title.innerHTML = `<h3>${ctx.r_exercise.current['title']}</h3>`
-			n_exercise.innerHTML = `<p>${ctx.r_exercise.current['exercise']}</p>`
-			n_answer.innerHTML = `<p>${ctx.r_exercise.current['answer']}</p>`
-			n_hints.innerHTML = `<p>${ctx.r_exercise.current['hints']}</p>`
-			n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
-			
-			// reload page after fetch exercise
-			ctx.s_finLoad[1](true);
+	if(exercise_preview) {
 		
-		})
+		exercise_preview['author'] = window.userId[0];
+		exercise_preview['latex_dir'] = 'temp';
+		
+		ctx.r_exercise.current = {
+		
+			id          : 0,
+			creationdate: '',
+			rating      : [],
+			tags        : [],
+			
+			title   	: mainText2html(exercise_preview, 'title'),
+			exercise	: mainText2html(exercise_preview, 'exercise'),
+			answer  	: mainText2html(exercise_preview, 'answer'),
+			hints   	: mainText2html(exercise_preview, 'hints'),
+			explain 	: mainText2html(exercise_preview, 'explain'),
+			
+		}
+	}
+		
+	useEffect(()=>{
+		if(!exercise_preview) {
+		
+			sendData('fetch/exercisePage', 'POST', {
+				'exerciseId': exerciseId
+			})
+			.then(e=>{ // e == exercise
+
+				e['title'] = mainText2html(e, 'title');
+				e['exercise'] = mainText2html(e, 'exercise');
+				e['answer'] = mainText2html(e, 'answer');
+				e['hints'] = mainText2html(e, 'hints');
+				e['explain'] = mainText2html(e, 'explain');
+			
+				ctx.r_likes.current = e['rating'].length;
+				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
+				ctx.c_isLike[1](e['rating'].includes(window.userId[0]));
+			
+				ctx.r_exercise.current = e;
+		
+			})
+		}
+		
+		const n_title = document.getElementById(BTM_TARGETS.title);
+		const n_exercise = document.getElementById(BTM_TARGETS.exercise);
+		const n_answer = document.getElementById(BTM_TARGETS.answer);
+		const n_hints = document.getElementById(BTM_TARGETS.hints);
+		const n_explain = document.getElementById(BTM_TARGETS.explain);
+
+		n_title.innerHTML = `<h3>${ctx.r_exercise.current['title']}</h3>`
+		n_exercise.innerHTML = `<p>${ctx.r_exercise.current['exercise']}</p>`
+		n_answer.innerHTML = `<p>${ctx.r_exercise.current['answer']}</p>`
+		n_hints.innerHTML = `<p>${ctx.r_exercise.current['hints']}</p>`
+		n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
+			
+		// reload page after fetch exercise
+		ctx.s_finLoad[1](true);
+		
 	},[])
 	
 	return(<MainBodie ctx={ctx}/>)

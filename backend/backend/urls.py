@@ -41,9 +41,9 @@ def getStackTrace():
     return ''.join(stackTrace) + traceback.format_exc()
 
 def printError(msg):
-    print("\n-------ERROR-------\n")
-    print(getStackTrace(), ' -- message:', msg)
-    print('\n-------END ERROR-------\n')
+	print("\n-------ERROR-------\n")
+	print(getStackTrace(), ' -- message:', msg)
+	print('\n-------END ERROR-------\n')
 
 def sql_post_error(message, errorType, stackTrace=None):
 
@@ -265,10 +265,12 @@ def fetch_exercisePage(request):
 	if inData == ERROR: return JsonError
 
 	exerciseId = int(inData['exerciseId'])
-	exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})[0]
-	
+	exercise = getSQL(sql_get_exercise, {'exerciseId':exerciseId})
+	if exercise == ERROR or not exercise:
+		return genJsonError("can't get exercise")
+
 	if exercise:
-		return fetch_out(request, protocall, exercise)
+		return fetch_out(request, protocall, exercise[0])
 		
 	else:
 		genError('cant get exercise %s'%exerciseId, 'SQL')
@@ -283,21 +285,25 @@ def fetch_profile(request):
 	
 	args = {'userId': inData['userId']}
 	
-	rawUname = getSQL(sql_get_user_name, args)
-	if rawUname == ERROR or not rawUname: 
+	raw_uname = getSQL(sql_get_user_name, args)
+	if raw_uname == ERROR or not raw_uname: 
 		genError('cant find user name', 'SQL')
 		return JsonError
 		
-	userName = rawUname[0]['userName']
+	uname = raw_uname[0]['uname']
 	liked = getSQL(sql_get_profile_liked, args)
 	authored = getSQL(sql_get_profile_authored, args)
+	messages = getSQL(sql_get_profile_messages, args)
 
 	if liked == ERROR: return JsonError
 	if authored == ERROR: return JsonError
+	if messages == ERROR: return JsonError
 	
 	data = {
+		'uname': uname,
 		'liked': liked,
 		'authored': authored,
+		'messages': messages,
 	}
 	
 	return fetch_out(request, protocall, data)
@@ -479,7 +485,34 @@ def fetch_sendMsg(request):
 	postSQL(command, args) 
 	
 	return JsonResponse({'success': True})
+
+@safe_fetch
+def fetch_deleteMsg(request):
 	
+	protocall = protocall_fetch_deleteMsg
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	command = sql_post_delete_msg
+	postSQL(command, {
+		'msgId': inData['msgId']
+	})
+	
+	return JsonSuccess
+
+@safe_fetch
+def fetch_deleteExercise(request):
+	protocall = protocall_fetch_deleteExercise
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	command = sql_post_delete_exercise
+	postSQL(command, {
+		'exerciseId': inData['exerciseId'],
+	})
+	
+	return JsonSuccess
+		
 @safe_fetch
 def fetch_like(request):
 
@@ -493,6 +526,7 @@ def fetch_like(request):
 	postSQL(command, args) 
 	
 	return JsonResponse({'success': True})
+
 	
 	
 @ensure_csrf_cookie
@@ -529,8 +563,9 @@ urlpatterns = [
     path('fetch/register_submit/', fetch_register_submit),
     path('fetch/submitExercise/', fetch_submit_exercise),
     path('fetch/sendMsg/', fetch_sendMsg),
+    path('fetch/deleteMsg/', fetch_deleteMsg),
+	path('fetch/deleteExercise/', fetch_deleteExercise),
     path('fetch/like/', fetch_like),
-
     path('fetch/addLatex/', fetch_addLatex),
     path('fetch/deleteLatex/', fetch_deleteLatex),
 

@@ -1,16 +1,16 @@
-.menueTabs {
-	width: 6rem;
-	height:2rem;
-}
 
-.scrollStyle{
-	position: fixed;
-	bottom: 0px;
+.tab-container {
+	margin-left: 1rem;
+	margin-right: 1rem;
+	border-radius: .3rem .3rem 0 0;
+	background-color: var(--pink);
+}
+	
+.display {
+	margin: 0 1rem 1rem 1rem;
+	padding: .3rem;
+	border-radius: 0 0 .3rem .3rem;
 	background-color: var(--brown);
-	width: calc(100% - 1.2rem);
-	margin: 0.6rem;
-	text-align: center;
-	border-radius: 0.3rem;
 }
 
 .message {
@@ -30,6 +30,6 @@
 	height: 0.5rem;
 	border-radius: 50%;
 	position: relative;
-	top: -1.5rem;
-	left: 5.2rem;
+	top: -2rem;
+	left: 11.6rem;
 }

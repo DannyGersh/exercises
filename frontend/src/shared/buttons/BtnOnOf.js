@@ -1,7 +1,24 @@
 import {useState} from 'react'
 
 
-function BtnOnOf(props){
+function Btn(props) {
+
+	return(
+		<button
+			type='button' 
+			style={props.style} 
+			className={props.className}
+			onClick={props.onClick} 
+		>
+		{props.text && props.text}
+		</button>
+    )
+    
+}
+export {Btn};
+
+
+function BtnOnOf(props) {
 
 	const c_isOn = props.c_isOn;
 	const s_render = useState(true);
@@ -10,7 +27,7 @@ function BtnOnOf(props){
 	let classNameStr = props.className;
 	
 	if(c_isOn) {
-		classNameStr += ` ${c_isOn[0]() ? 'green': 'blue'}`	 
+		classNameStr += ` ${c_isOn[0]() ? 'color_btn_green': 'color_btn_blue'}`	 
 		c_isOn[2]('renderFunc', ()=>{
 			s_render[1](!s_render[0]);
 		});	
@@ -33,20 +50,16 @@ function BtnOnOf(props){
 export default BtnOnOf;
 
 
-
-
-
-function BtnRadio(props){
+function BtnRadio(props) {
 
 	// c_selected[0]() == [previous selection, current selection]
 	// s_render - force rerender, s_render[0] value is irrelevant
-	
 	const c_selected = props.c_selected;
 	const s_render = useState(true);
 	
 	const classNameStr = `
 		${props.className} 
-		${c_selected[0]()[1] === props.name ? 'green': 'blue'}
+		${c_selected[0]()[1] === props.name ? 'color_btn_green': 'color_btn_blue'}
 	`	 
 	
 	function h_onClick(target) {

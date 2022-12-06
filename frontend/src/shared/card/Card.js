@@ -1,13 +1,24 @@
 import "./Card.css"
+import { useNavigate } from 'react-router-dom';
 
-// define props.url to be a url for redirection.
+
 function Card(props){
-
+	
+	/* props
+		* url - string
+		* isRedirect - bool
+		* className - string
+		* style - string
+	*/
+	
+	const navigate = useNavigate();
+	
 	function redirect(){
 		if(props.isRedirect) {
-			window.location.replace(props.url);
+			navigate(props.url);
 		}
 	}
+	
 	return(
 	<>
 		<div 

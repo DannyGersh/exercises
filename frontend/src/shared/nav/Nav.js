@@ -98,12 +98,9 @@ function Nav(props) {
 
 	{/* search bar on narrowWindow */}
 	{dropDownActive[0] && (
-		<div>
-			<form className='nav' action="/browse/" method="post">
-				{ process.env.NODE_ENV !== 'development' && <CSRFToken /> }
-				<button className='searchBtn' type="submit"></button>
-				<input className='searchText' type="text" name="browse" />
-			</form>
+		<div className='dropDownNav'>
+			<button className='searchBtn' type="submit"></button>
+			<input className='searchText' type="text" name="browse" />
 		</div>
 	)}
 	</> 

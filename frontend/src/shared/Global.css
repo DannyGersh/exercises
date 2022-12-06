@@ -1,32 +1,88 @@
 
 :root {
   --backGround: #faebd7;	
-  --apricot: #fbceb1;
   --champagne: #fad6a5;
   --champagne_hover: #eac695;
   --champagne_active: #dab685;
   
+  --pink: #fbceb1;
   --red: #ff7676;
   --green: #8fbc8f;
   --blue: #5b92e5;
-  --brown: #F1AF86;
+  --blue2: #2275ab;
+  --brown: #ffaf7b;
   --red_hover: #ff8686;
   --green_hover: #9fcc9f;
   --blue_hover: #6ba2f5;
+  --brown_hover: #ef9f6b;
  
   --cardHeight: 15rem;
+  
+  --shadow: 3px 3px 3px #662900;
 }
+
+.color_btn_default{
+	background-color: var(--champagne) !important;
+}
+.color_btn_default:hover{
+	background-color: var(--champagne_hover) !important;
+}
+.color_btn_default:active{
+	background-color: var(--champagne) !important;
+}
+
+.color_btn_green{
+	background-color: var(--green) !important;
+}
+.color_btn_green:hover{
+	background-color: var(--green_hover) !important;
+}
+.color_btn_green:active{
+	background-color: var(--green) !important;
+}
+
+.color_btn_red{
+	background-color: var(--red) !important;
+}
+.color_btn_red:hover{
+	background-color: var(--red_hover) !important;
+}
+.color_btn_red:active{
+	background-color: var(--red) !important;
+}
+
+.color_btn_blue{
+	color: white;
+	background-color: var(--blue) !important;
+}
+.color_btn_blue:hover{
+	background-color: var(--blue_hover) !important;
+}
+.color_btn_blue:active{
+	background-color: var(--blue) !important;
+}
+
+.color_btn_brown{
+	background-color: var(--brown) !important;
+}
+.color_btn_brown:hover{
+	background-color: var(--brown_hover) !important;
+}
+.color_btn_brown:active{
+	background-color: var(--brown) !important;
+}
+
 
 
 
 body{
 	background-color: #faebd7;
 }
-.vscroll{
+.hscroll{
 	overflow: auto;
 	white-space: nowrap;
 }
-.hscroll{
+.vscroll{
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -38,36 +94,6 @@ body{
 
 
 
-.green{
-	background-color: var(--green) !important;
-}
-.green:hover{
-	background-color: var(--green_hover) !important;
-}
-.green:active{
-	background-color: var(--green) !important;
-}
-
-.red{
-	background-color: var(--red) !important;
-}
-.red:hover{
-	background-color: var(--red_hover) !important;
-}
-.red:active{
-	background-color: var(--red) !important;
-}
-
-.blue{
-	background-color: var(--blue) !important;
-}
-.blue:hover{
-	background-color: var(--blue_hover) !important;
-}
-.blue:active{
-	background-color: var(--blue) !important;
-}
-
 
 .latex{
 	margin-bottom: -.3rem;
@@ -76,7 +102,16 @@ body{
 	background-color: var(--apricot); 
 }
 
-
+.btnTab{
+	vertical-align: middle;
+	padding: 0.3rem;
+	margin: 0.1rem;
+	border-radius: 0.3rem;
+	border-color: #e7feff;
+	border-width: 0.1rem;
+	border-style: solid;
+	white-space: nowrap;
+}
 
 .btnRound{
 	white-space: pre-wrap;
