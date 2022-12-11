@@ -1,7 +1,7 @@
 import './ExerciseCard.css'
 import {mainText2html, sendData} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
-import CSRFToken from '../../shared/Csrftoken'
+import {useNavigate} from "react-router-dom";
 
 import BtnMenue from '../../shared/buttons/BtnMenue'
 import BtnOnOf from '../../shared/buttons/BtnOnOf'
@@ -24,7 +24,7 @@ function Exercise_card(props){
 	const id_exercise = `exercise_${exerciseId}`;
 	let n_title = null;
 	let n_exercise = null;
-
+	
 	const style_text = {
 		whiteSpace: 'break-spaces', 
 		overflow:'hidden',
@@ -50,8 +50,18 @@ function Exercise_card(props){
 		dspOptions[1](!dspOptions[0]);
 	}
 	
-	function onEdit(evt) {
+	const navigate = useNavigate();
+	function h_edit(evt) {
 		evt.stopPropagation();
+			
+		localStorage.setItem('editInitial', 'true');
+
+		sendData('fetch/exercisePage/', 'POST', {
+			'exerciseId': parseInt(exerciseId),
+		})
+		.then(e=>{
+			return navigate('/new', {state: e});
+		})
 	}
 	
 	async function onDelete(evt) {
@@ -72,8 +82,9 @@ function Exercise_card(props){
 		
 	}
 	
-  return(
-  <>
+	
+	return(
+	<>	
 	<Card 
 		url={props.url} 
 		style={props.style} 
@@ -81,12 +92,12 @@ function Exercise_card(props){
 		narrowWindow={props.narrowWindow}
 		isRedirect={true}
 	>
-    
+
     {/*Card children*/} 
 	
 	{/* aditional menue button - only on profile */}
 	{ props.isOptions && 
-		<div className='topRight'>
+		<div className='topRightExerciseCard'>
 			<BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>
 		</div>
 	}
@@ -97,7 +108,7 @@ function Exercise_card(props){
 		<div style={{display:'flex'}}>
 					
 		<BtnMenue 
-			onClick={(evt)=>onEdit(evt)} 
+			onClick={(evt)=>h_edit(evt)} 
 			style={style_btnEditDelete}
 		>Edit</BtnMenue>
 
@@ -122,8 +133,14 @@ function Exercise_card(props){
 		<div id={id_title} style={style_text}/>
 		<div id={id_exercise} style={style_text}/>
 	</div>
-		    
-    </Card>
+	
+	<div className='bottomLeftExerciseCard'>
+		{props.exercise['tags'].map(i=>
+			<Tag key={i} url={`/search/${i}`}>{i}</Tag>
+		)}
+	</div>
+	
+  </Card>
   </>
   )
 }

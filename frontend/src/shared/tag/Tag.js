@@ -1,4 +1,5 @@
 import "./Tag.css";
+import {useNavigate} from 'react-router-dom';
 
 /* 	
 	define props.url to be a url for redirection.
@@ -6,19 +7,28 @@ import "./Tag.css";
 
 function Tag(props){
     
-	function redirect(event){
+	const navigate = useNavigate();
+
+	function h_redirect(event){
 		
 		if(props.onClick){
-			props.onClick(event); // assign non default function
+			// assign non default function
+			props.onClick(event); 
 		} else {
-			window.location.replace(props.url); // default
+			navigate(props.url);
 		}
-		
-		event.stopPropagation(); // prevents clickable Card from executing
+		// prevents clickable Card from executing
+		event.stopPropagation(); 
 	}
 	
 	return(
-        <button type='button' onClick={(e)=>redirect(e)} className={'tag '+ (props.className && props.className)}>{props.children}</button>
+        <button 
+			type='button' 
+			onClick={(e)=>h_redirect(e)} 
+			className={`tag color_btn_default ${props.className}`}
+		>
+			{props.children}
+		</button>
 	)
 }
 export default Tag;

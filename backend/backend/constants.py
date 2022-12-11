@@ -162,6 +162,7 @@ sql_get_exercise = (
     a.rating            ,
     a.tags              ,
     a.latex_dir         ,
+    a.latex_pkg         ,
 
     a.title             ,
     a.exercise          ,
@@ -191,6 +192,7 @@ sql_get_exercise = (
     'rating'            ,
     'tags'              ,
     'latex_dir'         ,
+    'latex_pkg'         ,
 
     'title'             ,
     'exercise'          ,
@@ -371,6 +373,7 @@ protocall_fetch_exercisePage = {
 		'rating'		: list,
 		'tags'			: list,
 		'latex_dir'		: str, 
+		'latex_pkg'		: str, 
 		
 		'title'			: str,
 		'exercise'		: str, 
@@ -390,37 +393,67 @@ protocall_fetch_exercisePage = {
 
 protocall_fetch_submit_exercise = {
 	'in': {
+		'exerciseId': int,
 		'userId'	: int,
-		'latexp'	: str,
+		'tags'		: list,
+		'latex_pkg'	: str,
 
-		'title'		: list,
-		'exercise'	: list,
-		'answer'	: list,
-		'hints'		: list,
-		'explain'	: list,	
+		'title'		: str,
+		'exercise'	: str,
+		'answer'	: str,
+		'hints'		: str,
+		'explain'	: str,		
+
+		'latex_title'	: dict,
+		'latex_exercise': dict,
+		'latex_answer'	: dict,
+		'latex_hints'	: dict,
+		'latex_explain'	: dict,
+	},
+	'out': {},
+}
+
+protocall_fetch_update_exercise = {
+	'in': {
+		'exerciseId': int,
+		'userId'	: int,
+		'tags'		: list,
+		'latex_pkg'	: str,
+		'latex_dir'	: str,
+
+		'title'		: str,
+		'exercise'	: str,
+		'answer'	: str,
+		'hints'		: str,
+		'explain'	: str,		
+
+		'latex_title'	: dict,
+		'latex_exercise': dict,
+		'latex_answer'	: dict,
+		'latex_hints'	: dict,
+		'latex_explain'	: dict,
 	},
 	'out': {},
 }
 
 protocall_fetch_addLatex = {
 	'in': {
-		'userId'	: int,
-		'exercise'	: str,
-		'target'	: str,
-		'latexId'	: int,
-		'latex'		: str,
-		'packages'	: str,
+		'userId'		: int,
+		'dir_exercise'	: str,
+		'target'		: str,
+		'latexId'		: int,
+		'latex'			: str,
+		'latex_pkg'		: str,
 	},
 	'out': {},
 }
 
 protocall_fetch_deleteLatex = {
 	'in': {
-		'userId'	: int,
-		'exercise'	: str,
-		'target'	: str,
-		'latexId'	: int,
-		'packages'	: str,
+		'userId'		: int,
+		'target'		: str,
+		'latexId'		: int,
+		'dir_exercise'	: str,
 	},
 	'out': {},
 }
@@ -443,7 +476,8 @@ sql_post_exercise =  '''
     
     insert into exercises(
     
-    author,       
+    author, 
+    tags,      
     latex_dir,       
     title,
     exercise,
@@ -459,6 +493,7 @@ sql_post_exercise =  '''
     ) values (
     
     {author}, 
+    {tags},
     {latex_dir}, 
     {title}, 
     {exercise}, 
@@ -472,6 +507,28 @@ sql_post_exercise =  '''
     {latex_explain}
     
     ) 
+'''
+
+sql_post_updateExercise = '''
+	
+	update exercises set
+	
+	tags={tags},
+	latex_pkg={latex_pkg},
+	
+    title={title},
+    exercise={exercise},
+    answer={answer}, 
+    hints={hints},
+    explain={explain}, 
+            
+    latex_title={latex_title},     
+    latex_exercise={latex_exercise},  
+    latex_answer={latex_answer},    
+    latex_hints={latex_hints},     
+    latex_explain={latex_explain}
+    
+    where id = {exerciseId}
 '''
 
 sql_post_sendMSG = '''
@@ -543,6 +600,14 @@ sql_post_delete_exercise = '''
 '''
 
 
+
+str_error_protocallNEQdata = '''
+len(protocall) != len(data)
+protocall:
+%s
+data:
+%s
+'''
 
 
 

@@ -29,6 +29,9 @@ cur.execute('SELECT version()')
 db_version = cur.fetchone()
 # print(db_version)
 
+def list2SqlArr(List):
+	return '{%s}'%','.join(List)
+	
 
 def csrf_exempt_if_debug(func):
     if DEBUG: 
@@ -167,7 +170,10 @@ def fetch_out(request, protocall, data):
     protocall = protocall['out']
     
     if len(protocall) != len(data):
-        genError('len(protocall) != len(data)', 'type error')
+        genError(
+			str_error_protocallNEQdata%(protocall.keys(), data.keys()), 
+			'type error'
+		)
         return JsonError
 
     for i in data:
@@ -320,11 +326,11 @@ def fetch_addLatex(request):
 	if not inData['userId']:
 		inData['userId'] = 0
 
-	dir_target = DIR_USERS / str(inData['userId']) / inData['exercise'] / inData['target']
+	dir_target = DIR_USERS / str(inData['userId']) / inData['dir_exercise'] / inData['target']
 	dir_target.mkdir(parents=True, exist_ok=True)
 	
 	file_svg = dir_target / (str(inData['latexId'])+'.svg')        
-	res = gen_svg(inData['latex'], inData['latexId'], dir_target, inData['packages'])
+	res = gen_svg(inData['latex'], inData['latexId'], dir_target, inData['latex_pkg'])
 	
 	if(res):
 		return genJsonError('could not compile latex')
@@ -340,7 +346,7 @@ def fetch_deleteLatex(request):
 	
 	if not inData['userId']: inData['userId'] = 0
 	
-	dir_target = DIR_USERS / str(inData['userId']) / inData['exercise'] / inData['target']
+	dir_target = DIR_USERS / str(inData['userId']) / inData['dir_exercise'] / inData['target']
 	file_svg = dir_target / (str(inData['latexId'])+'.svg')        
 	
 	try:
@@ -384,7 +390,7 @@ def fetch_submit_exercise(request):
 		target keys and their values
 	'''
 	for i in inData:
-		if i not in latex_targets:
+		if i not in latex_targets and i not in ['latex_%s'%j for j in latex_targets]:
 			temp_inData.pop(i)
     
 	'''
@@ -400,7 +406,7 @@ def fetch_submit_exercise(request):
 		dir_target.mkdir(parents=True, exist_ok=True)
 		
 		ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
-		expected = list(temp_inData[i][1].keys())
+		expected = list(temp_inData["latex_%s"%i].keys())
 		
 		if expected != ready:
 			for j in ready:
@@ -439,28 +445,117 @@ def fetch_submit_exercise(request):
 		location with its new name
 	'''
 	subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
-
+	
     # SQL
 	sql_args = {
 		'author' : inData['userId'],          
 		'latex_dir' : new_exercise_dir,       
+		'tags' : list2SqlArr(inData['tags']),
 		'latex_pkg' : inData['latexp'],        
 		
-		'title' : inData['title'][0],          
-		'exercise' : inData['exercise'][0],        
-		'answer' : inData['answer'][0],          
-		'hints' : inData['hints'][0],            
-		'explain' : inData['explain'][0],          
+		'title' : inData['title'],          
+		'exercise' : inData['exercise'],        
+		'answer' : inData['answer'],          
+		'hints' : inData['hints'],            
+		'explain' : inData['explain'],          
 		
-		'latex_title' : (json.dumps(inData['title'][1])),     
-		'latex_exercise' : (json.dumps(inData['exercise'][1])),  
-		'latex_answer' : (json.dumps(inData['answer'][1])),    
-		'latex_hints' : (json.dumps(inData['hints'][1])),     
-		'latex_explain' : (json.dumps(inData['explain'][1])),   
+		'latex_title' : (json.dumps(inData['latex_title'])),     
+		'latex_exercise' : (json.dumps(inData['latex_exercise'])),  
+		'latex_answer' : (json.dumps(inData['latex_answer'])),    
+		'latex_hints' : (json.dumps(inData['latex_hints'])),     
+		'latex_explain' : (json.dumps(inData['latex_explain'])),   
 	}
 	res = postSQL(sql_post_exercise, sql_args)
 	if res == ERROR: return JsonError
 
+	return JsonSuccess
+
+@safe_fetch
+def fetch_update_exercise(request):
+	
+	protocall = protocall_fetch_update_exercise
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	# when user is undefined, then this is debug
+	# in that case userid must be 0
+	if not inData['userId']:
+		inData['userId'] = 0
+
+	# define relevant directories
+	dir_user = DIR_USERS / str(inData['userId']) 
+	dir_temp = dir_user / 'temp' 
+	dir_temp.mkdir(parents=True, exist_ok=True)
+	dir_new_exercise = dir_user / str(inData['latex_dir'])
+	
+	# delete all directories that are
+	# not 'temp' or numeric
+	for i in os.listdir(dir_user):
+		if i != 'temp' and not os.path.basename(i).isnumeric():
+			subprocess.run(['rm', '-r', dir_user / i,])
+
+    # BEGIN validation
+
+	temp_inData = inData.copy()
+	
+	'''
+		filter input to
+		only contain the
+		target keys and their values
+	'''
+	for i in inData:
+		if i not in latex_targets and i not in ['latex_%s'%j for j in latex_targets]:
+			temp_inData.pop(i)
+    
+	'''
+		per each target,
+		check if the latex directory
+		has the exact same latex
+		as in the inputs in the html
+		'texput.log' is a latex compilation thing
+		and is ignored
+	'''
+	for i in latex_targets:
+		dir_target = dir_temp / i
+		dir_target.mkdir(parents=True, exist_ok=True)
+		
+		ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
+		expected = list(temp_inData['latex_%s'%i].keys())
+
+		if expected != ready:
+			for j in ready:
+				if j not in expected:
+					subprocess.run(['rm', dir_target/ (j+'.svg')])
+					
+			genError('js sais there should be different latex files in the server then there are', 'latex paths & files')
+			return JsonError
+
+    # END validation
+
+	subprocess.run(['rm', '-r', dir_new_exercise])
+	subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
+
+    # SQL
+	sql_args = {
+		'exerciseId': inData['exerciseId'],
+		'tags' : list2SqlArr(inData['tags']),
+		'latex_pkg' : inData['latex_pkg'],        
+		
+		'title' : inData['title'],          
+		'exercise' : inData['exercise'],        
+		'answer' : inData['answer'],          
+		'hints' : inData['hints'],            
+		'explain' : inData['explain'],          
+		
+		'latex_title' : (json.dumps(inData['latex_title'])),     
+		'latex_exercise' : (json.dumps(inData['latex_exercise'])),  
+		'latex_answer' : (json.dumps(inData['latex_answer'])),    
+		'latex_hints' : (json.dumps(inData['latex_hints'])),     
+		'latex_explain' : (json.dumps(inData['latex_explain'])),   
+	}
+	res = postSQL(sql_post_updateExercise, sql_args)
+	if res == ERROR: return JsonError
+	
 	return JsonSuccess
 
 @safe_fetch
@@ -505,6 +600,19 @@ def fetch_deleteExercise(request):
 	protocall = protocall_fetch_deleteExercise
 	inData = fetch_in(request, protocall)
 	if inData == ERROR: return JsonError
+	
+	# TODO - could optimise by removing the get exercise sql call
+	directive = sql_get_exercise
+	deleteme = getSQL(directive, {
+		'exerciseId': inData['exerciseId'],
+	})
+	if deleteme != ERROR: 
+		deleteme = deleteme[0]
+	else: 
+		return JsonError
+	
+	dir_deleteme = DIR_USERS / str(deleteme['author']) / str(deleteme['latex_dir'])
+	subprocess.Popen(['rm', '-r', dir_deleteme])
 	
 	command = sql_post_delete_exercise
 	postSQL(command, {
@@ -562,6 +670,7 @@ urlpatterns = [
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
     path('fetch/submitExercise/', fetch_submit_exercise),
+    path('fetch/updateExercise/', fetch_update_exercise),
     path('fetch/sendMsg/', fetch_sendMsg),
     path('fetch/deleteMsg/', fetch_deleteMsg),
 	path('fetch/deleteExercise/', fetch_deleteExercise),

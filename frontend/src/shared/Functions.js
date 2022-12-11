@@ -27,23 +27,14 @@ export {remToPx};
 
 function useWindowResize(){
 
-const narrowWindow = useState(
-	( px2rem(window.innerWidth) < windowBp )
-	? true : false
-);
+	const isNarrow = px2rem(window.innerWidth) < windowBp;
+	const s_renderApp = useState(false);
 
-function windowResizeHandler(){
-	const w = px2rem(window.innerWidth);
-
-	if( w  < windowBp ){
-		narrowWindow[1](true);
-	} else {
-	narrowWindow[1](false);
-	}
-}
-
-window.addEventListener('resize', windowResizeHandler);
-	return narrowWindow;
+	window.addEventListener('resize', ()=>{
+		s_renderApp[1](!s_renderApp[0])
+	});
+	
+	return isNarrow;
 }
 export default useWindowResize;
 
@@ -207,29 +198,40 @@ function uploadError(type, error) {
 }
 export {uploadError}
 
-function mainText2html(exercise, target) {
+function mainText2html(exercise, target, isEdit=false) {
 
 	const reg_latex = /(\$\$\d+\$\$)/gms
 	let textList = exercise[target].split(reg_latex)
 	textList = textList.filter(i=>i!=='')
-
+	
+	// guarantee image uniqueness
+	const timeStamp = new Date().getTime();
+	
 	for(let i=0 ; i<textList.length ; i++) {
+		
 		if(reg_latex.test(textList[i])) {
 
 			const index = textList[i].match(/\d+/gms)[0]
-			const path = [
-				'http://localhost/static/users', 
-				exercise['author'],
-				exercise['latex_dir'],
-				target,
-				index
-			].join('/')
-			textList[i] = `<img src="${path}.svg">`
+
+			if(!isEdit) {
+				const path = [
+					'http://localhost/static/users', 
+					exercise['author'],
+					exercise['latex_dir'],
+					target,
+					index
+				].join('/')
+				textList[i] = `<img src="${path}.svg?t=${timeStamp}">`
+			} else {
+				const inner = exercise[`latex_${target}`][index];
+				textList[i] = `$$${inner}$$`;
+			}
 		}
 	}
 	return textList.join('');
 }
 export {mainText2html};
+
 
 
 function useController(val) {
@@ -255,4 +257,6 @@ function useController(val) {
 	return [getRef, setRef, addCallback, callbacks];
 }
 export {useController};
+
+
 

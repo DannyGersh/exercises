@@ -19,13 +19,13 @@ function NotFound() {
 
 function App() {
  
-  const narrowWindow = useWindowResize();
+  window.nrw = useWindowResize();
   window.userId = useState(1);
 
   return (
     <>
     <BrowserRouter>
-      <Nav narrowWindow={narrowWindow[0]}/>
+      <Nav/>
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/new" element={<New isEdit={false} exercise={null}/>}/>

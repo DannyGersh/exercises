@@ -6,7 +6,7 @@ create table exercises(
     author          integer not null,
     creationdate    timestamp not null default current_timestamp,
     rating          integer[] not null default '{}',
-    tags            integer[] not null default '{}',
+    tags            varchar(20)[] not null default '{}',
     latex_dir       varchar(30) not null,
     latex_pkg       varchar(400) not null default '', 
 

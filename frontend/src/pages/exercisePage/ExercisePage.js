@@ -4,6 +4,7 @@ import {useController, sendData, mainText2html} from '../../shared/Functions'
 import {useParams, useLocation} from "react-router-dom";
 import BtnOnOf, {BtnRadio} from '../../shared/buttons/BtnOnOf'
 import ToolTip from '../../shared/tooltip/ToolTip'
+import Tag from '../../shared/tag/Tag'
 import './ExercisePage.css'
 
 
@@ -145,8 +146,7 @@ function BottomRightMenue(props) {
 			
 		}
 	}
-	
-	
+		
 	return(
 
 		<div className='bottomRight'>
@@ -180,7 +180,7 @@ function BottomRightMenue(props) {
 			}
 			
 			{/* like btn */}
-			{ window.userId[0] ?
+			{ window.userId[0] && !ctx.exercise_preview?
 				<BtnOnOf 
 					className='btnRound'
 					c_isOn={ctx.c_isLike} 
@@ -304,18 +304,31 @@ function BottomLeftMenue(props) {
 
 	const ctx = props.ctx;
 
+	function h_popup() {
+		if(!ctx.exercise_preview) {
+			ctx.c_isPopup[1](!ctx.c_isPopup[0]());
+		}
+	}
+	
 	return (
 
 	<div className="bottomLeft">
 	  
 		{/* adittional menue button (...) */}      
 		<button 
-			onClick={()=>{ctx.c_isPopup[1](!ctx.c_isPopup[0]())}} 
+			onClick={h_popup} 
 			className='additional'
 		>...</button>	
 
 		<PopupMenue ctx={ctx}/>	
 
+		{ctx.exercise_preview && ctx.exercise_preview.tags.map(i=>
+			<Tag url={`/search/${i}`} key={i}>{i}</Tag>
+		)}
+		{!ctx.exercise_preview && ctx.r_exercise.current.tags.map(i=>
+			<Tag url={`/search/${i}`} key={i}>{i}</Tag>
+		)}
+		
 	</div>
 
 	)
@@ -337,7 +350,7 @@ function ExercisePage(props){
 	const params = useParams();
 	const exerciseId = parseInt(params['exerciseId']);
 	const exercise_preview = useLocation().state;
-	
+
 	const ctx = {
 		
 		s_finLoad: useState(false),
@@ -366,6 +379,7 @@ function ExercisePage(props){
 			
 		}),
 		
+		exercise_preview: exercise_preview,
 	}
 
 	if(exercise_preview) {
@@ -388,7 +402,23 @@ function ExercisePage(props){
 			
 		}
 	}
+	
+	function fillTargetsInnerHtml() {
 		
+		const n_title = document.getElementById(BTM_TARGETS.title);
+		const n_exercise = document.getElementById(BTM_TARGETS.exercise);
+		const n_answer = document.getElementById(BTM_TARGETS.answer);
+		const n_hints = document.getElementById(BTM_TARGETS.hints);
+		const n_explain = document.getElementById(BTM_TARGETS.explain);
+
+		n_title.innerHTML = `<h3>${ctx.r_exercise.current['title']}</h3>`
+		n_exercise.innerHTML = `<p>${ctx.r_exercise.current['exercise']}</p>`
+		n_answer.innerHTML = `<p>${ctx.r_exercise.current['answer']}</p>`
+		n_hints.innerHTML = `<p>${ctx.r_exercise.current['hints']}</p>`
+		n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
+
+	}
+	
 	useEffect(()=>{
 		if(!exercise_preview) {
 		
@@ -406,26 +436,19 @@ function ExercisePage(props){
 				ctx.r_likes.current = e['rating'].length;
 				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
 				ctx.c_isLike[1](e['rating'].includes(window.userId[0]));
-			
-				ctx.r_exercise.current = e;
-		
-			})
-		}
-		
-		const n_title = document.getElementById(BTM_TARGETS.title);
-		const n_exercise = document.getElementById(BTM_TARGETS.exercise);
-		const n_answer = document.getElementById(BTM_TARGETS.answer);
-		const n_hints = document.getElementById(BTM_TARGETS.hints);
-		const n_explain = document.getElementById(BTM_TARGETS.explain);
 
-		n_title.innerHTML = `<h3>${ctx.r_exercise.current['title']}</h3>`
-		n_exercise.innerHTML = `<p>${ctx.r_exercise.current['exercise']}</p>`
-		n_answer.innerHTML = `<p>${ctx.r_exercise.current['answer']}</p>`
-		n_hints.innerHTML = `<p>${ctx.r_exercise.current['hints']}</p>`
-		n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
+				ctx.r_exercise.current = e;
+				fillTargetsInnerHtml();
+				ctx.s_finLoad[1](true);
+
+			})
 			
-		// reload page after fetch exercise
-		ctx.s_finLoad[1](true);
+		} else {
+			
+			fillTargetsInnerHtml();
+			ctx.s_finLoad[1](true);
+
+		}
 		
 	},[])
 	

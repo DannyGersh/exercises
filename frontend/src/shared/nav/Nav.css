@@ -6,6 +6,7 @@
 	overflow: hidden;
 	padding: 0;
 	margin: 0;
+	align-items: center;
 }
 .dropDownNav{
 	display: flex;
@@ -26,7 +27,13 @@
 	display: flex;
 	justify-content: right;
 	padding-right: 0.3rem;
-	align-items: center;
+}
+.wideWinowSearchBox{
+	width: 20%;
+	display: flex;
+	justify-content: right;
+	padding-right: 0.3rem;
+	width: 100%;
 }
 .searchBtn{
 	background-color: var(--champagne);
@@ -40,7 +47,16 @@
 	background-repeat: no-repeat;
 	background-position: center;
 }
-.searchText{
+.searchTextNarrow{
+	vertical-align: center;
+	background-color: white;
+	border-radius: 0px 100px 100px 0px;
+	border-color: black;
+	border-width: 0.1rem;
+	border-style: solid;
+	width: 14rem;
+}
+.searchTextWide{
 	vertical-align: center;
 	background-color: white;
 	border-radius: 0px 100px 100px 0px;

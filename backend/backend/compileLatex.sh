@@ -12,16 +12,28 @@ timeout 1m pdflatex \
 	-parse-first-line \
 	-no-shell-escape \
 	-file-line-error \
-	"$2.tex" && \
+	"$2.tex"
+
+if [ $? != 0 ]; then
+	# compilation failed, exit code is $?
+	rm \
+		"$2.aux" \
+		"$2.log" \
+		"$2.pdf" \
+		"$2.tex"
+	exit
+fi
+
+
 pdfcrop \
 	"$2.pdf" \
 	"$2.pdf" &&
 dvisvgm \
 	--pdf \
-	"$2.pdf" &&
+	"$2.pdf"
+
 rm \
 	"$2.aux" \
 	"$2.log" \
 	"$2.pdf" \
-	"$2.tex" \
-	*.log
+	"$2.tex"

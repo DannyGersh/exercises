@@ -1,11 +1,56 @@
 import "./Nav.css";
-import CSRFToken from "../Csrftoken";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import BtnMenue from '../buttons/BtnMenue'
 import {sendData} from '../Functions'
 import '../buttons/BtnMenue.css'
 
-import { useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useNavigate, useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+function SearchBox(props) {
+	
+	const navigate = useNavigate();
+	let node_searchBox = document.getElementById("id_searchBox");
+
+	useEffect(()=>{
+		node_searchBox = document.getElementById("id_searchBox");
+		if(node_searchBox) { 
+		
+			node_searchBox.addEventListener("keyup", function(event) {
+				if (event.key === "Enter") {
+					props.s_isDspSearchBox[1](false);
+					let test = event.target.value;
+					if(!test) return;
+					navigate(`/search/${test}`);
+				}
+			});
+			node_searchBox.addEventListener('focusout', (event) => {
+				props.s_isDspSearchBox[1](false);
+			});
+		}
+		
+	},[])
+
+	function h_searchBtnClick() {
+		const text = node_searchBox.value;
+		node_searchBox.value = '';
+		props.s_isDspSearchBox[1](false);
+		if(!text) return;
+		navigate(`/search/${text}`);
+	}
+	
+	return(<>
+		<button 
+			onClick={h_searchBtnClick} 
+			className='searchBtn' 
+			type="button"
+		/>
+		<input 
+			id='id_searchBox' 
+			className={`${window.nrw ? 'searchTextWide' : 'searchTextNarrow'}`} 
+			type="text"
+		/>
+	</>)		
+}
 
 function Nav(props) {
 
@@ -15,24 +60,27 @@ function Nav(props) {
 
 	const userid = window.userId[0];
 
-	// dropDownActive - true if nav searchBar is expended
-	const dropDownActive = useState(false);
+	// s_isDspSearchBox - true if nav searchBar is expended
+	const s_isDspSearchBox = useState(false);
 	
 	// nav dropDown event
 	const navDropDown = new CustomEvent('navDropDown', {
-		detail: {'isDropedDown': !dropDownActive[0]},
+		detail: {'isDropedDown': !s_isDspSearchBox[0]},
 		bubbles: true,
 		cancelable: true,
 		composed: false
 	})
   
 	// dispatch event on searchBar button click
-	function dropDownHandler() {
-		dropDownActive[1](!dropDownActive[0]);
+	function h_dropDown() {
+		s_isDspSearchBox[1](!s_isDspSearchBox[0]);
     	// set timeout prevents asincroneus dispatching of the event
     	setTimeout(() => 
     		window.dispatchEvent(navDropDown)
     	);
+	}
+	function h_btnClick() {
+		s_isDspSearchBox[1](false);
 	}
 
 	function logOutHandle(){
@@ -46,64 +94,57 @@ function Nav(props) {
 		userid ? window.location = temp : window.location = '/login/';
 	}
 
-	const dspProfileBtn = userid && !/profile\/\d/.test(window.location);
-	const dspNewBtn = /.*[\\/]new/.test(window.location)
-
-	return ( 
-	<>
+	
+	return (<>
+	
 	<div className="nav">
 
 		{/* menue buttons */}
-		<Link to='/'>
+		<Link to='/' onClick={h_btnClick}>
 		<BtnMenue>Home</BtnMenue>
 		</Link>
 
-		<Link to='/new'>
-		{window.userId[0] && <BtnMenue>New</BtnMenue>}
+		<Link to='/new' onClick={h_btnClick}>
+		{userid && <BtnMenue>New</BtnMenue>}
 		</Link>
 
-		<Link to={'/profile/'+userid}>
-		{window.userId[0] && <BtnMenue>Profile</BtnMenue>}			
+		<Link to={`/profile/${userid}`} onClick={h_btnClick}>
+		{userid && <BtnMenue>Profile</BtnMenue>}			
 		</Link>
 
-		<Link to={window.userId[0] ? '/' : '/login'}>
-		<BtnMenue onClick={logOutHandle}>{window.userId[0] ? 'Log out' : 'Log in'}</BtnMenue>	
+		<Link to={userid ? '/' : '/login'} onClick={h_btnClick}>
+		<BtnMenue onClick={logOutHandle}>{userid ? 'Log out' : 'Log in'}</BtnMenue>	
 		</Link>
 
-		<Link to='/contact'>
+		<Link to='/contact' onClick={h_btnClick}>
 		<BtnMenue>Contact</BtnMenue>		
 		</Link>
 
 		{/* search buttons on narrowWindow */}
-		{ props.narrowWindow &&
+		{ window.nrw &&
 			<div className='searchContainer'>
-				<BtnMenue onClick={dropDownHandler}>
+				<BtnMenue onClick={h_dropDown}>
 					Search
 				</BtnMenue>
 			</div>
 		}
 
 		{/* search bar on wide window */}
-		{ !props.narrowWindow &&
-			<div className='searchContainer'>
-			<form className='nav' action="/browse/" method="post">
-			{ process.env.NODE_ENV !== 'development' && <CSRFToken /> }
-			<button className='searchBtn' type="submit"></button>
-			<input className='searchText' type="text" name="browse" />
-			</form>
+		{ !window.nrw &&
+			<div className='wideWinowSearchBox'>
+				<SearchBox s_isDspSearchBox={s_isDspSearchBox}/>
 			</div>
 		}
 
 	</div>
 
 	{/* search bar on narrowWindow */}
-	{dropDownActive[0] && (
+	{ (s_isDspSearchBox[0] && window.nrw) && (
 		<div className='dropDownNav'>
-			<button className='searchBtn' type="submit"></button>
-			<input className='searchText' type="text" name="browse" />
+			<SearchBox s_isDspSearchBox={s_isDspSearchBox}/>
 		</div>
 	)}
-	</> 
-	);
+	
+	</>);
 }
 export default Nav;
