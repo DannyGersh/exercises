@@ -158,7 +158,7 @@ sql_get_exercise = (
 
     a.id                ,
     a.author            ,
-    to_char(a.creationdate, 'MM/DD/YYYY - HH24:MI'),
+    to_char(a.creationdate, 'MM/DD/YYYY'),
     a.rating            ,
     a.tags              ,
     a.latex_dir         ,
@@ -333,7 +333,43 @@ sql_get_profile_messages = (
     )
 )
 
+sql_get_search = (
+	'''
+    select
+    
+	id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
 
+    from exercises
+    where '{searchTerm}'=any(tags) 
+    order by cardinality(rating) desc
+    limit 10
+    '''
+    ,
+
+    (
+	'id',
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title',
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise',
+    )
+)
 
 protocall_fetch_home = {
 	'in': {},
@@ -359,6 +395,15 @@ protocall_fetch_profile = {
 		'authored'	: list,
 		'liked'		: list,
 		'messages'	: list,
+	},
+}
+
+protocall_fetch_search = {
+	'in': {
+		'searchTerm' : str,
+	},
+	'out': {
+		'searchResult' : list,
 	},
 }
 

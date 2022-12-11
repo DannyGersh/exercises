@@ -314,6 +314,20 @@ def fetch_profile(request):
 	
 	return fetch_out(request, protocall, data)
 
+@safe_fetch
+def fetch_search(request):
+	
+	protocall = protocall_fetch_search
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	args = {'searchTerm': inData['searchTerm']}
+	searchResult = getSQL(sql_get_search, args)
+	if searchResult == ERROR: return JsonError
+
+	data = {'searchResult': searchResult}
+	return fetch_out(request, protocall, data)
+
 
 
 @safe_fetch
@@ -451,7 +465,7 @@ def fetch_submit_exercise(request):
 		'author' : inData['userId'],          
 		'latex_dir' : new_exercise_dir,       
 		'tags' : list2SqlArr(inData['tags']),
-		'latex_pkg' : inData['latexp'],        
+		'latex_pkg' : inData['latex_pkg'],        
 		
 		'title' : inData['title'],          
 		'exercise' : inData['exercise'],        
@@ -666,6 +680,7 @@ urlpatterns = [
     path('fetch/home/', fetch_home),
     path('fetch/exercisePage/', fetch_exercisePage),
     path('fetch/profile/', fetch_profile),
+    path('fetch/search/', fetch_search),
 
     path('fetch/logout/', fetch_logout),
     path('fetch/register_submit/', fetch_register_submit),
