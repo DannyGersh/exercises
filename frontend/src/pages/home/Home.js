@@ -22,10 +22,24 @@ function Home(props) {
 	return(
 	<>		
 		<center>
+		
 		<h1>www.ididthisforu.com <font color='green'>Alpha</font></h1>
 		<p style={{margin:'1rem'}}>The website for uploading and solving exercises in any field</p>
-		<BtnMenue className={`btnHomeMenue ${!ms[0] && 'color_btn_green'}`} onClick={()=>ms[1](false)}>hottest</BtnMenue>
-		<BtnMenue className={`btnHomeMenue ${ ms[0] && 'color_btn_green'}`} onClick={()=>ms[1](true)}>latest</BtnMenue>
+		
+		<BtnMenue 
+			className={`btnHomeMenue ${!ms[0] && 'color_btn_green'}`} 
+			onClick={()=>ms[1](false)}
+		>
+			hottest
+		</BtnMenue>
+		
+		<BtnMenue 
+			className={`btnHomeMenue ${ ms[0] && 'color_btn_green'}`} 
+			onClick={()=>ms[1](true)}
+		>
+			latest
+		</BtnMenue>
+		
 		</center>
 		
 		<div className='gridContainer'>

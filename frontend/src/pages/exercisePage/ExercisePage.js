@@ -7,6 +7,7 @@ import ToolTip from '../../shared/tooltip/ToolTip'
 import Tag from '../../shared/tag/Tag'
 import './ExercisePage.css'
 
+import {Link} from 'react-router-dom'
 
 const BTM_TARGETS = {
 	title: 'Title',
@@ -203,8 +204,7 @@ function BottomRightMenue(props) {
 function SendMessage(props) {
 
 	const ctx = props.ctx;
-	const dspSendMsg = useState(false);
-
+	const states = props.states;
 	const id_sendMsg = 'id_sendMsg';
 	
 	function h_sendMsg() {
@@ -217,8 +217,14 @@ function SendMessage(props) {
 			'receiver': ctx.r_exercise.current['author'], 
 			'message': message,
 		})
-		
-		dspSendMsg[1](false);
+
+		states.s_dspReport[1](false);		
+		states.s_dspSendMsg[1](false);
+	}
+	
+	function h_togleSendMsg() {
+		states.s_dspSendMsg[1](!states.s_dspSendMsg[0]);
+		states.s_dspReport[1](false);
 	}
 	
 	return (
@@ -227,8 +233,10 @@ function SendMessage(props) {
 		<div style={{display: 'flex', alignItems:'center'}}>	
 
 		<p 
-			onClick={()=>{dspSendMsg[1](!dspSendMsg[0])}} 
-			className='sendMessage'>send message
+			onClick={h_togleSendMsg} 
+			className='sendMessage'
+		>
+			send message
 		</p>	
 
 		<ToolTip 
@@ -242,7 +250,7 @@ function SendMessage(props) {
 
 		</div>	
 
-	  { dspSendMsg[0] &&
+	  { states.s_dspSendMsg[0] &&
 		<>
 		  <textarea id={id_sendMsg} rows='4' type='textarea'/>
 		  <br/>
@@ -257,13 +265,28 @@ function SendMessage(props) {
 function PopupMenue(props) {
 
 	const ctx = props.ctx;
-	const dspReport = useState(false);
+	const s_dspReport = useState(false);
+	const s_dspSendMsg = useState(false);
 	const s_render = useState(false);
 	
+	const states = {
+		s_dspReport: s_dspReport,
+		s_dspSendMsg: s_dspSendMsg,
+	}
+	
 	ctx.c_isPopup[2]('c_isPopup', ()=>{
+		s_dspReport[1](false); 
+		s_dspSendMsg[1](false);
+		// while not render if both false so:
 		s_render[1](!s_render[0]);
-		dspReport[1](false);
 	})
+	
+	function h_report() {
+		s_dspReport[1](!s_dspReport[0]);
+		s_dspSendMsg[1](false);
+	}
+	
+	const jsx_reportText = <Link to={'/about'}>about page</Link>
 	
 	const jsx = <>	
 		
@@ -281,13 +304,17 @@ function PopupMenue(props) {
 				<br/>
 			</p>
 			
-			{ window.userId[0] && <SendMessage ctx={ctx}/>}	
+			{ window.userId[0] && <SendMessage ctx={ctx} states={states}/>}	
 			<hr/>
 			
-			<p onClick={()=>{dspReport[1](!dspReport[0])}} 
-				className='report'>report
+			<p 
+				onClick={h_report} 
+				className='report'
+			>
+				report
 			</p>	
-			{dspReport[0] && <p>temp</p>}
+			
+			{s_dspReport[0] && <p>read the "contact" section of the {jsx_reportText}. thank you for the cooperation</p>}
 			
 		</div>	
 		

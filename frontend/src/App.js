@@ -5,6 +5,7 @@ import ExercisePage from './pages/exercisePage/ExercisePage'
 import SearchPage from './pages/searchPage/SearchPage'
 import Profile from './pages/profile/Profile'
 import Register from './pages/register/Register'
+import AboutPage from './pages/about/AboutPage'
 
 import Nav from './shared/nav/Nav'
 import useWindowResize, {sendData} from './shared/Functions'
@@ -29,12 +30,13 @@ function App() {
       <Nav/>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/new" element={<New isEdit={false} exercise={null}/>}/>
+        <Route path="/new" element={<New/>}/>
         <Route path="/login" element={<Register isLogin={true}/>}/>
         <Route path="/signup" element={<Register isLogin={false}/>}/>
         <Route path="/profile/:userId" element={<Profile/>}/>
         <Route path="/exercise/:exerciseId" element={<ExercisePage/>}/>
         <Route path="/search/:searchTerm" element={<SearchPage/>}/>
+        <Route path="/about" element={<AboutPage/>}/>
         <Route path="/*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>

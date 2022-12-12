@@ -26,7 +26,7 @@ function Card(props){
 				`card 
 				${props.isRedirect && 'redirect'} 
 				${props.className && props.className} 
-				${props.narrowWindow ? 'narrowWindow': 'wideWindow'}
+				${window.nrw ? 'narrowWindow': 'wideWindow'}
 				${props.isRedirect && 'redirect'}`
 			}
 			style={props.style}

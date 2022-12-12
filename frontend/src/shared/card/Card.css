@@ -18,7 +18,8 @@
 
 .narrowWindow{
 	width: calc(100% - 5rem);
-	height:  unset;
+	height: unset;
+	min-height: 10rem;
 	max-height: var(--cardHeight);
 }
 .wideWindow{

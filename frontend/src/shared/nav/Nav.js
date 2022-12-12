@@ -10,11 +10,15 @@ function SearchBox(props) {
 	
 	const navigate = useNavigate();
 	let node_searchBox = document.getElementById("id_searchBox");
+	let node_searchContainer = document.getElementById("id_searchContainer");
 
 	useEffect(()=>{
 		node_searchBox = document.getElementById("id_searchBox");
-		if(node_searchBox) { 
+		node_searchContainer = document.getElementById("id_searchContainer");
+		if(node_searchContainer) { 
 		
+			node_searchBox.focus();
+			
 			node_searchBox.addEventListener("keyup", function(event) {
 				if (event.key === "Enter") {
 					props.s_isDspSearchBox[1](false);
@@ -23,8 +27,10 @@ function SearchBox(props) {
 					navigate(`/search/${test}`);
 				}
 			});
-			node_searchBox.addEventListener('focusout', (event) => {
-				props.s_isDspSearchBox[1](false);
+			node_searchContainer.addEventListener('focusout', (event) => {
+				setTimeout(()=>{
+					props.s_isDspSearchBox[1](false);
+				}, 100)
 			});
 		}
 		
@@ -33,12 +39,12 @@ function SearchBox(props) {
 	function h_searchBtnClick() {
 		const text = node_searchBox.value;
 		node_searchBox.value = '';
-		props.s_isDspSearchBox[1](false);
 		if(!text) return;
 		navigate(`/search/${text}`);
+		props.s_isDspSearchBox[1](false);
 	}
 	
-	return(<>
+	return(<div className='searchContainer' id='id_searchContainer'>
 		<button 
 			onClick={h_searchBtnClick} 
 			className='searchBtn' 
@@ -49,7 +55,7 @@ function SearchBox(props) {
 			className={`${window.nrw ? 'searchTextWide' : 'searchTextNarrow'}`} 
 			type="text"
 		/>
-	</>)		
+	</div>)		
 }
 
 function Nav(props) {
@@ -116,8 +122,8 @@ function Nav(props) {
 		<BtnMenue onClick={logOutHandle}>{userid ? 'Log out' : 'Log in'}</BtnMenue>	
 		</Link>
 
-		<Link to='/contact' onClick={h_btnClick}>
-		<BtnMenue>Contact</BtnMenue>		
+		<Link to='/about' onClick={h_btnClick}>
+		<BtnMenue>About</BtnMenue>		
 		</Link>
 
 		{/* search buttons on narrowWindow */}
