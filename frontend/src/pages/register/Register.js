@@ -1,10 +1,9 @@
-import '../../shared/Global.css'
-//import ReCAPTCHA from "react-google-recaptcha";
-import BtnMenue from '../../shared/buttons/BtnMenue'
-import {sendData} from '../../shared/Functions'
 import {useState, useRef} from 'react'
-
 import { Link, Navigate } from "react-router-dom";
+import {BtnTab} from '../../shared/buttons/Buttons'
+import {sendData} from '../../shared/Functions'
+//import ReCAPTCHA from "react-google-recaptcha";
+import '../../shared/Global.css'
 
 
 function Login(props) {
@@ -71,7 +70,12 @@ function Login(props) {
 			'password': ref_password.current.value,
 		})
 		.then(data=>{
-			window.userid[1](data.userid);
+			if(Object.keys(data).length){
+				if(!props.isLogin) {
+					window.alert('account created successfully');
+				}
+				window.userId[1](data.userId);
+			}
 		})
 	}
 	
@@ -90,7 +94,11 @@ function Login(props) {
     	<br/><br/>
 
     	<Link to='/'>
- 		<BtnMenue className='green' onClick={submitMain} type='button'>Log in</BtnMenue>
+ 		<BtnTab 
+			className='green' 
+			onClick={submitMain}
+			children='Log in'
+ 		/>
  		</Link>
 
  		<br/><br/>
@@ -101,17 +109,44 @@ function Login(props) {
     	<>
 
     	<p>Display name:</p>
-    	<input ref={ref_uname} name='uname' type='text'/>
+    	<input 
+			ref={ref_uname} 
+			name='uname' 
+			type='text'
+		/>
+    	
     	<p>Password:</p>
-    	<input onChange={validate} ref={ref_password} name='password' type='password'/>
+    	<input 
+			onChange={validate} 
+			ref={ref_password} 
+			name='password' 
+			type='password'
+		/>
+    	
     	<p>Verify password:</p>
-    	<input name='Verify password' ref={ref_confirm_password} type='password'/>
+    	<input 
+			name='Verify password' 
+			ref={ref_confirm_password} 
+			type='password'
+		/>
           
 		<div>
-		<p style={{color: `${Lcase[0] ? 'green': 'red'}`}}>{Lcase[0] ? '✓': 'x'} Lower case</p>
-		<p style={{color: `${Ucase[0] ? 'green': 'red'}`}}>{Ucase[0] ? '✓': 'x'} Upper case</p>
-		<p style={{color: `${Ncase[0] ? 'green': 'red'}`}}>{Ncase[0] ? '✓': 'x'} Number</p>
-		<p style={{color: `${Scase[0] ? 'green': 'red'}`}}>{Scase[0] ? '✓': 'x'} more than 7 characters</p>
+		<p style={{color: `${Lcase[0] ? 'green': 'red'}`}}>
+			{Lcase[0] ? '✓': 'x'} Lower case
+		</p>
+		
+		<p style={{color: `${Ucase[0] ? 'green': 'red'}`}}>
+			{Ucase[0] ? '✓': 'x'} Upper case
+		</p>
+		
+		<p style={{color: `${Ncase[0] ? 'green': 'red'}`}}>
+			{Ncase[0] ? '✓': 'x'} Number
+		</p>
+		
+		<p style={{color: `${Scase[0] ? 'green': 'red'}`}}>
+			{Scase[0] ? '✓': 'x'} more than 7 characters
+		</p>
+		
 		</div>
 		
 		{ !window.isdebug &&
@@ -124,15 +159,25 @@ function Login(props) {
   		}
 
   		<div style={{display:'flex', justifyContent: 'center'}}>
-  			<input onClick={(e)=>ref_terms.current=e.target.checked} type="checkbox" name="terms"/>
-  			<p>I have read and agreed to the <a href={window.isdebug ? "http://localhost/terms/terms.txt": "http://www.ididthisforu.com/terms/terms.txt"}>terms and conditions</a></p>
+  			<input 
+				onClick={(e)=>ref_terms.current=e.target.checked} 
+				type="checkbox" name="terms"/>
+  			<p>
+				I have read and agreed to the 
+				<a href={'/'}>terms and conditions</a>
+			</p>
   		</div>  
 
     	<br/>
 
-
- 		<BtnMenue className='green' onClick={submitMain} type='button'>Sign up</BtnMenue>
- 		{window.userid[0] && <Navigate to='/'/>}
+ 		<BtnTab 
+			className='green' 
+			onClick={submitMain}
+			children='Sign up'
+		/>
+ 		
+ 		{window.userId[0] && <Navigate to='/'/>}
+ 		
 		</>
     }
     

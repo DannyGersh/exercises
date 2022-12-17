@@ -19,6 +19,7 @@
 	width: calc(100% - 4rem);
 	word-wrap: break-word;
 	height: unset;
+	min-height: 1rem;
 }
 .messageBody {
 	display: inline-block;

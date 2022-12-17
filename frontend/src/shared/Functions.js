@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import StackTrace from 'stacktrace-js'
 
 /*
@@ -8,7 +8,21 @@ at which the app changes from
 narrow display mode to wide.
 */
 const windowBp = 50;
-	
+const MIN_PAGINATION = 2; // minimal number of displayed exercises
+export {MIN_PAGINATION}
+
+
+function isInt(num) {
+	if(typeof(num) !== 'number') {
+		return false;
+	} else if(num*10%10 !== 0) {
+		return false;
+	} else {
+		return true;
+	}
+}
+export {isInt}
+
 export function compArr(arr1, arr2) {
 	return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
@@ -20,19 +34,27 @@ function px2rem(px) {
 export {px2rem};
 
 function remToPx(rem) {
-	return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+	const fontSize = getComputedStyle(
+		document.documentElement
+	).fontSize;
+	return rem * parseFloat(fontSize);
 }
 export {remToPx};
 
 
 function useWindowResize(){
 
+	// on resize event, the entire app rerenders,
+	// so isNarrow gets recalculated
+	
 	const isNarrow = px2rem(window.innerWidth) < windowBp;
 	const s_renderApp = useState(false);
 
-	window.addEventListener('resize', ()=>{
-		s_renderApp[1](!s_renderApp[0])
-	});
+	useEffect(()=>{
+		window.addEventListener('resize', ()=>{
+			s_renderApp[1](!s_renderApp[0])
+		});
+	},[])
 	
 	return isNarrow;
 }
@@ -54,7 +76,9 @@ function getCookie(name) {
 			//var cookie = jQuery.trim(cookies[i]);
 			var cookie = trim(cookies[i]);
 			if (cookie.substring(0, name.length + 1) === name + "=") {
-				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				cookieValue = decodeURIComponent(
+					cookie.substring(name.length + 1)
+				);
 				break;
 			}
 		}
@@ -118,7 +142,8 @@ async function raw_sendData(url, methode='GET', data={} ) {
 		return await fetch(url, {
 			headers:{
 				'Accept': 'application/json',
-				'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+				'X-Requested-With': 'XMLHttpRequest', 
+				//Necessary to work with request.is_ajax()
 			},
 		})
 	}
@@ -132,6 +157,7 @@ async function sendData(url, methode='GET', data={}){
 
 	// args:
 	// url - string
+	// methode - "GET or "POST"
 	// data - object to send
 
 	// return: promise, resolves to object
@@ -139,49 +165,48 @@ async function sendData(url, methode='GET', data={}){
 	return raw_sendData(url, methode, data)
 
 		// client side
-		.then((res)=>{
-			if(res['status']===200) {
-				return new Promise(function(resolve, reject) {
-					resolve(res.json())
-				})
-			} else {
-				
-				getStackTrace()
-				.then(result=>{
-					const error = {
-						url:res.url, 
-						redirect:res.redirect, 
-						status:res.status, 
-						ok:res.ok, 
-						statusText:res.statusText, 
-						headers:res.headers, 
-						body:res.json(), 
-						bodyUsed:res.bodyUsed,	
-						description: 'failed to fetch, status != 200',						
-						stackTrace: JSON.stringify(result),
-					}
-					const fin = {
-						type:res.type,
-						error: JSON.stringify(error),
-						stackTrace: JSON.stringify(result)
-					}
-					sendData('fetch/submitErrorSql', 'POST', fin)
-					window.alert('an error has accurred ...');
-				})		
-    			throw(res)
-			}
+		.then(res=>{
+			const test123 = res.json()
+			return test123
+			.then(fin=>{
+				if(res['status']===200) {
+					return new Promise(function(resolve, reject) {
+						resolve(test123)
+					})
+				} else if(res['status']===202){
+					window.alert(Object.values(fin)[0])
+					return new Promise(function(resolve, reject) {
+						resolve({})
+					})
+				} else {
+					
+					getStackTrace()
+					.then(result=>{
+						const error = {
+							url:res.url, 
+							redirect:res.redirect, 
+							status:res.status, 
+							ok:res.ok, 
+							statusText:res.statusText, 
+							headers:res.headers, 
+							body:res.json(), 
+							bodyUsed:res.bodyUsed,	
+							description: 
+								'failed to fetch, status != 200',						
+							stackTrace: JSON.stringify(result),
+						}
+						const fin = {
+							type:res.type,
+							error: JSON.stringify(error),
+							stackTrace: JSON.stringify(result)
+						}
+						sendData('fetch/submitErrorSql', 'POST', fin)
+						window.alert('an error has accurred ...');
+					})		
+					throw(res)
+				}	
+			})
 		})
-		.then((data)=>{
-			// here, error is not nesseseraly software failure
-			// it could be username not unique for example
-			if(data['error']) {
-				window.alert(data['error'])
-			} else {
-				return new Promise(function(resolve, reject) {
-					resolve(data)
-				})
-			}
-		});
 	}
 export {sendData};
 
@@ -195,6 +220,7 @@ function uploadError(type, error) {
 			'stackTrace': JSON.stringify(st)
 		})
 	})
+	throw(error);
 }
 export {uploadError}
 
@@ -221,7 +247,10 @@ function mainText2html(exercise, target, isEdit=false) {
 					target,
 					index
 				].join('/')
-				textList[i] = `<img src="${path}.svg?t=${timeStamp}">`
+				textList[i] = `<img 
+					style="max-width: 100%;" 
+					src="${path}.svg?t=${timeStamp}"
+				>`
 			} else {
 				const inner = exercise[`latex_${target}`][index];
 				textList[i] = `$$${inner}$$`;
@@ -234,29 +263,7 @@ export {mainText2html};
 
 
 
-function useController(val) {
-	
-	const ref = useRef(val);
-	const callbacks = {};
-	
-	function getRef() {
-		return ref.current;
-	}
-	
-	function setRef(val) {
-		ref.current = val;
-		for (let key in callbacks) {
-			callbacks[key] && callbacks[key]();
-		}
-	}
-	
-	function addCallback(identifier, func) {
-		callbacks[identifier] = func;
-	}
-	
-	return [getRef, setRef, addCallback, callbacks];
-}
-export {useController};
+
 
 
 

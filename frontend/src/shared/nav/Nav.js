@@ -1,10 +1,8 @@
-import "./Nav.css";
 import {useEffect, useState} from "react";
-import BtnMenue from '../buttons/BtnMenue'
+import {useNavigate, Link} from "react-router-dom";
 import {sendData} from '../Functions'
-import '../buttons/BtnMenue.css'
-
-import { useNavigate, useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import {BtnTab} from '../buttons/Buttons'
+import "./Nav.css";
 
 function SearchBox(props) {
 	
@@ -12,19 +10,32 @@ function SearchBox(props) {
 	let node_searchBox = document.getElementById("id_searchBox");
 	let node_searchContainer = document.getElementById("id_searchContainer");
 
+	const evt_search = new CustomEvent('evt_search', {
+		bubbles: true,
+		cancelable: true,
+		composed: false
+	})
+	function dispatchEventSearch() {
+		setTimeout(() => 
+    		window.dispatchEvent(evt_search)
+    	);
+	}
+	
 	useEffect(()=>{
 		node_searchBox = document.getElementById("id_searchBox");
 		node_searchContainer = document.getElementById("id_searchContainer");
 		if(node_searchContainer) { 
-		
-			node_searchBox.focus();
+			
+			window.nrw && node_searchBox.focus();
 			
 			node_searchBox.addEventListener("keyup", function(event) {
 				if (event.key === "Enter") {
+					dispatchEventSearch();
 					props.s_isDspSearchBox[1](false);
-					let test = event.target.value;
-					if(!test) return;
-					navigate(`/search/${test}`);
+					let text = event.target.value;
+					if(!text) return;
+					node_searchBox.value = '';
+					navigate(`/search/${text}`);
 				}
 			});
 			node_searchContainer.addEventListener('focusout', (event) => {
@@ -37,6 +48,7 @@ function SearchBox(props) {
 	},[])
 
 	function h_searchBtnClick() {
+		dispatchEventSearch();
 		const text = node_searchBox.value;
 		node_searchBox.value = '';
 		if(!text) return;
@@ -89,13 +101,13 @@ function Nav(props) {
 		s_isDspSearchBox[1](false);
 	}
 
-	function logOutHandle(){
+	function h_logOut(){
 		sendData('/fetch/logout')
 		.then(data=>{
 			window.userId[1](null);
 		})
 	}
-	function profileHandle(){
+	function h_profile(){
 		let temp = '/profile/' + String(userid);
 		userid ? window.location = temp : window.location = '/login/';
 	}
@@ -107,31 +119,32 @@ function Nav(props) {
 
 		{/* menue buttons */}
 		<Link to='/' onClick={h_btnClick}>
-		<BtnMenue>Home</BtnMenue>
+		<BtnTab>Home</BtnTab>
 		</Link>
 
 		<Link to='/new' onClick={h_btnClick}>
-		{userid && <BtnMenue>New</BtnMenue>}
+		{userid && <BtnTab>New</BtnTab>}
 		</Link>
 
 		<Link to={`/profile/${userid}`} onClick={h_btnClick}>
-		{userid && <BtnMenue>Profile</BtnMenue>}			
+		{userid && <BtnTab>Profile</BtnTab>}			
 		</Link>
 
 		<Link to={userid ? '/' : '/login'} onClick={h_btnClick}>
-		<BtnMenue onClick={logOutHandle}>{userid ? 'Log out' : 'Log in'}</BtnMenue>	
+		<BtnTab onClick={h_logOut}>{userid ? 'Log out' : 'Log in'}</BtnTab>	
 		</Link>
 
 		<Link to='/about' onClick={h_btnClick}>
-		<BtnMenue>About</BtnMenue>		
+		<BtnTab>About</BtnTab>		
 		</Link>
 
 		{/* search buttons on narrowWindow */}
 		{ window.nrw &&
 			<div className='searchContainer'>
-				<BtnMenue onClick={h_dropDown}>
-					Search
-				</BtnMenue>
+				<BtnTab 
+					onClick={h_dropDown}
+					children='Search'
+				/>
 			</div>
 		}
 

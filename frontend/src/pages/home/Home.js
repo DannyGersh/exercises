@@ -1,15 +1,16 @@
 import {useState, useEffect} from 'react'
+import {sendData, MIN_PAGINATION} from '../../shared/Functions'
+import {BtnTab, BtnShowMore} from '../../shared/buttons/Buttons'
 import ExerciseCard from '../../shared/exerciseCard/ExerciseCard'
-import BtnMenue from '../../shared/buttons/BtnMenue'
-import './Home.css'
 
-import {sendData, getCookie} from '../../shared/Functions'
 
 function Home(props) {
 	
 	let latest = useState([]);
 	let hotest = useState([]);
-	const ms = useState(false) // Menue Selection - true: latest, false: hotest
+	// s_ms - menue Selection - true: hottest, false: latest
+	const s_ms = useState(true); 
+	const s_dspExNum = useState(MIN_PAGINATION); 
 	
 	useEffect(()=>{
 		sendData('fetch/home')
@@ -19,31 +20,50 @@ function Home(props) {
 		})	
 	},[])
 	
+	function h_ms(isHottest) {
+		s_ms[1](isHottest);
+		s_dspExNum[1](MIN_PAGINATION);
+	}
+	
+	const exercises = 
+		(s_ms[0] ? hotest[0]: latest[0]).slice(0,s_dspExNum[0]);
+	
+	const style_btn_tab = {
+		height: '2rem',
+		width: '6rem',
+	}
+	
 	return(
 	<>		
 		<center>
 		
-		<h1>www.ididthisforu.com <font color='green'>Alpha</font></h1>
-		<p style={{margin:'1rem'}}>The website for uploading and solving exercises in any field</p>
+		<h1>
+			www.ididthisforu.com 
+			 &nbsp;<font color='green'>Alpha</font>
+		</h1>
 		
-		<BtnMenue 
-			className={`btnHomeMenue ${!ms[0] && 'color_btn_green'}`} 
-			onClick={()=>ms[1](false)}
-		>
-			hottest
-		</BtnMenue>
+		<p style = {{margin:'1rem'}}>
+			The website for uploading 
+			and solving exercises in any field
+		</p>
 		
-		<BtnMenue 
-			className={`btnHomeMenue ${ ms[0] && 'color_btn_green'}`} 
-			onClick={()=>ms[1](true)}
-		>
-			latest
-		</BtnMenue>
+		<BtnTab 
+			className = {`${s_ms[0] && 'color_btn_green'}`} 
+			style={style_btn_tab}
+			onClick={()=>h_ms(true)}
+			children='hottest'
+		/>
+		<BtnTab 
+			className={`${ !s_ms[0] && 'color_btn_green'}`} 
+			style={style_btn_tab}
+			onClick={()=>h_ms(false)}
+			children='latest'
+		/>
 		
 		</center>
 		
 		<div className='gridContainer'>
-		{ (ms[0] ? latest[0]: hotest[0]).map( (item,index) =>
+		{ exercises.map( (item,index) =>
 			<ExerciseCard
 				userId={window.userId[0]}
 				narrowWindow={false}
@@ -51,10 +71,18 @@ function Home(props) {
 				url={`/exercise/${item['id']}`} 
 				exercise={item}
 				isOptions={false}
-				renderOnChange={ms}
+				renderOnChange={s_ms}
 			/>
 		)}	
 		</div>
+		
+		<center>
+		<BtnShowMore 
+			step={MIN_PAGINATION}
+			max={hotest[0].length}
+			s_count={s_dspExNum} 
+		/>
+		</center>
 		
 	</>	
 	)

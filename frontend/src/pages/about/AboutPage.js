@@ -8,7 +8,8 @@ given interesting exercises,
 one can accelerate and gain not only new skills, 
 but also new passion for the subject of study.
 for those who upload an exercise I say, 
-as many have told before me: "teaching is the best way of learning".
+as many have told before me: 
+"teaching is the best way of learning".
 `
 const str_contact = `
 send your message to 
@@ -41,7 +42,19 @@ function AboutPage() {
 		<tr>
 			<td>report an exercise</td>
 			<td>report</td>
-			<td>a link to the exercise to report and the reasone of reporting</td>
+			<td>
+				a link to the exercise to report 
+				and the reasone of reporting
+			</td>
+		</tr>
+		<tr>
+			<td>report a bug or issue</td>
+			<td>bug</td>
+			<td>
+				the browser you are using, 
+				what is the problem\issue, 
+				how to replicate the issue.
+			</td>
 		</tr>
 		<tr>
 			<td>other</td>

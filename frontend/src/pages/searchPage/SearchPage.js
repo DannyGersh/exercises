@@ -1,13 +1,15 @@
 import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom';
-import {sendData} from '../../shared/Functions'
+import {sendData, MIN_PAGINATION} from '../../shared/Functions'
+import {BtnTab, BtnShowMore} from '../../shared/buttons/Buttons'
 import ExerciseCard from '../../shared/exerciseCard/ExerciseCard'
 
 
 function MainBody(props) {
 	
 	const ctx = props.ctx;
-	
+	const s_dspExNum = useState(MIN_PAGINATION); 
+
 	let exercises = [];
 	if(ctx.s_exercises[0]) {
 		exercises = ctx.s_exercises[0].searchResult;
@@ -16,17 +18,23 @@ function MainBody(props) {
 	const style_text = {
 		marginLeft: '1rem',
 	}
-	const cond_dspNoMatches = ctx.s_finLoad[0] && !exercises.length;
 	
+	// is any exercises - are there any search results
+	const isAnyEx = !(ctx.s_finLoad[0] && !exercises.length);
+	
+	window.addEventListener('evt_search', ()=>{
+		s_dspExNum[1](MIN_PAGINATION);
+	})
+
 	return(<>
 		
 		<h3 style={style_text}>Search results for: {ctx.searchTerm}</h3>
-		{cond_dspNoMatches &&
+		{!isAnyEx &&
 			<p style={style_text}>no matches found ...</p>
 		}
 		
 		<div className='gridContainer'>
-		{exercises.map((item, index)=>
+		{exercises.slice(0, s_dspExNum[0]).map((item, index)=>
 			<ExerciseCard
 				userId={window.userId[0]}
 				narrowWindow={false}
@@ -38,6 +46,14 @@ function MainBody(props) {
 			/>
 		)}
 		</div>
+		
+		<center>
+		<BtnShowMore 
+			step={MIN_PAGINATION}
+			s_count={s_dspExNum} 
+			max={exercises.length}
+		/>
+		</center>
 		
 	</>)
 }

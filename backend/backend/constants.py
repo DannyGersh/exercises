@@ -6,8 +6,10 @@ from django.http import JsonResponse
 DIR_USERS = pathlib.Path('/volume/static/users')
 reg_latex_search = r'\$\$(.+?)\$\$'
 JsonError = JsonResponse({'error': 'an error hase occurred.'}, status=500)
-JsonSuccess = JsonResponse({'success':0}, status=200)
+JsonSuccess = JsonResponse({'success': True}, status=200)
 ERROR = 'unique error string'
+
+SQL_SIMILARITY_LIMIT = 0.2
 
 latex_targets = (
     'title',
@@ -17,6 +19,7 @@ latex_targets = (
     'explain',
 )
 
+'''
 sql_exercises = (
     'id',              #serial primary key not null, 
     'author',          #integer not null,
@@ -70,6 +73,9 @@ sql_messages = (
     'receiver'      # serial            not null            ,
     'message'       # varchar(4000)     not null
 )
+'''
+
+
 
 
 sql_get_hotest = (
@@ -305,7 +311,7 @@ sql_get_profile_messages = (
     m.exerciseId,
     m.sender,
     m.receiver,
-    to_char(m.creationdate, 'MM/DD/YYYY - HH24:MI'),
+    to_char(m.creationdate, 'MM/DD/YYYY'),
     m.message,
     a_sender.username,
     a_receiver.username
@@ -318,6 +324,7 @@ sql_get_profile_messages = (
 	on a_receiver.id = m.receiver
     
     where m.receiver='{userId}'
+    order by creationdate desc
     '''
     ,
 
@@ -333,7 +340,7 @@ sql_get_profile_messages = (
     )
 )
 
-sql_get_search = (
+sql_get_search_by_tag = (
 	'''
     select
     
@@ -349,10 +356,56 @@ sql_get_search = (
     latex_title, 
     latex_exercise
 
-    from exercises
-    where '{searchTerm}'=any(tags) 
-    order by cardinality(rating) desc
-    limit 10
+    from exercises 
+    where (
+		select bool_or(similarity('{searchTerm}', data) > %s) 
+		from unnest(tags) as data
+	)
+
+	order by ( 
+		select max(similarity('{searchTerm}',data)) 
+		from unnest(tags) as data
+	) desc
+	
+    '''%(SQL_SIMILARITY_LIMIT)
+    ,
+
+    (
+	'id',
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title',
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise',
+    )
+)
+
+sql_get_search_by_title = (
+	'''
+    select
+    
+	id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
+
+    from exercises 
+    where 
+    to_tsvector('english', title)
+    @@ to_tsquery('english', '{searchTerm}')
+	
     '''
     ,
 
@@ -370,6 +423,184 @@ sql_get_search = (
     'latex_exercise',
     )
 )
+
+sql_get_search_by_exercise = (
+	'''
+    select
+    
+	id,
+    rating, 
+    tags, 
+    latex_dir, 
+    author,
+    
+    title,
+    exercise,
+    
+    latex_title, 
+    latex_exercise
+
+    from exercises 
+    where 
+    to_tsvector('english', exercise)
+    @@ to_tsquery('english', '{searchTerm}')
+	
+    '''
+    ,
+
+    (
+	'id',
+    'rating', 
+    'tags', 
+    'latex_dir', 
+    'author',
+    
+    'title',
+    'exercise',
+    
+    'latex_title', 
+    'latex_exercise',
+    )
+)
+
+
+
+
+sql_post_error = '''
+    insert into 
+    errors(error, type, stackTrace)
+    values({error}, {type}, {stackTrace})
+'''
+
+sql_post_exercise =  '''
+    
+    insert into exercises(
+    
+    author, 
+    tags,      
+    latex_dir,       
+    title,
+    exercise,
+    answer, 
+    hints,
+    explain,         
+    latex_title,     
+    latex_exercise,  
+    latex_answer,    
+    latex_hints,     
+    latex_explain
+
+    ) values (
+    
+    {author}, 
+    {tags},
+    {latex_dir}, 
+    {title}, 
+    {exercise}, 
+    {answer},
+    {hints}, 
+    {explain}, 
+    {latex_title}, 
+    {latex_exercise}, 
+    {latex_answer}, 
+    {latex_hints}, 
+    {latex_explain}
+    
+    ) 
+'''
+
+sql_post_updateExercise = '''
+	
+	update exercises set
+	
+	tags={tags},
+	latex_pkg={latex_pkg},
+	
+    title={title},
+    exercise={exercise},
+    answer={answer}, 
+    hints={hints},
+    explain={explain}, 
+            
+    latex_title={latex_title},     
+    latex_exercise={latex_exercise},  
+    latex_answer={latex_answer},    
+    latex_hints={latex_hints},     
+    latex_explain={latex_explain}
+    
+    where id = {exerciseId}
+'''
+
+sql_post_sendMSG = '''
+
+	insert into messages(
+	
+	exerciseId, 
+	sender, 
+	receiver, 
+	message
+		
+	) values (
+	
+	{exerciseId}, 
+	{sender}, 
+	{receiver}, 
+	{message}
+		
+	)
+
+
+'''
+
+sql_post_like = '''
+	
+	update exercises 
+	set rating = (
+		select array(
+			select distinct a from unnest(rating) as a
+		) from exercises where id = {exerciseId}
+	) 
+	where id = {exerciseId};
+	
+	update exercises set rating = 
+	case when {userId} = any(rating) 
+		then array_remove(rating, {userId})
+		else array_append(rating, {userId})
+	end
+	where id={exerciseId};
+	
+	update auth_user 
+	set liked = array(select distinct a from unnest(liked) as a) 
+	where id={userId};
+
+	update auth_user set liked = 
+	case when {exerciseId} = any(liked) 
+		then array_remove(liked, {exerciseId})
+		else array_append(liked, {exerciseId})
+	end
+	where id={userId};
+	
+'''
+
+sql_post_delete_msg = '''
+
+	delete 
+	from messages
+	where id={msgId}
+
+'''
+
+sql_post_delete_exercise = '''
+
+	delete 
+	from exercises
+	where id={exerciseId}
+
+'''
+
+
+
+
 
 protocall_fetch_home = {
 	'in': {},
@@ -510,139 +741,26 @@ protocall_fetch_deleteMsg = {
 	'out': {},
 }
 
+protocall_fetch_register_submit = {
+	'in': {
+		'isLogin'	: bool,
+		'uname'		: str,
+		'password'	: str,
+	},
+	'out': {
+		'userId'	: int,
+	},
+}
 
-sql_post_error = '''
-    insert into 
-    errors(error, type, stackTrace)
-    values({error}, {type}, {stackTrace})
-'''
-
-sql_post_exercise =  '''
-    
-    insert into exercises(
-    
-    author, 
-    tags,      
-    latex_dir,       
-    title,
-    exercise,
-    answer, 
-    hints,
-    explain,         
-    latex_title,     
-    latex_exercise,  
-    latex_answer,    
-    latex_hints,     
-    latex_explain
-
-    ) values (
-    
-    {author}, 
-    {tags},
-    {latex_dir}, 
-    {title}, 
-    {exercise}, 
-    {answer},
-    {hints}, 
-    {explain}, 
-    {latex_title}, 
-    {latex_exercise}, 
-    {latex_answer}, 
-    {latex_hints}, 
-    {latex_explain}
-    
-    ) 
-'''
-
-sql_post_updateExercise = '''
-	
-	update exercises set
-	
-	tags={tags},
-	latex_pkg={latex_pkg},
-	
-    title={title},
-    exercise={exercise},
-    answer={answer}, 
-    hints={hints},
-    explain={explain}, 
-            
-    latex_title={latex_title},     
-    latex_exercise={latex_exercise},  
-    latex_answer={latex_answer},    
-    latex_hints={latex_hints},     
-    latex_explain={latex_explain}
-    
-    where id = {exerciseId}
-'''
-
-sql_post_sendMSG = '''
-
-	insert into messages(
-	
-	exerciseId, 
-	sender, 
-	receiver, 
-	message
-		
-	) values (
-	
-	{exerciseId}, 
-	{sender}, 
-	{receiver}, 
-	{message}
-		
-	)
-
-
-'''
-
-# need to set exerciseId, userId
-sql_post_like = '''
-	
-	update exercises 
-	set rating = (
-		select array(
-			select distinct a from unnest(rating) as a
-		) from exercises where id = {exerciseId}
-	) 
-	where id = {exerciseId};
-	
-	update exercises set rating = 
-	case when {userId} = any(rating) 
-		then array_remove(rating, {userId})
-		else array_append(rating, {userId})
-	end
-	where id={exerciseId};
-	
-	update auth_user 
-	set liked = array(select distinct a from unnest(liked) as a) 
-	where id={userId};
-
-	update auth_user set liked = 
-	case when {exerciseId} = any(liked) 
-		then array_remove(liked, {exerciseId})
-		else array_append(liked, {exerciseId})
-	end
-	where id={userId};
-	
-'''
-
-sql_post_delete_msg = '''
-
-	delete 
-	from messages
-	where id={msgId}
-
-'''
-
-sql_post_delete_exercise = '''
-
-	delete 
-	from exercises
-	where id={exerciseId}
-
-'''
+protocall_fetch_sendMsg = {
+	'in': {
+		'exerciseId': int,
+		'sender':     int,
+		'receiver':   int,
+		'message':    str,
+	},
+	'out': {},
+}
 
 
 

@@ -1,13 +1,13 @@
-//import MainJsx from './ExercisePageJsx.js'
 import {useCallback, useState, useEffect, useRef} from 'react'
-import {useController, sendData, mainText2html} from '../../shared/Functions'
-import {useParams, useLocation} from "react-router-dom";
-import BtnOnOf, {BtnRadio} from '../../shared/buttons/BtnOnOf'
+import {useParams, useLocation, Link} from "react-router-dom";
+
+import {sendData, mainText2html} from '../../shared/Functions'
+import useController from '../../shared/Hooks'
+import Btn, {BtnOnOf, BtnRadio} from '../../shared/buttons/Buttons'
 import ToolTip from '../../shared/tooltip/ToolTip'
 import Tag from '../../shared/tag/Tag'
 import './ExercisePage.css'
 
-import {Link} from 'react-router-dom'
 
 const BTM_TARGETS = {
 	title: 'Title',
@@ -37,7 +37,9 @@ function ExerciseBody(props) {
 		
 		if(ctx.c_hae[0]()[1]===target) {
 			style.visibility = 'visible';
-			refs.main.current.style.height = `${ref.current.getBoundingClientRect().height}px`;
+			refs.main.current.style.height = `
+				${ref.current.getBoundingClientRect().height}px
+			`;
 		} else {
 			style.visibility = 'hidden';
 		}
@@ -60,13 +62,12 @@ function ExerciseBody(props) {
 		}
 	}
 
-	const mainStyle = {
+	const style_main = {
 		height:'calc(100vh - 7.5rem)',
 		marginLeft: '1rem',
-		borderBottom: 'solid 1px var(--brown)',
 	}
 
-	const mainRefStyle = {
+	const style_mainRef = {
 		overflow:'hidden', 
 		backgruondColor: 'blue', 
 		position: 'relative',
@@ -75,7 +76,9 @@ function ExerciseBody(props) {
 	
 	if(refs.main.current && ctx.s_finLoad[0]) {
 		let id_interval = setInterval(()=>{
-			refs.main.current.style.height = `${refs.exercise.current.getBoundingClientRect().height}px`;
+			refs.main.current.style.height = `
+			${refs.exercise.current.getBoundingClientRect().height}px
+			`;
 		},100);
 		setTimeout(()=>{
 			clearInterval(id_interval);
@@ -85,13 +88,13 @@ function ExerciseBody(props) {
 	
 	return(
 	
-	<div className='vscroll' style={mainStyle}>
+	<div className='vscroll' style={style_main}>
 
 		<div id={BTM_TARGETS.title} 
 			className='textWithLatex'
 		/>
 		
-		<div style={mainRefStyle} ref={refs.main}>
+		<div style={style_mainRef} ref={refs.main}>
 		
 		<div id={BTM_TARGETS.exercise} 
 			ref={refs.exercise}
@@ -122,85 +125,6 @@ function ExerciseBody(props) {
 	
 }
 
-function BottomRightMenue(props) {
-
-	const ctx = props.ctx;
-
-	function h_like() { // user clicked like btn
-		
-		if(window.userId[0]) {
-			
-			if( ctx.c_isLike[0]() ) {
-				ctx.r_likes.current-=1;
-				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
-				ctx.c_isLike[1](false);
-			} else {
-				ctx.r_likes.current+=1;
-				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
-				ctx.c_isLike[1](true);
-			}
-			
-			sendData('fetch/like', 'POST', {
-				exerciseId: ctx.r_exercise.current['exerciseId'],
-				userId: window.userId[0],
-			})
-			
-		}
-	}
-		
-	return(
-
-		<div className='bottomRight'>
-			
-			<BtnRadio 
-				c_selected={ctx.c_hae}
-				name={BTM_TARGETS.exercise}
-				className='btnRound'
-			/>
-			
-			{ ctx.r_exercise.current['hints'] &&
-				<BtnRadio 
-					c_selected={ctx.c_hae}
-					name={BTM_TARGETS.hints}
-					className='btnRound'
-				/>
-			}
-			
-			<BtnRadio 
-				c_selected={ctx.c_hae}
-				name={BTM_TARGETS.answer}
-				className='btnRound'
-			/>
-			
-			{ ctx.r_exercise.current['explain'] && 
-				<BtnRadio 
-					c_selected={ctx.c_hae}
-					name={BTM_TARGETS.explain}
-					className='btnRound'
-				/>
-			}
-			
-			{/* like btn */}
-			{ window.userId[0] && !ctx.exercise_preview?
-				<BtnOnOf 
-					className='btnRound'
-					c_isOn={ctx.c_isLike} 
-					r_text={ctx.r_btn_like_text}
-					onClick={h_like}
-				/>
-				: 
-				<BtnOnOf 
-					className='btnRound'
-					r_text={ctx.r_btn_like_text}
-				/>
-			}
-					
-		</div>
-
-	)
-
-}
-
 function SendMessage(props) {
 
 	const ctx = props.ctx;
@@ -216,6 +140,10 @@ function SendMessage(props) {
 			'sender': window.userId[0], 
 			'receiver': ctx.r_exercise.current['author'], 
 			'message': message,
+		}).then(d=>{
+			if(d.success) {
+				window.alert('message sent successfully');
+			}
 		})
 
 		states.s_dspReport[1](false);		
@@ -226,6 +154,11 @@ function SendMessage(props) {
 		states.s_dspSendMsg[1](!states.s_dspSendMsg[0]);
 		states.s_dspReport[1](false);
 	}
+	
+	const info_message = `
+		inform the author of typos, mistakes, improvements, etc. 
+		the message would be sent with this exercise attached.
+	`
 	
 	return (
 	<>
@@ -242,7 +175,7 @@ function SendMessage(props) {
 		<ToolTip 
 			id1 = 'ToolTip1'
 			id2 = 'ToolTip2'
-			text = 'inform the author of typos, mistakes, improvements, etc. the message would be sent with this exercise attached.'
+			text = {info_message}
 		>
 		<button className='btnRound info'>i</button>
 		</ToolTip>	
@@ -304,7 +237,9 @@ function PopupMenue(props) {
 				<br/>
 			</p>
 			
-			{ window.userId[0] && <SendMessage ctx={ctx} states={states}/>}	
+			{ window.userId[0] && 
+				<SendMessage ctx={ctx} states={states}/>
+			}	
 			<hr/>
 			
 			<p 
@@ -314,7 +249,10 @@ function PopupMenue(props) {
 				report
 			</p>	
 			
-			{s_dspReport[0] && <p>read the "contact" section of the {jsx_reportText}. thank you for the cooperation</p>}
+			{s_dspReport[0] && <p>
+					read the "contact" section of the {jsx_reportText}. 
+					thank you for the cooperation
+			</p>}
 			
 		</div>	
 		
@@ -327,48 +265,123 @@ function PopupMenue(props) {
 	}
 }
 
-function BottomLeftMenue(props) {
-
+function BottomMenue(props) {
+	
 	const ctx = props.ctx;
-
+	
 	function h_popup() {
 		if(!ctx.exercise_preview) {
 			ctx.c_isPopup[1](!ctx.c_isPopup[0]());
 		}
 	}
 	
-	return (
+	function h_like() { // user clicked like btn
+		
+		if(window.userId[0]) {
+			
+			if( ctx.c_isLike[0]() ) {
+				ctx.r_likes.current-=1;
+				ctx.r_btn_like_text.current = 
+					`${ctx.r_likes.current}\nLikes`;
+				ctx.c_isLike[1](false);
+			} else {
+				ctx.r_likes.current+=1;
+				ctx.r_btn_like_text.current = 
+					`${ctx.r_likes.current}\nLikes`;
+				ctx.c_isLike[1](true);
+			}
+			
+			sendData('fetch/like', 'POST', {
+				exerciseId: ctx.r_exercise.current['exerciseId'],
+				userId: window.userId[0],
+			})
+			
+		}
+	}
+	
+	
+	return(<div className='ExercisePage_bottomMenue'>
 
-	<div className="bottomLeft">
-	  
 		{/* adittional menue button (...) */}      
-		<button 
+		<Btn 
 			onClick={h_popup} 
-			className='additional'
-		>...</button>	
-
+			className={`
+				bottomLeft
+				${ctx.exercise_preview ? 
+					'color_static_blue': 
+					'color_btn_blue' 
+				}
+			`}
+			children='...'
+		/>
+		
 		<PopupMenue ctx={ctx}/>	
 
+		<div className='hscroll tags'>
 		{ctx.exercise_preview && ctx.exercise_preview.tags.map(i=>
-			<Tag url={`/search/${i}`} key={i}>{i}</Tag>
+			<Tag 
+				isDisabled={true} 
+				url={`/search/${i}`} 
+				key={i}
+				children={i}
+			/>
 		)}
 		{!ctx.exercise_preview && ctx.r_exercise.current.tags.map(i=>
-			<Tag url={`/search/${i}`} key={i}>{i}</Tag>
+			<Tag 
+				url={`/search/${i}`} 
+				key={i} 
+				children={i}
+			/>
 		)}
+		</div>
 		
-	</div>
-
-	)
-}
-
-function MainBodie(props) {
-	
-	return (<>
-		<ExerciseBody ctx={props.ctx}/>
-		<BottomLeftMenue ctx={props.ctx}/>
-		<BottomRightMenue ctx={props.ctx}/>
-	</>)
-	
+		{/* RIGHT */}
+		<div className='bottomRight'>
+			<BtnRadio 
+				c_selected={ctx.c_hae}
+				name={BTM_TARGETS.exercise}
+				className='btnRound'
+			/>
+			
+			{ ctx.r_exercise.current['hints'] &&
+				<BtnRadio 
+					c_selected={ctx.c_hae}
+					name={BTM_TARGETS.hints}
+					className='btnRound'
+				/>
+			}
+			
+			<BtnRadio 
+				c_selected={ctx.c_hae}
+				name={BTM_TARGETS.answer}
+				className='btnRound'
+			/>
+			
+			{ ctx.r_exercise.current['explain'] && 
+				<BtnRadio 
+					c_selected={ctx.c_hae}
+					name={BTM_TARGETS.explain}
+					className='btnRound'
+				/>
+			}
+			
+			{/* like btn */}
+			{ window.userId[0] && !ctx.exercise_preview?
+				<BtnOnOf 
+					className='btnRound'
+					c_isOn={ctx.c_isLike} 
+					r_text={ctx.r_btn_like_text}
+					onClick={h_like}
+				/>
+				: 
+				<BtnOnOf 
+					className='btnRound'
+					r_text={ctx.r_btn_like_text}
+				/>
+			}
+		</div>
+		
+	</div>)
 }
 
 
@@ -432,18 +445,27 @@ function ExercisePage(props){
 	
 	function fillTargetsInnerHtml() {
 		
-		const n_title = document.getElementById(BTM_TARGETS.title);
-		const n_exercise = document.getElementById(BTM_TARGETS.exercise);
-		const n_answer = document.getElementById(BTM_TARGETS.answer);
-		const n_hints = document.getElementById(BTM_TARGETS.hints);
-		const n_explain = document.getElementById(BTM_TARGETS.explain);
+		const n_title = 
+			document.getElementById(BTM_TARGETS.title);
+		const n_exercise = 
+			document.getElementById(BTM_TARGETS.exercise);
+		const n_answer = 
+			document.getElementById(BTM_TARGETS.answer);
+		const n_hints = 
+			document.getElementById(BTM_TARGETS.hints);
+		const n_explain = 
+			document.getElementById(BTM_TARGETS.explain);
 
-		n_title.innerHTML = `<h3>${ctx.r_exercise.current['title']}</h3>`
-		n_exercise.innerHTML = `<p>${ctx.r_exercise.current['exercise']}</p>`
-		n_answer.innerHTML = `<p>${ctx.r_exercise.current['answer']}</p>`
-		n_hints.innerHTML = `<p>${ctx.r_exercise.current['hints']}</p>`
-		n_explain.innerHTML = `<p>${ctx.r_exercise.current['explain']}</p>`
-
+		n_title.innerHTML = 
+			`<h3>${ctx.r_exercise.current['title']}</h3>`
+		n_exercise.innerHTML = 
+			`<p>${ctx.r_exercise.current['exercise']}</p>`
+		n_answer.innerHTML = 
+			`<p>${ctx.r_exercise.current['answer']}</p>`
+		n_hints.innerHTML = 
+			`<p>${ctx.r_exercise.current['hints']}</p>`
+		n_explain.innerHTML = 
+			`<p>${ctx.r_exercise.current['explain']}</p>`
 	}
 	
 	useEffect(()=>{
@@ -461,7 +483,8 @@ function ExercisePage(props){
 				e['explain'] = mainText2html(e, 'explain');
 			
 				ctx.r_likes.current = e['rating'].length;
-				ctx.r_btn_like_text.current = `${ctx.r_likes.current}\nLikes`;
+				ctx.r_btn_like_text.current = 
+					`${ctx.r_likes.current}\nLikes`;
 				ctx.c_isLike[1](e['rating'].includes(window.userId[0]));
 
 				ctx.r_exercise.current = e;
@@ -479,7 +502,10 @@ function ExercisePage(props){
 		
 	},[])
 	
-	return(<MainBodie ctx={ctx}/>)
+	return(<>
+		<ExerciseBody ctx={ctx}/>
+		<BottomMenue ctx={ctx}/>
+	</>)
 
 }
 

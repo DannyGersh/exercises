@@ -1,14 +1,11 @@
-import './ExerciseCard.css'
-import {mainText2html, sendData} from '../../shared/Functions'
 import {useState, useEffect} from 'react'
 import {useNavigate} from "react-router-dom";
-
-import BtnMenue from '../../shared/buttons/BtnMenue'
-import BtnOnOf from '../../shared/buttons/BtnOnOf'
+import {mainText2html, sendData} from '../../shared/Functions'
+import {BtnTab, BtnOnOf} from '../../shared/buttons/Buttons'
 import Card from '../card/Card'
 import Tag from '../../shared/tag/Tag'
-
 import './ExerciseCard.css'
+
 
 function Exercise_card(props){
 
@@ -89,55 +86,58 @@ function Exercise_card(props){
 		url={props.url} 
 		style={props.style} 
 		className={props.className} 
-		narrowWindow={props.narrowWindow}
 		isRedirect={true}
 	>
 
     {/*Card children*/} 
 	
-	{/* aditional menue button - only on profile */}
-	{ props.isOptions && 
-		<div className='topRightExerciseCard'>
-			<BtnMenue onClick={(evt)=>onOptions(evt)}>...</BtnMenue>
-		</div>
-	}
-
-	{/* aditional menue - only on profile */}
 	{ dspOptions[0] && 
 		
 		<div style={{display:'flex'}}>
-					
-		<BtnMenue 
+
+		<BtnTab 
 			onClick={(evt)=>h_edit(evt)} 
 			style={style_btnEditDelete}
-		>Edit</BtnMenue>
-
-		<BtnMenue 
+			children='Edit'
+		/>
+			
+		<BtnTab 
 			onClick={(evt)=>onDelete(evt)} 
 			style={style_btnEditDelete}
-		>Delete</BtnMenue>
-		
+			children='Delete'
+		/>
+				
 		</div>
-
 	}
 	
-	{/* likes */}		
-	<BtnOnOf 
-		style={style_btnLike}
-		text={`${props.exercise['rating'].length}\nLikes`}
-		className='btnRound bottomRightExerciseCard'
-	/>
-
 	{/* title, exercise */}
-	<div style={{maxHeight: '12rem', overflow:'hidden'}}>
-		<div id={id_title} style={style_text}/>
-		<div id={id_exercise} style={style_text}/>
-	</div>
+	<div id={id_title} style={style_text}/>
+	<div id={id_exercise} style={style_text}/>
 	
-	<div className='bottomLeftExerciseCard'>
-		{props.exercise['tags'].map(i=>
-			<Tag key={i} url={`/search/${i}`}>{i}</Tag>
-		)}
+	{/* aditional menue button - only on profile */}
+	{ props.isOptions && 
+		<div className='topRightExerciseCard'>
+			<BtnTab 
+				onClick={(evt)=>onOptions(evt)}
+				children='...'
+			/>
+		</div>
+	}
+
+	{/* likes */}		
+	<div className='exerciseCard_btm'>
+		{/* tags */}
+		<div className='hscroll exerciseCard_btm_tags'>
+			{props.exercise['tags'].map(i=>
+				<Tag key={i} url={`/search/${i}`}>{i}</Tag>
+			)}
+		</div>
+		<div className='exerciseCard_btm_like'>
+		<BtnOnOf
+			text={`${props.exercise['rating'].length}\nLikes`}
+			className={`btnRound ${isLike && 'color_btn_green'}`}
+		/>
+		</div>
 	</div>
 	
   </Card>

@@ -12,10 +12,19 @@ function Explain(props){
 	}
 
 	useEffect(()=>{
-		if(ctx.mainState === MAIN_STATES.newExercise || ctx.mainState === MAIN_STATES.editInProgress) {
-			document.getElementById('explain').value = localStorage.getItem('explain');
+		
+		const temp_cond = (
+			ctx.mainState === MAIN_STATES.newExercise || 
+			ctx.mainState === MAIN_STATES.editInProgress
+		)
+		
+		if(temp_cond) {
+			document.getElementById('explain').value = 
+				localStorage.getItem('explain');
 		} else {
-			const explain = mainText2html(ctx.exercise_edit, 'explain', true);
+			const explain = mainText2html(
+				ctx.exercise_edit, 'explain', true
+			);
 			document.getElementById('explain').value = explain;
 			localStorage.setItem('explain', explain);
 		}	
@@ -27,14 +36,19 @@ function Explain(props){
 			
 			<textarea
 				id='explain'
-				onChange={(v)=>updateRefs('explain', props.refs, v.target.value)}
+				onChange={(v)=>
+					updateRefs('explain', props.refs, v.target.value)
+				}
 				defaultValue={localStorage.getItem('Explanation')}
 				className='ExerciseTextArea' 
 			/>
 			
 			<p >Tips:</p>
 			<ul>
-				<li>go through all the steps of solving your exercise</li>
+				<li>
+					go through all the steps 
+					of solving your exercise
+				</li>
 			</ul>
 			<br/><br/><br/>
 		

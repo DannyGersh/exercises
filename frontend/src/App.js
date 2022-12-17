@@ -22,8 +22,13 @@ function NotFound() {
 function App() {
  
   window.nrw = useWindowResize();
-  window.userId = useState(1);
-
+  
+  let tempUserId = 1;
+  if(window.jsonData) {
+    tempUserId = window.jsonData['userId'];
+  }
+  window.userId = useState(tempUserId);
+  
   return (
     <>
     <BrowserRouter>

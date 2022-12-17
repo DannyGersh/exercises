@@ -21,6 +21,8 @@ from . settings import DEBUG
 from . constants import *
 from . compileLatex import gen_svg
 
+import ipdb
+
 
 conn = psycopg2.connect("dbname=exercises user=postgres")
 conn.set_session(autocommit=True)
@@ -50,8 +52,6 @@ def printError(msg):
 
 def sql_post_error(message, errorType, stackTrace=None):
 
-    if DEBUG: printError(message) # force stackTrace
-
     message = message.replace("'", "''")
     errorType = errorType.replace("'","''")
     
@@ -63,27 +63,31 @@ def sql_post_error(message, errorType, stackTrace=None):
     cur.execute("insert into errors(error, type, stackTrace) values('%s', '%s', '%s')"%(message, errorType, stackTrace))            
 
 def genError(message, errorType, stackTrace=None):
-	printError(message)
+	if DEBUG: printError(message)
 	sql_post_error(message, errorType, stackTrace)
 
 def genJsonError(message='an error hase occurred.'):
+
 	return JsonResponse({ERROR: message}, status=500)	
 	
-	
+def genJsonMessage(message):
+
+	return JsonResponse({'message': message}, status=202)	
+
 def fetch_try_except(func):
 
-    def wraper(*args, **kwargs):
-        try:
+	def wraper(*args, **kwargs):
+		try:
+		
+			return func(*args, **kwargs)
+		
+		except Exception as exp:
 
-            return func(*args, **kwargs)
+			if DEBUG: printError(exp)
+			sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
+			return JsonError
 
-        except Exception as exp:
-            
-            if DEBUG: printError(exp)
-            sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
-            return JsonError
-
-    return wraper
+	return wraper
 
 def sql_try_except(func):
 
@@ -228,10 +232,13 @@ def fetch_home(request):
 @safe_fetch
 def fetch_register_submit(request):
 
+	# breakpoint() 
+	
 	protocall = protocall_fetch_register_submit
 	inData = fetch_in(request, protocall)
 	if inData == ERROR: return JsonError
 	
+	isLogin = inData['isLogin']
 	uname = inData['uname']
 	password = inData['password']
 	
@@ -247,13 +254,13 @@ def fetch_register_submit(request):
 	else:
 		# check if username is unique
 		if getSQL(sql_get_userId, {'userName': uname}):
-			return genJsonError('username taken, try another one.')
+			return genJsonMessage('username taken, try another one.')
 			
 		user = User.objects.create_user(
 			uname, '', password
 		)
 		if not user:
-			return genJsonError('could not create user ...')
+			return genJsonMessage('could not create user ...')
 		else:
 			login(request, user)
 			return fetch_out(request, protocall, {'userId': user.id})
@@ -322,9 +329,15 @@ def fetch_search(request):
 	if inData == ERROR: return JsonError
 	
 	args = {'searchTerm': inData['searchTerm']}
-	searchResult = getSQL(sql_get_search, args)
-	if searchResult == ERROR: return JsonError
-
+	res_by_tag = getSQL(sql_get_search_by_tag, args)
+	res_by_title = getSQL(sql_get_search_by_title, args)
+	res_by_exercise = getSQL(sql_get_search_by_exercise, args)
+	
+	debug_res = [res_by_tag, res_by_title, res_by_exercise]
+	if ERROR in debug_res: return JsonError
+	
+	searchResult = res_by_tag + res_by_title + res_by_exercise
+	
 	data = {'searchResult': searchResult}
 	return fetch_out(request, protocall, data)
 
@@ -573,27 +586,15 @@ def fetch_update_exercise(request):
 	return JsonSuccess
 
 @safe_fetch
-def fetch_addTag(request):
-
-    inData = json.loads(request.body.decode("utf-8"))
-    
-    return JsonResponse({'success': True})
-
-@safe_fetch
 def fetch_sendMsg(request):
 	
-	inData = json.loads(request.body.decode("utf-8"))
-
-	command = sql_post_sendMSG
-	args = {
-		'exerciseId': inData['exerciseId'],
-		'sender':     inData['sender'],
-		'receiver':   inData['receiver'],
-		'message':    inData['message'],
-	}
-	postSQL(command, args) 
+	protocall = protocall_fetch_sendMsg
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
 	
-	return JsonResponse({'success': True})
+	postSQL(sql_post_sendMSG, inData) 
+	
+	return JsonSuccess
 
 @safe_fetch
 def fetch_deleteMsg(request):
@@ -653,15 +654,12 @@ def fetch_like(request):
 	
 @ensure_csrf_cookie
 def home(request):
-    outData={'userid':request.user.id}
-    
+    outData={'userId': request.user.id}
     return render(request, 'index.html', context={'value':outData})
 
-@ensure_csrf_cookie
-def nonHome(request, id):
-
-    return render(request, 'index.html')
-
+def nonHome(request, slug):
+    outData={'userId': request.user.id}
+    return render(request, 'index.html', context={'value':outData})
 
 
 # routing is done in react - see App.js
@@ -669,29 +667,26 @@ def nonHome(request, id):
 # nonHome() is anything but the home page
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', home), # see (1) in App.js
-    path('<slug:id>/', nonHome), # see (2) in App.js
-    path('profile/<slug:id>/', nonHome), # see (3) in App.js
-
-    path('fetch/test123/', fetch_test),
-    path('fetch/submitErrorSql/', fetch_submitErrorSql),
-    
-    path('fetch/home/', fetch_home),
-    path('fetch/exercisePage/', fetch_exercisePage),
-    path('fetch/profile/', fetch_profile),
-    path('fetch/search/', fetch_search),
-
-    path('fetch/logout/', fetch_logout),
-    path('fetch/register_submit/', fetch_register_submit),
-    path('fetch/submitExercise/', fetch_submit_exercise),
-    path('fetch/updateExercise/', fetch_update_exercise),
-    path('fetch/sendMsg/', fetch_sendMsg),
-    path('fetch/deleteMsg/', fetch_deleteMsg),
+	path('admin/', admin.site.urls),
+	path('', home), 
+	path('<slug:slug>/', nonHome), 
+	
+	path('fetch/test123/', fetch_test),
+	path('fetch/submitErrorSql/', fetch_submitErrorSql),
+	
+	path('fetch/home/', fetch_home),
+	path('fetch/exercisePage/', fetch_exercisePage),
+	path('fetch/profile/', fetch_profile),
+	path('fetch/search/', fetch_search),
+	
+	path('fetch/logout/', fetch_logout),
+	path('fetch/register_submit/', fetch_register_submit),
+	path('fetch/submitExercise/', fetch_submit_exercise),
+	path('fetch/updateExercise/', fetch_update_exercise),
+	path('fetch/sendMsg/', fetch_sendMsg),
+	path('fetch/deleteMsg/', fetch_deleteMsg),
 	path('fetch/deleteExercise/', fetch_deleteExercise),
-    path('fetch/like/', fetch_like),
-    path('fetch/addLatex/', fetch_addLatex),
-    path('fetch/deleteLatex/', fetch_deleteLatex),
-
-    path('fetch/addTag/', fetch_addTag),
+	path('fetch/like/', fetch_like),
+	path('fetch/addLatex/', fetch_addLatex),
+	path('fetch/deleteLatex/', fetch_deleteLatex),	
 ]

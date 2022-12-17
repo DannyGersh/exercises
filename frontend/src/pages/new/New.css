@@ -1,4 +1,4 @@
-.bottomMenue{
+.NewBottomMenue{
 	display: flex;
 	flex-wrap: wrap;
 	position: fixed;
@@ -9,6 +9,3 @@
     justify-content: center;
 }
 
-.btnBottomMenue{
-	height: 2.5rem;
-}

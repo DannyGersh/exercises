@@ -12,10 +12,19 @@ function Hints(props){
 	}
 
 	useEffect(()=>{
-		if(ctx.mainState === MAIN_STATES.newExercise || ctx.mainState === MAIN_STATES.editInProgress) {
-			document.getElementById('hints').value = localStorage.getItem('hints');
+		
+		const temp_cond = (
+			ctx.mainState === MAIN_STATES.newExercise || 
+			ctx.mainState === MAIN_STATES.editInProgress
+		)
+		
+		if(temp_cond) {
+			document.getElementById('hints').value = 
+				localStorage.getItem('hints');
 		} else {
-			const hints = mainText2html(ctx.exercise_edit, 'hints', true);
+			const hints = mainText2html(
+				ctx.exercise_edit, 'hints', true
+			);
 			document.getElementById('hints').value = hints;
 			localStorage.setItem('hints', hints);
 		}	
@@ -27,7 +36,9 @@ function Hints(props){
 		
 		<textarea 
 			id='hints'
-			onChange={(v)=>updateRefs('hints', props.refs, v.target.value)} 
+			onChange={(v)=>
+				updateRefs('hints', props.refs, v.target.value)
+			} 
 			defaultValue={localStorage.getItem('hints')} 
 			rows='6' 
 			className='ExerciseTextArea' 
