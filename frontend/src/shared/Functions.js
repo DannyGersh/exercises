@@ -11,6 +11,14 @@ const windowBp = 50;
 const MIN_PAGINATION = 2; // minimal number of displayed exercises
 export {MIN_PAGINATION}
 
+const TARGETS = {
+	title: 'title',
+	exercise: 'exercise',
+	answer: 'answer',
+	hints: 'hints',
+	explain: 'explain',
+}
+export {TARGETS}
 
 function isInt(num) {
 	if(typeof(num) !== 'number') {

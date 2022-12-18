@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useCallback} from 'react'
 import {useNavigate, useLocation} from "react-router-dom";
-import {mainText2html, sendData} from '../../shared/Functions'
+import {TARGETS, mainText2html, sendData} from '../../shared/Functions'
 import regex_escape from '../../shared/regex_escape'
 import Btn, {BtnTab} from '../../shared/buttons/Buttons'
 import Exercise from './pages/Exercise'
@@ -8,20 +8,17 @@ import Hints from './pages/Hints'
 import Explain from './pages/Explain'
 import './New.css'
 
+
 const BMT_TARGETS = { // bottom menue targets
 	exercise: 'Exercise',
 	hints: 'Hints',
 	explain: 'Explanation',
 }
 const CON = { // constants
-	title: 'title',
-	exercise: 'exercise',
-	answer: 'answer',
-	hints: 'hints',
-	explain: 'explain',
-	bmt: 'bmt',
+	bmt: 's_bmt',
 	tags: 'tags',
 	latex_pkg: 'latex_pkg',
+	main_state: 'main_state',
 }
 const MAIN_STATES = {
 	newExercise: 'newExercise',
@@ -42,10 +39,7 @@ function compileLatex(
 			{0: 'latex1', 1: 'latex2' ...}
 		] , ... }
 	*/
-	
-	if(target==='title')
-		console.log(refs.current['title'])
-	
+
 	if(!refs.current) { return -1 }
 
 	if(!text) text='';
@@ -96,6 +90,11 @@ function compileLatex(
 		text = text.replace(reg, `\$\$\$${i[0]}\$\$\$`);
 	})
 	refs.current[target][1] = text;
+	
+	localStorage.setItem(
+		target, 
+		JSON.stringify([text, refs.current[target][3]])
+	);
 }
 
 function updateRefs(target, refs, text, compile=true) {
@@ -104,7 +103,6 @@ function updateRefs(target, refs, text, compile=true) {
 
 	refs.current[target][2] = (
 		setTimeout(()=>{
-			localStorage.setItem(target, text)
 			refs.current[target][0] = text;
 			compileLatex(target, refs, text, compile)
 		}, 1000)
@@ -116,6 +114,8 @@ function tagsStrToArray(tagsStr) {
 	temp = temp.filter(i=>i!=='');
 	return temp;
 }
+export {tagsStrToArray}
+
 
 function New(props){
 	
@@ -125,7 +125,7 @@ function New(props){
 	}
 	const navigate = useNavigate();
 	const editInitial = localStorage.getItem(MAIN_STATES.editInitial);
-
+	
 	if(ctx.exercise_edit && editInitial) {
 		
 		// user clicked edit and got here
@@ -148,7 +148,7 @@ function New(props){
 		ctx.mainState === MAIN_STATES.editInitial || 
 		ctx.mainState === MAIN_STATES.editInProgress
 	);
-	
+
 	const refs = useRef({
 		/*
 			target : [text, formated_text, timeoutId, latex_object]
@@ -170,65 +170,45 @@ function New(props){
 		update   : updateRefs,
 	})
 
-	// bmt (bottom menue tab) -
+	// s_bmt (bottom menue tab) -
 	//		str representing which tab is currently selected
 	const temp = localStorage.getItem(CON.bmt);
-	const bmt = useState(temp ? temp : BMT_TARGETS.exercise);
+	const s_bmt = useState(temp ? temp : BMT_TARGETS.exercise);
 	
 	// when bottom menue tab is clicked
 	function h_btm(e){
 		
-		bmt[1](e.target.innerHTML);
+		s_bmt[1](e.target.innerHTML);
 		localStorage.setItem(CON.bmt, e.target.innerHTML)
 	}
 
 	function getLocalExercise() {
-				
-		let latex_pkg = localStorage.getItem(CON.latex_pkg)
-		const title = localStorage.getItem(CON.title)
-		const exercise = localStorage.getItem(CON.exercise)
-		const answer = localStorage.getItem(CON.answer)
-		const hints = localStorage.getItem(CON.hints)
-		const explain = localStorage.getItem(CON.explain)
-		let tags = localStorage.getItem(CON.tags)
-		
-		if(!latex_pkg) latex_pkg = '';
-		if(!tags) tags = '';
-		tags = tagsStrToArray(tags);
-		
+			
 		// PERROR - input validation
 		
-		function val_input(str) { 
-			// val_input - validate input
-			const q = str ? str.match(/<.*\/.*>/gms): '';
-			return q
-		}
-		function val_isTagValid(tagStr) {
-			return !/[^a-zA-Z0-9]/gms.test(tagStr);
-		}
+		let tags = localStorage.getItem(CON.tags)
+		let latex_pkg = localStorage.getItem(CON.latex_pkg)
+		if(!tags) tags = '';
+		if(!latex_pkg) latex_pkg = '';
+		tags = tagsStrToArray(tags);
 		
-		
-		for(let i=0; i< tags.length; i++) {
-			if(!val_isTagValid(tags[i])) {
-				window.alert(`invalid tag: ${tags[i]}`)
+		for(const [target, value] of Object.entries(TARGETS)) {
+			if(refs.current[target][0].match(/<.*\/.*>/gms)) {
+				window.alert("invalid input")
 				return
 			}
 		}
-		
-		if(
-			val_input(title) ||
-			val_input(exercise) ||
-			val_input(answer) ||
-			val_input(hints) ||
-			val_input(explain)
-		) {
-			window.alert("invalid input")
-			return
+		for(const tag of tags) {
+			if(/[^a-zA-Z0-9\s]/gms.test(tag)) {
+				window.alert(`invalid tag: ${tag}`);
+				return;
+			}
 		}
-		
+
 		// END_PERROR
 
-		if( title && answer ) {
+		if( refs.current[TARGETS.title][1] && 
+			refs.current[TARGETS.answer][1] ) {
 			
 			const local_exercise = { 
 				
@@ -236,17 +216,17 @@ function New(props){
 				latex_pkg: latex_pkg,
 				tags: tags,
 				
-				title		: refs.current[CON.title][1],
-				exercise	: refs.current[CON.exercise][1],
-				answer		: refs.current[CON.answer][1],
-				hints		: refs.current[CON.hints][1],
-				explain		: refs.current[CON.explain][1],
+				title		: refs.current[TARGETS.title][1],
+				exercise	: refs.current[TARGETS.exercise][1],
+				answer		: refs.current[TARGETS.answer][1],
+				hints		: refs.current[TARGETS.hints][1],
+				explain		: refs.current[TARGETS.explain][1],
 				
-				latex_title		: refs.current[CON.title][3],
-				latex_exercise	: refs.current[CON.exercise][3],
-				latex_answer	: refs.current[CON.answer][3],
-				latex_hints		: refs.current[CON.hints][3],
-				latex_explain	: refs.current[CON.explain][3],
+				latex_title		: refs.current[TARGETS.title][3],
+				latex_exercise	: refs.current[TARGETS.exercise][3],
+				latex_answer	: refs.current[TARGETS.answer][3],
+				latex_hints		: refs.current[TARGETS.hints][3],
+				latex_explain	: refs.current[TARGETS.explain][3],
 			
 			}
 			if(ctx.exercise_edit) {
@@ -257,10 +237,14 @@ function New(props){
 			return local_exercise;
 			
 		} else {
-			let str = 'You are missing:\n';
-			if(!title) { str += '* title (in the exercise tab)\n' }
-			if(!answer) { str += '* answer\n' }
-			window.alert(str)
+			let errorStr = 'You are missing:\n';
+			if(!refs.current[TARGETS.title][1]) { 
+				errorStr += '* title (in the exercise tab)\n' 
+			}
+			if(!refs.current[TARGETS.answer][1]) { 
+				errorStr += '* answer\n' 
+			}
+			window.alert(errorStr)
 		}
 	}
 	
@@ -274,6 +258,13 @@ function New(props){
 			.then(result=>{
 				if(!result['error']) {
 					window.alert('successfully uploaded exercises.')
+					for (const [key, value] of Object.entries(CON)) {
+						localStorage.removeItem(value);
+					}
+					for (const [key, value] of Object.entries(TARGETS)) {
+						localStorage.removeItem(value);
+					}
+					navigate(`/profile/${window.userId[0]}`)
 				}
 			})
 		} else {
@@ -286,6 +277,9 @@ function New(props){
 				if(!result['error']) {
 					window.alert('successfully updated exercises.')
 					for (const [key, value] of Object.entries(CON)) {
+						localStorage.removeItem(value);
+					}
+					for (const [key, value] of Object.entries(TARGETS)) {
 						localStorage.removeItem(value);
 					}
 					navigate(`/profile/${window.userId[0]}`)
@@ -308,7 +302,7 @@ function New(props){
 	}
 	
 	function genClassName(target) {
-		const condition = bmt[0]===target;
+		const condition = s_bmt[0]===target;
 		return (`
 			btnTab 
 			${condition ? 'color_btn_green' : 'color_btn_default'}
@@ -316,57 +310,70 @@ function New(props){
 	}
 		
 	useEffect(()=>{
-		
-		const temp_cond = (
-			ctx.mainState === MAIN_STATES.newExercise || 
-			ctx.mainState === MAIN_STATES.editInProgress
-		)
-	
-		if(temp_cond) {
-			let title = localStorage.getItem(CON.title)
-			let exercise = localStorage.getItem(CON.exercise)
-			let answer = localStorage.getItem(CON.answer)
-			let hints = localStorage.getItem(CON.hints)
-			let explain = localStorage.getItem(CON.explain)
-			updateRefs(CON.title, refs, title, false)
-			updateRefs(CON.exercise, refs, exercise, false)
-			updateRefs(CON.answer, refs, answer, false)
-			updateRefs(CON.hints, refs, hints, false)
-			updateRefs(CON.explain, refs, explain, false)
-		} else {
-			// meaning: ctx.mainState === MAIN_STATES.editInitial
-			const title = mainText2html(
-				ctx.exercise_edit, CON.title, true
-			);
-			const exercise = mainText2html(
-				ctx.exercise_edit, CON.exercise, true
-			);
-			const answer = mainText2html(
-				ctx.exercise_edit, CON.answer, true
-			);
-			const hints = mainText2html(
-				ctx.exercise_edit, CON.hints, true
-			);
-			const explain = mainText2html(
-				ctx.exercise_edit, CON.explain, true
-			);
-			updateRefs(CON.title, refs, title)
-			updateRefs(CON.exercise, refs, exercise)
-			updateRefs(CON.answer, refs, answer)
-			updateRefs(CON.hints, refs, hints)
-			updateRefs(CON.explain, refs, explain)
-		}
-	},[])
 
+		if(ctx.mainState!==MAIN_STATES.editInitial){
+			for (const [key, value] of Object.entries(TARGETS)) {
+				
+				let item = localStorage.getItem(value);
+				
+				if(!item) {
+					localStorage.setItem(value, '');
+					item = '["",{}]';
+				}
+				
+				item = JSON.parse(item);
+				
+				refs.current[key][1] = item[0];
+				refs.current[key][3] = item[1];
+	
+				for(const [index, latex] of Object.entries(item[1])) {
+					item[0] = item[0].replace(
+						`\$\$${index}\$\$`, 
+						`\$\$\$${latex}\$\$\$`
+					);
+				}
+				refs.current[key][0] = item[0];
+			
+				const node = document.getElementById(key);
+				if(node) node.value = item[0];
+			}
+		} else {
+			for (const [key, value] of Object.entries(TARGETS)) {
+				
+				let string = ctx.exercise_edit[key];
+				const replacment = ctx.exercise_edit[`latex_${key}`];
+				
+				localStorage.setItem(
+					key, 
+					JSON.stringify([string, replacment])
+				);
+				
+				refs.current[key][1] = string;
+				for(const [index, latex] of Object.entries(replacment)) {
+					string = string.replace(
+						`\$\$${index}\$\$`, 
+						`\$\$\$${latex}\$\$\$`
+					);
+				}
+				refs.current[key][0] = string;
+				refs.current[key][3] = replacment;
+				
+				const node = document.getElementById(key);
+				if(node) node.value = string;
+			}
+		}
+	},[s_bmt])
+	
+	
 	return(
 	<>
-		{bmt[0]===BMT_TARGETS.exercise && 
+		{s_bmt[0]===BMT_TARGETS.exercise && 
 			<Exercise refs={refs} ctx={ctx}/>
 		}
-		{bmt[0]===BMT_TARGETS.hints && 
+		{s_bmt[0]===BMT_TARGETS.hints && 
 			<Hints refs={refs} ctx={ctx}/>
 		}
-		{bmt[0]===BMT_TARGETS.explain && 
+		{s_bmt[0]===BMT_TARGETS.explain && 
 			<Explain refs={refs} ctx={ctx}/>
 		}
 		

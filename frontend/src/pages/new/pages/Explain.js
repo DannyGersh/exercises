@@ -1,45 +1,23 @@
 import {useEffect} from 'react'
-import {mainText2html} from '../../../shared/Functions'
+import {TARGETS, mainText2html} from '../../../shared/Functions'
 import {MAIN_STATES} from '../New'
 
 function Explain(props){
 		
 	const ctx = props.ctx;
 	const updateRefs = props.refs.current.update;
-
-	if(!localStorage.getItem('Explanation')) {
-		localStorage.setItem('Explanation', '');
-	}
-
-	useEffect(()=>{
-		
-		const temp_cond = (
-			ctx.mainState === MAIN_STATES.newExercise || 
-			ctx.mainState === MAIN_STATES.editInProgress
-		)
-		
-		if(temp_cond) {
-			document.getElementById('explain').value = 
-				localStorage.getItem('explain');
-		} else {
-			const explain = mainText2html(
-				ctx.exercise_edit, 'explain', true
-			);
-			document.getElementById('explain').value = explain;
-			localStorage.setItem('explain', explain);
-		}	
-	},[])
 	
 	return(
 		<div className='Exercise'>
 			<label htmlFor="AnswereTextArea">Explanation bodie</label>
 			
 			<textarea
-				id='explain'
-				onChange={(v)=>
-					updateRefs('explain', props.refs, v.target.value)
+				id={TARGETS.explain}
+				onChange={
+					(e)=>updateRefs(
+						TARGETS.explain, props.refs, e.target.value
+					)
 				}
-				defaultValue={localStorage.getItem('Explanation')}
 				className='ExerciseTextArea' 
 			/>
 			
