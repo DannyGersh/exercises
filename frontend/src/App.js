@@ -1,4 +1,6 @@
-import { useParams, BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import {useState} from 'react'
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import useWindowResize from './shared/Functions'
 import Home from './pages/home/Home'
 import New from './pages/new/New'
 import ExercisePage from './pages/exercisePage/ExercisePage'
@@ -6,12 +8,8 @@ import SearchPage from './pages/searchPage/SearchPage'
 import Profile from './pages/profile/Profile'
 import Register from './pages/register/Register'
 import AboutPage from './pages/about/AboutPage'
-
 import Nav from './shared/nav/Nav'
-import useWindowResize, {sendData} from './shared/Functions'
 import './shared/Global.css'
-
-import {useEffect, useState} from 'react'
 
 
 function NotFound() {
@@ -21,7 +19,8 @@ function NotFound() {
 
 function App() {
  
-  window.nrw = useWindowResize();
+  const s_render = useState(false);
+  window.nrw = useWindowResize(s_render);
   
   let tempUserId = 1;
   if(window.jsonData) {

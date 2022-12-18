@@ -2,14 +2,14 @@ import {useState, useRef} from 'react'
 import { Link, Navigate } from "react-router-dom";
 import {BtnTab} from '../../shared/buttons/Buttons'
 import {sendData} from '../../shared/Functions'
-//import ReCAPTCHA from "react-google-recaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 import '../../shared/Global.css'
 
 
 function Login(props) {
-	
-	const ref_cap = useRef(true)
-	const ref_terms = useRef(true)
+			
+	const ref_cap = useRef(false)
+	const ref_terms = useRef(false);
 	const ref_uname = useRef('');
 	const ref_password = useRef('');
 	const ref_confirm_password = useRef('');
@@ -150,12 +150,14 @@ function Login(props) {
 		</div>
 		
 		{ !window.isdebug &&
-			<h1>recaptcha</h1>
-		//<ReCAPTCHA
-    	//sitekey={window.isdebug ? "6Ldtj_AhAAAAAFpTIwb_0P_2bLLnk_cu-SRlYbb5": "6Ld73kkiAAAAAM7Pp9rgeUTA9uBZEdojcYiadpuk"}
-    	//onChange={()=>ref_cap.current=true}
-    	//onExpired={()=>ref_cap.current=false}
-  		///>
+		<ReCAPTCHA
+    	sitekey={!window.userId[0] ? 
+			'6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+			: 'TODO - create recaptcha key'
+		}
+    	onChange={()=>ref_cap.current=true}
+    	onExpired={()=>ref_cap.current=false}
+  		/>
   		}
 
   		<div style={{display:'flex', justifyContent: 'center'}}>
@@ -164,7 +166,7 @@ function Login(props) {
 				type="checkbox" name="terms"/>
   			<p>
 				I have read and agreed to the 
-				<a href={'/'}>terms and conditions</a>
+				<a href={'/terms.txt'}>terms and conditions</a>
 			</p>
   		</div>  
 
@@ -176,7 +178,7 @@ function Login(props) {
 			children='Sign up'
 		/>
  		
- 		{window.userId[0] && <Navigate to='/'/>}
+ 		{Boolean(window.userId[0]) && <Navigate to='/'/>}
  		
 		</>
     }

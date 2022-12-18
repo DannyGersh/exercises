@@ -183,7 +183,7 @@ function SendMessage(props) {
 
 		</div>	
 
-	  { states.s_dspSendMsg[0] &&
+	  { Boolean(states.s_dspSendMsg[0]) &&
 		<>
 		  <textarea id={id_sendMsg} rows='4' type='textarea'/>
 		  <br/>
@@ -237,7 +237,7 @@ function PopupMenue(props) {
 				<br/>
 			</p>
 			
-			{ window.userId[0] && 
+			{ Boolean(window.userId[0]) && 
 				<SendMessage ctx={ctx} states={states}/>
 			}	
 			<hr/>
@@ -366,7 +366,7 @@ function BottomMenue(props) {
 			}
 			
 			{/* like btn */}
-			{ window.userId[0] && !ctx.exercise_preview?
+			{ Boolean(window.userId[0]) && !ctx.exercise_preview?
 				<BtnOnOf 
 					className='btnRound'
 					c_isOn={ctx.c_isLike} 

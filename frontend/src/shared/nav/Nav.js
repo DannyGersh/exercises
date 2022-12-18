@@ -122,16 +122,23 @@ function Nav(props) {
 		<BtnTab>Home</BtnTab>
 		</Link>
 
-		<Link to='/new' onClick={h_btnClick}>
-		{userid && <BtnTab>New</BtnTab>}
-		</Link>
+		{Boolean(userid) && 
+			<Link to='/new' onClick={h_btnClick}>
+				<BtnTab>New</BtnTab>
+			</Link>
+		}
 
-		<Link to={`/profile/${userid}`} onClick={h_btnClick}>
-		{userid && <BtnTab>Profile</BtnTab>}			
-		</Link>
-
+		{Boolean(userid) && 
+			<Link to={`/profile/${userid}`} onClick={h_btnClick}>
+				<BtnTab>Profile</BtnTab>			
+			</Link>
+		}
+		
 		<Link to={userid ? '/' : '/login'} onClick={h_btnClick}>
-		<BtnTab onClick={h_logOut}>{userid ? 'Log out' : 'Log in'}</BtnTab>	
+			<BtnTab 
+				onClick={h_logOut}
+				children={userid ? 'Log out' : 'Log in'}
+			/>	
 		</Link>
 
 		<Link to='/about' onClick={h_btnClick}>

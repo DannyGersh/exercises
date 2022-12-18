@@ -1,6 +1,7 @@
 import json
 import psycopg2
 import os
+import re
 import pathlib
 import subprocess
 import traceback
@@ -29,21 +30,21 @@ conn.set_session(autocommit=True)
 cur = conn.cursor()
 cur.execute('SELECT version()')
 db_version = cur.fetchone()
-# print(db_version)
+#print(db_version)
 
 def list2SqlArr(List):
 	return '{%s}'%','.join(List)
 	
 
 def csrf_exempt_if_debug(func):
-    if DEBUG: 
-        return csrf_exempt(func)
-    else:
-        return func
+		if DEBUG: 
+				return csrf_exempt(func)
+		else:
+				return func
 
 def getStackTrace():
-    stackTrace = traceback.format_list(traceback.extract_stack(limit=10))
-    return ''.join(stackTrace) + traceback.format_exc()
+		stackTrace = traceback.format_list(traceback.extract_stack(limit=10))
+		return ''.join(stackTrace) + traceback.format_exc()
 
 def printError(msg):
 	print("\n-------ERROR-------\n")
@@ -52,15 +53,15 @@ def printError(msg):
 
 def sql_post_error(message, errorType, stackTrace=None):
 
-    message = message.replace("'", "''")
-    errorType = errorType.replace("'","''")
-    
-    if not stackTrace:
-        stackTrace = getStackTrace()
-    
-    stackTrace = stackTrace.replace("'", "''")
+		message = message.replace("'", "''")
+		errorType = errorType.replace("'","''")
+		
+		if not stackTrace:
+				stackTrace = getStackTrace()
+		
+		stackTrace = stackTrace.replace("'", "''")
 
-    cur.execute("insert into errors(error, type, stackTrace) values('%s', '%s', '%s')"%(message, errorType, stackTrace))            
+		cur.execute("insert into errors(error, type, stackTrace) values('%s', '%s', '%s')"%(message, errorType, stackTrace))            
 
 def genError(message, errorType, stackTrace=None):
 	if DEBUG: printError(message)
@@ -91,48 +92,54 @@ def fetch_try_except(func):
 
 def sql_try_except(func):
 
-    def wraper(*args, **kwargs):
-        try:
+		def wraper(*args, **kwargs):
+				try:
 
-            return func(*args, **kwargs)
+						return func(*args, **kwargs)
 
-        except Exception as exp:
-            
-            if DEBUG: printError(exp)
-            sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
-            return ERROR
+				except Exception as exp:
+						
+						if DEBUG: printError(exp)
+						sql_post_error(str(exp), str(type(exp)), getStackTrace()+traceback.format_exc())
+						return ERROR
 
-    return wraper
+		return wraper
 
 def safe_fetch(func):
-    
-    @csrf_exempt_if_debug
-    @fetch_try_except
-    def wraper(*args, **kwargs):
-        return func(*args, **kwargs)
+		
+	@csrf_exempt_if_debug
+	@fetch_try_except
+	def wraper(*args, **kwargs):
+		return func(*args, **kwargs)
 
-    return wraper
+	return wraper
 
 
 @sql_try_except
 def getSQL(directive, args=None):
 
-    res = []    
-    sql = None
-    command = directive[0]
-    protocall = directive[1]
+	res = []    
+	sql = None
+	command = directive[0]
+	protocall = directive[1]
 
-    if args:
-        command = command.format(**args)
+	if args:
+		if '@@' in command:
+			temp = args.copy()
+			for j in args:
+				temp[j] = re.sub('\s+', ' & ', args[j])
+			args = temp
+			
+		command = command.format(**args)
 
-    cur.execute(command)
-    sql = cur.fetchall()
+	cur.execute(command)
+	sql = cur.fetchall()
 
-    if sql:
-        for i in sql:
-            res.append({k:v for (k, v) in zip(protocall, i)})
+	if sql:
+		for i in sql:
+			res.append({k:v for (k, v) in zip(protocall, i)})
 
-    return res
+	return res
 
 @sql_try_except
 def postSQL(command, args=None):
@@ -171,36 +178,36 @@ def fetch_in(request, protocall):
 @fetch_try_except
 def fetch_out(request, protocall, data):
 
-    protocall = protocall['out']
-    
-    if len(protocall) != len(data):
-        genError(
+		protocall = protocall['out']
+		
+		if len(protocall) != len(data):
+				genError(
 			str_error_protocallNEQdata%(protocall.keys(), data.keys()), 
 			'type error'
 		)
-        return JsonError
+				return JsonError
 
-    for i in data:
-        if type(data[i]) != protocall[i]:
-            error = "expected %s, but got %s"%( protocall[i], type(data[i]) )
-            genError(error, 'type error')
-            return JsonError
-    
-    data['userId'] = request.user.id if request.user.id else 0
+		for i in data:
+				if type(data[i]) != protocall[i]:
+						error = "expected %s, but got %s"%( protocall[i], type(data[i]) )
+						genError(error, 'type error')
+						return JsonError
+		
+		data['userId'] = request.user.id if request.user.id else 0
  
-    return JsonResponse(data)
+		return JsonResponse(data)
 
 
 
 
 @safe_fetch
 def fetch_test(request):
-    
-    inData = json.loads(request.body.decode("utf-8"))
-    print("inData", inData)
-    print("request.user.id", request.user.id)
-    print("request.user", request.user)
-    return JsonResponse({'test123':'test123'})
+		
+		inData = json.loads(request.body.decode("utf-8"))
+		print("inData", inData)
+		print("request.user.id", request.user.id)
+		print("request.user", request.user)
+		return JsonResponse({'test123':'test123'})
 
 @safe_fetch
 def fetch_submitErrorSql(request):
@@ -216,7 +223,7 @@ def fetch_submitErrorSql(request):
 def fetch_home(request):
 
 	protocall = protocall_fetch_home
-    
+		
 	hotest = getSQL(sql_get_hotest)
 	latest = getSQL(sql_get_latest)
 	if latest == ERROR: return JsonError
@@ -264,11 +271,11 @@ def fetch_register_submit(request):
 		else:
 			login(request, user)
 			return fetch_out(request, protocall, {'userId': user.id})
-   
+	 
 @safe_fetch
 def fetch_logout(request):
-    logout(request)
-    return JsonSuccess
+		logout(request)
+		return JsonSuccess
 
 @safe_fetch
 def fetch_exercisePage(request):
@@ -344,8 +351,24 @@ def fetch_search(request):
 
 
 @safe_fetch
+def fetch_initialEdit(request):
+	
+	protocall = protocall_fetch_initialEdit
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+		
+	dir_user = DIR_USERS / str(inData['author'])
+	dir_ex = dir_user / str(inData['latex_dir'])
+	dir_temp = dir_user / 'temp'
+	
+	subprocess.Popen(['rm', '-r', dir_temp])
+	subprocess.Popen(['cp', '-r', dir_ex, dir_temp])
+
+	return JsonSuccess
+	
+@safe_fetch
 def fetch_addLatex(request):
-    
+		
 	protocall = protocall_fetch_addLatex
 	inData = fetch_in(request, protocall)
 	if inData == ERROR: return JsonError
@@ -361,7 +384,7 @@ def fetch_addLatex(request):
 	
 	if(res):
 		return genJsonError('could not compile latex')
-    
+		
 	return JsonSuccess
 
 @safe_fetch
@@ -372,7 +395,6 @@ def fetch_deleteLatex(request):
 	if inData == ERROR: return JsonError
 	
 	if not inData['userId']: inData['userId'] = 0
-	
 	dir_target = DIR_USERS / str(inData['userId']) / inData['dir_exercise'] / inData['target']
 	file_svg = dir_target / (str(inData['latexId'])+'.svg')        
 	
@@ -407,7 +429,7 @@ def fetch_submit_exercise(request):
 		if i != 'temp' and not os.path.basename(i).isnumeric():
 			subprocess.run(['rm', '-r', dir_user / i,])
 
-    # BEGIN validation
+		# BEGIN validation
 
 	temp_inData = inData.copy()
 
@@ -419,7 +441,7 @@ def fetch_submit_exercise(request):
 	for i in inData:
 		if i not in latex_targets and i not in ['latex_%s'%j for j in latex_targets]:
 			temp_inData.pop(i)
-    
+		
 	'''
 		per each target,
 		check if the latex directory
@@ -442,7 +464,7 @@ def fetch_submit_exercise(request):
 					
 			genError('js sais there should be different latex files in the server then there are', 'latex paths & files')
 
-    # END validation
+		# END validation
 
 	'''
 		create new unique 
@@ -461,7 +483,7 @@ def fetch_submit_exercise(request):
 	if 'temp' in listDir:
 		listDir.remove('temp')
 	listDir = [int(os.path.basename(i)) for i in listDir]
-    
+		
 	if listDir:
 		new_exercise_dir = max(listDir) + 1
 
@@ -473,7 +495,7 @@ def fetch_submit_exercise(request):
 	'''
 	subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
 	
-    # SQL
+		# SQL
 	sql_args = {
 		'author' : inData['userId'],          
 		'latex_dir' : new_exercise_dir,       
@@ -521,7 +543,7 @@ def fetch_update_exercise(request):
 		if i != 'temp' and not os.path.basename(i).isnumeric():
 			subprocess.run(['rm', '-r', dir_user / i,])
 
-    # BEGIN validation
+		# BEGIN validation
 
 	temp_inData = inData.copy()
 	
@@ -533,7 +555,7 @@ def fetch_update_exercise(request):
 	for i in inData:
 		if i not in latex_targets and i not in ['latex_%s'%j for j in latex_targets]:
 			temp_inData.pop(i)
-    
+		
 	'''
 		per each target,
 		check if the latex directory
@@ -549,7 +571,7 @@ def fetch_update_exercise(request):
 		ready = [i.split('.')[0] for i in os.listdir(dir_target) if i != 'texput.log']
 		expected = list(temp_inData['latex_%s'%i].keys())
 
-		if expected != ready:
+		if set(expected) != set(ready):
 			for j in ready:
 				if j not in expected:
 					subprocess.run(['rm', dir_target/ (j+'.svg')])
@@ -557,12 +579,12 @@ def fetch_update_exercise(request):
 			genError('js sais there should be different latex files in the server then there are', 'latex paths & files')
 			return JsonError
 
-    # END validation
+		# END validation
 
 	subprocess.run(['rm', '-r', dir_new_exercise])
 	subprocess.run(['cp', '-r', dir_temp, dir_new_exercise])
 
-    # SQL
+		# SQL
 	sql_args = {
 		'exerciseId': inData['exerciseId'],
 		'tags' : list2SqlArr(inData['tags']),
@@ -654,12 +676,12 @@ def fetch_like(request):
 	
 @ensure_csrf_cookie
 def home(request):
-    outData={'userId': request.user.id}
-    return render(request, 'index.html', context={'value':outData})
+		outData={'userId': request.user.id}
+		return render(request, 'index.html', context={'value':outData})
 
 def nonHome(request, slug):
-    outData={'userId': request.user.id}
-    return render(request, 'index.html', context={'value':outData})
+		outData={'userId': request.user.id}
+		return render(request, 'index.html', context={'value':outData})
 
 
 # routing is done in react - see App.js
@@ -689,4 +711,5 @@ urlpatterns = [
 	path('fetch/like/', fetch_like),
 	path('fetch/addLatex/', fetch_addLatex),
 	path('fetch/deleteLatex/', fetch_deleteLatex),	
+	path('fetch/initialEdit/', fetch_initialEdit),
 ]

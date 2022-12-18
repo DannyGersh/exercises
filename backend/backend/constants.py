@@ -762,7 +762,13 @@ protocall_fetch_sendMsg = {
 	'out': {},
 }
 
-
+protocall_fetch_initialEdit = {
+	'in': {
+		'latex_dir': str,
+		'author': int,
+	},
+	'out': {},
+}
 
 str_error_protocallNEQdata = '''
 len(protocall) != len(data)

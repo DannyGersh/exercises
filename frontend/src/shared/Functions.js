@@ -8,6 +8,7 @@ at which the app changes from
 narrow display mode to wide.
 */
 const windowBp = 50;
+window.isDebug = Boolean(window.jsonData);
 const MIN_PAGINATION = 2; // minimal number of displayed exercises
 export {MIN_PAGINATION}
 
@@ -50,17 +51,16 @@ function remToPx(rem) {
 export {remToPx};
 
 
-function useWindowResize(){
+function useWindowResize(s_render){
 
 	// on resize event, the entire app rerenders,
 	// so isNarrow gets recalculated
 	
 	const isNarrow = px2rem(window.innerWidth) < windowBp;
-	const s_renderApp = useState(false);
 
 	useEffect(()=>{
 		window.addEventListener('resize', ()=>{
-			s_renderApp[1](!s_renderApp[0])
+			s_render[1](!s_render[0])
 		});
 	},[])
 	

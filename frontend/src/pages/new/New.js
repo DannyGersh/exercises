@@ -50,9 +50,10 @@ function compileLatex(
 	// remove $$
 	let new_latex = temp.map(i=>i.substring(2,i.length-2)); 
 
-	let latex_pkg = localStorage.getItem(CON.latexp);
+	let latex_pkg = localStorage.getItem(CON.latex_pkg);
 	if(!latex_pkg) latex_pkg = ''; 
 
+	// delete latex
 	new Set(Object.entries(old_latex)).forEach(i=>{
 		if(!new_latex.includes(i[1])) {
 			if(compile) {
@@ -66,6 +67,7 @@ function compileLatex(
 			delete refs.current[target][3][i[0]];
 		} 
 	})
+	// add latex
 	new Set(new_latex).forEach((item, index)=>{
 		if(!Object.values(old_latex).includes(item)) {
 			let new_id = 0;
@@ -361,6 +363,10 @@ function New(props){
 				const node = document.getElementById(key);
 				if(node) node.value = string;
 			}
+			sendData('fetch/initialEdit', 'POST', {
+				'latex_dir': ctx.exercise_edit['latex_dir'],
+				'author': ctx.exercise_edit['author'],
+			})
 		}
 	},[s_bmt])
 	

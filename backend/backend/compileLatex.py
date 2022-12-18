@@ -60,7 +60,7 @@ def gen_svg(latex, latexid, dir_svg, packages):
 	with open(file_name + '.tex', 'w') as f:
 		# print(latex_a + packages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 		f.write(latex_a + packages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
-
+	print(latex_a + packages + latex_b+latex_c+'\n'+latex+'\n\n'+latex_d)
 	res = 0
 	try:
 		subprocess.Popen([

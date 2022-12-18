@@ -26,6 +26,13 @@ function MainBody(props) {
 		s_dspExNum[1](MIN_PAGINATION);
 	})
 
+	const temp = [];
+	exercises = exercises.filter(i=>{
+		const cond = !temp.includes(i['id']) 
+		temp.push(i['id'])
+		return cond;
+	})
+	
 	return(<>
 		
 		<h3 style={style_text}>Search results for: {ctx.searchTerm}</h3>
