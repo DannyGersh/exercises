@@ -1,6 +1,7 @@
 import {useEffect, useRef} from 'react'
 import {TARGETS, mainText2html} from '../../../shared/Functions'
 import {CON, MAIN_STATES} from '../New'
+import ToolTip from '../../../shared/tooltip/ToolTip'
 import './Shared.css'
 
 
@@ -21,27 +22,62 @@ function Exercise(props){
 			node_tags.value = def_tags;
 			node_latex_pkg.value = def_latex_pkg;
 		} else {
-			const def_tags = localStorage.getItem(CON.tags)
+			let def_tags = localStorage.getItem(CON.tags)
 			const def_latex_pkg = localStorage.getItem(CON.latex_pkg)
+			if(ctx.mainState === MAIN_STATES.newExercise && !def_tags) {
+				def_tags = 'private'
+			}
 			node_tags.value = def_tags;
 			node_latex_pkg.value = def_latex_pkg;
 		}
 	}, [ctx.s_bmt])
 
+	const str_tooltip_tags = `
+	comma separated list of tags.
+	the "private" tag keeps this 
+	exercise only accessible in your profile
+	`
+	const str_tooltip_latex_pkg = `
+	double comma separated list 
+	of latex packages. 
+	see the "latex" section 
+	below the tips
+	`	
+	const style_label = {display:'flex', alignItems:'center'};
+	
 	return(
 	<div className='Exercise'>
 		
+		<div style={style_label}>
 		<label>tags</label>
+		<ToolTip 
+			id1 = 'tooltip_tags1'
+			id2 = 'tooltip_tags2'
+			text = {str_tooltip_tags}
+			children='ⓘ'
+		/>	
+		</div>
+		
 		<input
 			id={CON.tags}
 			onChange={(e)=>
 				localStorage.setItem(CON.tags, e.target.value)
 			}
+			placeholder='private'
 			style={{width:'100%'}}
 			type="text" 
 		/>
 		
+		<div style={style_label}>
 		<label>latex packages</label>
+		<ToolTip 
+			id1 = 'tooltip_latex_pkg1'
+			id2 = 'tooltip_latex_pkg2'
+			text = {str_tooltip_latex_pkg}
+			children='ⓘ'
+		/>	
+		</div>
+		
 		<input
 			id={CON.latex_pkg}
 			onChange={(e)=>

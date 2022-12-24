@@ -1,4 +1,6 @@
 .tag{
+	box-shadow: var(--shadowBtn);
+	background-color: var(--champagne);
 	vertical-align: middle;
 	padding: 0.3rem;
 	margin: 0.1rem;

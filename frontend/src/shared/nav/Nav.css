@@ -7,6 +7,10 @@
 	padding: 0;
 	margin: 0;
 	align-items: center;
+
+	-webkit-box-shadow: -1px 8px 8px -9px rgba(0,0,0,0.72); 
+	box-shadow: -1px 8px 8px -9px rgba(0,0,0,0.72);
+
 }
 .dropDownNav{
 	display: flex;
@@ -35,6 +39,7 @@
 	width: 100%;
 }
 .searchBtn{
+	box-shadow: var(--shadowBtn);
 	background-color: var(--champagne);
 	border-radius: 100px 0px 0px 100px;
 	border-color: black;
@@ -46,7 +51,12 @@
 	background-repeat: no-repeat;
 	background-position: center;
 }
+.searchBtn:hover{
+	background-color: var(--champagne_hover);
+}
 .searchTextNarrow{
+    box-shadow: var(--shadowBtn);
+
 	vertical-align: center;
 	background-color: white;
 	border-radius: 0px 100px 100px 0px;

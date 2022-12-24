@@ -15,11 +15,14 @@
   --green_hover: #9fcc9f;
   --blue_hover: #6ba2f5;
   --brown_hover: #ef9f6b;
- 
-  --cardHeight: 15rem;
   
+  --font: "Georgia";
+  
+  --cardHeight: 15rem;
   --shadow: 3px 3px 3px #662900;
+  --shadowBtn: 1px 1px 1px 0 #555;
 }
+
 
 .color_static_default{
 	background-color: var(--champagne) !important;
@@ -120,14 +123,17 @@ body{
 }
 
 .btnTab{
+	font-family: var(--font);
+	color: black;
 	vertical-align: middle;
 	padding: 0.3rem;
 	margin: 0.1rem;
 	border-radius: 0.3rem;
-	border-color: #e7feff;
+	border-color: black;
 	border-width: 0.1rem;
 	border-style: solid;
 	white-space: nowrap;
+    box-shadow: var(--shadowBtn);
 }
 
 .btnRound{

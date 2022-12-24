@@ -83,6 +83,7 @@
 	-moz-user-select: none;    
 	-ms-user-select: none;      
 	user-select: none;
+	margin-right: .3rem;
 }
 .sendMessage:hover {
 	color: green;

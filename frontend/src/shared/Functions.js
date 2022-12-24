@@ -10,7 +10,8 @@ narrow display mode to wide.
 const windowBp = 50;
 window.isDebug = Boolean(window.jsonData);
 const MIN_PAGINATION = 2; // minimal number of displayed exercises
-export {MIN_PAGINATION}
+const REG_NEW_LINE = /(\r\n|\n|\r|\t)/gm;
+export {MIN_PAGINATION, REG_NEW_LINE}
 
 const TARGETS = {
 	title: 'title',

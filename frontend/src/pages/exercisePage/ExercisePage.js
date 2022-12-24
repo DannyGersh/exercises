@@ -176,10 +176,8 @@ function SendMessage(props) {
 			id1 = 'ToolTip1'
 			id2 = 'ToolTip2'
 			text = {info_message}
-		>
-		<button className='btnRound info'>i</button>
-		</ToolTip>	
-	
+			children='ⓘ'
+		/>
 
 		</div>	
 

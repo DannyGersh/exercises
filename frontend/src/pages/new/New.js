@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useCallback} from 'react'
 import {useNavigate, useLocation} from "react-router-dom";
-import {TARGETS, mainText2html, sendData} from '../../shared/Functions'
+import {REG_NEW_LINE, TARGETS, mainText2html, sendData} from '../../shared/Functions'
 import regex_escape from '../../shared/regex_escape'
 import Btn, {BtnTab} from '../../shared/buttons/Buttons'
 import Exercise from './pages/Exercise'
@@ -250,10 +250,21 @@ function New(props){
 		}
 	}
 	
+	const str_wdnConf_nonPrivate = `
+	this exercises does not contain the "private" tag, 
+	thus it will be public. 
+	continue ?
+	`.replace(REG_NEW_LINE, '');
+	
 	function h_submit() {
 		
 		const local_exercise = getLocalExercise();
 		if(!local_exercise) return
+		
+		console.log(local_exercise['tags'])
+		if(!local_exercise['tags'].includes('private')) {
+			if(!window.confirm(str_wdnConf_nonPrivate)) return;
+		}
 		
 		if(!ctx.exercise_edit) {
 			sendData('fetch/submitExercise', 'POST', local_exercise)
@@ -352,7 +363,7 @@ function New(props){
 				
 				refs.current[key][1] = string;
 				for(const [index, latex] of Object.entries(replacment)) {
-					string = string.replace(
+					string = string.replaceAll(
 						`\$\$${index}\$\$`, 
 						`\$\$\$${latex}\$\$\$`
 					);

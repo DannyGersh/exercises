@@ -41,13 +41,15 @@ function ToolTip(props) {
 			
 			// when tooltip goes outside window
 			if(rect.right > width) {
-				const fin_width = (width - rect.left - 50).toString() + 'px';
+				const fin_width = 
+					`${(width - rect.left - 50).toString()}px`;
 				ref.current.style.width = fin_width;
 				ref.current.style.whiteSpace = 'unset';
 				rect = elm2.getBoundingClientRect();
 			}
 			if(rect.bottom > height) {
-				const fin_top = (rect.top - (rect.bottom - height)).toString()+'px';
+				const fin_top = 
+					`${(rect.top - (rect.bottom - height)).toString()}px`;
 				ref.current.style.position = 'fixed'
 				ref.current.style.top = fin_top;
 			}

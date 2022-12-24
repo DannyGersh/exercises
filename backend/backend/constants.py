@@ -94,6 +94,10 @@ sql_get_hotest = (
     latex_exercise
 
     from exercises
+    
+    where
+	not ('private' = any(tags))
+    
     order by cardinality(rating) desc
     limit 10
     '''
@@ -129,6 +133,10 @@ sql_get_latest = (
     latex_exercise
 
     from exercises
+    
+    where
+	not ('private' = any(tags))
+    
     order by creationdate desc
     limit 10
     '''
@@ -361,6 +369,8 @@ sql_get_search_by_tag = (
 		select bool_or(similarity('{searchTerm}', data) > %s) 
 		from unnest(tags) as data
 	)
+	and
+	not ('private' = any(tags))
 
 	order by ( 
 		select max(similarity('{searchTerm}',data)) 
@@ -405,7 +415,8 @@ sql_get_search_by_title = (
     where 
     to_tsvector('english', title)
     @@ to_tsquery('english', '{searchTerm}')
-	
+	and
+	not ('private' = any(tags))
     '''
     ,
 
@@ -444,7 +455,8 @@ sql_get_search_by_exercise = (
     where 
     to_tsvector('english', exercise)
     @@ to_tsquery('english', '{searchTerm}')
-	
+	and
+	not ('private' = any(tags))
     '''
     ,
 
