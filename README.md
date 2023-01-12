@@ -6,14 +6,39 @@ An exercise could be any thing from solving a linear set of equations to solving
 
 the site fully supports latex, hence any field of study of any level can be expressed in any way. 
 
-frontend - React
-backend - Django
-server - Nginx
-database - PostgreSQL
+* frontend - React
+* backend - Django
+* server - Nginx
+* database - PostgreSQL
+
+## latex 
 
 the real challenge was the implementation of latex. basically when the user types for example "$$latex$$", then "latex" is compiled by the standard latex-live compiler to pdf, then the pdf is cropped and converted to an svg image. 
 
-the user input text is parsed and converts the latex expressions to their corresponding svg image id's (which is allso the svg file names) so for example "this is a $$latex$$ example" would be converted to "this is a 0 example"
+when the user creates an exercise, the user input text is parsed, converting the latex expressions to their corresponding id's so for example:
+
+-- this is a "$$latex$$" example --
+
+would be converted to:
+
+-- this is a "$$0$$" example -- 
+
+(without the quotation mark) and 0.svg while be stored in the server's file system.
+the database stores the parser output text together with a json string as follows:
+
+* "... example "$$0$$" yadayada "$$1$$" more yadayada ..."
+* {"0": "latex1", 1: "latex2"}
+
+so when an exercise is requested, the parser replaces the ids with the appropriate <img> tag:
+
+* "... example <_img src="/../0.svg"> yadayada <_img src="/../1.svg"> more yadayada ..."
+
+and when a user updates an exercise, the editor loads the raw text as it was when created.
+
+this approach was chosen to keep the information ordered and concise, so to prevent for example the normal text "0" to be formatted, and in general prevent unwanted behavior that was not forseen.
+
+
+## clone and run the project for development
 
 ```console
 git clone https://github.com/DannyGersh/exercises.git && cd exercises
