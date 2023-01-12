@@ -13,7 +13,7 @@ the site fully supports latex, hence any field of study of any level can be expr
 
 ## latex 
 
-the real challenge was the implementation of latex. basically when the user types for example "$$latex$$", then "latex" is compiled by the standard latex-live compiler to pdf, then the pdf is cropped and converted to an svg image. 
+the real challenge was the implementation of latex. basically when the user types for example "$$latex$$", then "latex" is compiled by the standard latex-live compiler to pdf, then the pdf is cropped and converted to an svg image. this approach ensures the most professional and standardized result as the latex compiler is the de-facto standard for technical and scientific literature.
 
 when the user creates an exercise, the user input text is parsed, converting the latex expressions to their corresponding id's so for example:
 
