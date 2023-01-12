@@ -24,28 +24,37 @@ PATH_MAIN = BASE_DIR.parent.absolute()
 SECRET_KEY = 'django-insecure-r5h0)-lfid5aw-(s3bs=m9l^%fxq36%=m(#p66(&v$*p3an!fj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1', 
+    '127.0.0.1:3000',
     'localhost', 
-    'localhost:3000'
+    'localhost:3000',
+    'ididthisforu.com',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000/register/', 
     'http://localhost', 
     'http://127.0.0.1', 
     'http://localhost:3000',
+    'https://ididthisforu.com',
+    'https://www.ididthisforu.com',
 ]
 CORS_ALLOWED_ORIGINS = [
+	'http://127.0.0.1',
+	'http://127.0.0.1:3000',
     "http://localhost",
     "http://localhost:3000",
+    'https://www.ididthisforu.com',
 ]
 CORS_ALLOW_METHODS = [
     'GET','POST'
 ]
 CORS_ORIGIN_WHITELIST = (
+	'http://127.0.0.1',
+	'http://127.0.0.1:3000',
     'http://localhost:3000',
+    'https://www.ididthisforu.com',
 )
 # CORS_ALLOW_ALL_ORIGINS = True
 
@@ -80,7 +89,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            PATH_MAIN / 'frontend' / 'build',
+            PATH_MAIN / 'static' / 'build',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -148,7 +157,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    PATH_MAIN / "frontend" / 'build' / 'static',
+    #PATH_MAIN / "frontend" / 'build' / 'static',
+    PATH_MAIN / 'static' / 'build' / 'static',
 ]
 
 # Default primary key field type

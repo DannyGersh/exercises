@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import {sendData, MIN_PAGINATION} from '../../shared/Functions'
 import {BtnTab, BtnShowMore} from '../../shared/buttons/Buttons'
+import Loading from '../../shared/loading/Loading'
 import ExerciseCard from '../../shared/exerciseCard/ExerciseCard'
 
 
@@ -11,16 +12,18 @@ function Home(props) {
 	// s_ms - menue Selection - true: hottest, false: latest
 	const s_ms = useState(true); 
 	const s_dspExNum = useState(MIN_PAGINATION); 
+	const s_finLoad = useState(false);
 	
 	useEffect(()=>{
 		sendData('fetch/home')
 		.then(data=>{
 			latest[1](data['latest']);
 			hotest[1](data['hotest']);
+			s_finLoad[1](true);
 		})	
 	},[])
 	
-	function h_ms(isHottest) {
+	function h_ms(isHottest) { // handle menue selection
 		s_ms[1](isHottest);
 		s_dspExNum[1](MIN_PAGINATION);
 	}
@@ -36,7 +39,7 @@ function Home(props) {
 	return(
 	<>		
 		<center>
-		
+
 		<h1>
 			www.ididthisforu.com 
 			 &nbsp;<font color='green'>Alpha</font>
@@ -63,10 +66,14 @@ function Home(props) {
 		</center>
 		
 		<div className='gridContainer'>
+		{ !Boolean(s_finLoad[0]) &&
+			<Loading/>
+		}
+
 		{ exercises.map( (item,index) =>
 			<ExerciseCard
 				userId={window.userId[0]}
-				narrowWindow={false}
+				narrowWindow={window.nrw}
 				key={index}
 				url={`/exercise/${item['id']}`} 
 				exercise={item}

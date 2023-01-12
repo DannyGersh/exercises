@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom';
 import {sendData, MIN_PAGINATION} from '../../shared/Functions'
 import {BtnTab, BtnShowMore} from '../../shared/buttons/Buttons'
+import Loading from '../../shared/loading/Loading'
 import ExerciseCard from '../../shared/exerciseCard/ExerciseCard'
 
 
@@ -38,6 +39,10 @@ function MainBody(props) {
 		<h3 style={style_text}>Search results for: {ctx.searchTerm}</h3>
 		{!isAnyEx &&
 			<p style={style_text}>no matches found ...</p>
+		}
+		
+		{!ctx.s_finLoad[0] &&
+			<Loading vcenter={true}/>
 		}
 		
 		<div className='gridContainer'>

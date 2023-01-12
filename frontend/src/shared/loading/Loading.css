@@ -1,15 +1,3 @@
-.NewBottomMenue{
-	display: flex;
-	flex-wrap: wrap;
-	position: fixed;
-	bottom: 0px;
-	left: 0px;
-	width: 100%;
-	background-color: var(--pink);
-    justify-content: center;
-}
-
-
 .lds-ring {
   display: inline-block;
   position: relative;

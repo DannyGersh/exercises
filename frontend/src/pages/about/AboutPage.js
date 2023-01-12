@@ -3,13 +3,13 @@ import './AboutPage.css'
 const str_about = `
 This website I built for those who 
 seek to share their passion and knowledge. 
-exercises are a fundamental block of learning,
+Exercises are a fundamental block of learning,
 given interesting exercises, 
 one can accelerate and gain not only new skills, 
 but also new passion for the subject of study.
-for those who upload an exercise I say, 
+For those who upload an exercise I say, 
 as many have told before me: 
-"teaching is the best way of learning".
+"Teaching is the best way of learning".
 `
 const str_contact = `
 send your message to 

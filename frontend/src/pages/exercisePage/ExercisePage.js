@@ -1,11 +1,11 @@
 import {useCallback, useState, useEffect, useRef} from 'react'
 import {useParams, useLocation, Link} from "react-router-dom";
-
 import {sendData, mainText2html} from '../../shared/Functions'
 import useController from '../../shared/Hooks'
 import Btn, {BtnOnOf, BtnRadio} from '../../shared/buttons/Buttons'
 import ToolTip from '../../shared/tooltip/ToolTip'
 import Tag from '../../shared/tag/Tag'
+import Loading from '../../shared/loading/Loading'
 import './ExercisePage.css'
 
 
@@ -90,6 +90,10 @@ function ExerciseBody(props) {
 	
 	<div className='vscroll' style={style_main}>
 
+		{ctx.s_finLoad[0] !== true &&
+			<Loading vcenter={true}/>
+		}
+		
 		<div id={BTM_TARGETS.title} 
 			className='textWithLatex'
 		/>

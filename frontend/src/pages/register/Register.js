@@ -2,6 +2,7 @@ import {useState, useRef} from 'react'
 import { Link, Navigate } from "react-router-dom";
 import {BtnTab} from '../../shared/buttons/Buttons'
 import {sendData} from '../../shared/Functions'
+import {message_confirm_password} from '../../shared/Messages';
 import ReCAPTCHA from "react-google-recaptcha";
 import '../../shared/Global.css'
 
@@ -64,6 +65,10 @@ function Login(props) {
 	  		// this is to ensure the script keeps on going.
 	  	}
 
+		if(!window.confirm(message_confirm_password)) {
+			return;
+		}
+		
   		sendData('fetch/register_submit', 'POST', {
   			'isLogin': props.isLogin,
 			'uname': ref_uname.current.value,
@@ -151,9 +156,9 @@ function Login(props) {
 		
 		{ !window.isdebug &&
 		<ReCAPTCHA
-    	sitekey={!window.userId[0] ? 
+    	sitekey={Boolean(window.isDebug) ? 
 			'6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-			: 'TODO - create recaptcha key'
+			: '6LcuHc4jAAAAAJZ4TULnXONYgmbDcwoBf7YHgrT0'
 		}
     	onChange={()=>ref_cap.current=true}
     	onExpired={()=>ref_cap.current=false}
@@ -165,8 +170,8 @@ function Login(props) {
 				onClick={(e)=>ref_terms.current=e.target.checked} 
 				type="checkbox" name="terms"/>
   			<p>
-				I have read and agreed to the 
-				<a href={'/terms.txt'}>terms and conditions</a>
+				I have read and agreed to the &nbsp;
+				<a href='/static/terms.txt'>terms and conditions</a>
 			</p>
   		</div>  
 

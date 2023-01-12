@@ -1,3 +1,4 @@
+
 import json
 import psycopg2
 import os
@@ -572,12 +573,23 @@ def fetch_update_exercise(request):
 		expected = list(temp_inData['latex_%s'%i].keys())
 
 		if set(expected) != set(ready):
+			li = []
 			for j in ready:
 				if j not in expected:
+					li.append(dir_target/ (j+'.?'))
 					subprocess.run(['rm', dir_target/ (j+'.svg')])
-					
-			genError('js sais there should be different latex files in the server then there are', 'latex paths & files')
-			return JsonError
+					subprocess.run(['rm', dir_target/ (j+'.tex')])
+					subprocess.run(['rm', dir_target/ (j+'.*')])
+
+			sql_post_error('''
+				js sais there should be different latex files 
+				in the server then there are.
+				ready: %s
+				expected: %s
+				files not in expected: %s
+			'''%(ready, expected, li), 
+			'latex paths & files'
+			)
 
 		# END validation
 
@@ -679,9 +691,20 @@ def home(request):
 		outData={'userId': request.user.id}
 		return render(request, 'index.html', context={'value':outData})
 
-def nonHome(request, slug):
-		outData={'userId': request.user.id}
-		return render(request, 'index.html', context={'value':outData})
+@ensure_csrf_cookie
+def nonHome1(request, slug1):
+	outData={'userId': request.user.id}
+	return render(request, 'index.html', context={'value':outData})
+
+@ensure_csrf_cookie
+def nonHome2(request, slug1, slug2):
+	outData={'userId': request.user.id}
+	return render(request, 'index.html', context={'value':outData})
+
+@ensure_csrf_cookie
+def nonHome3(request, slug1, slug2, slug3):
+	outData={'userId': request.user.id}
+	return render(request, 'index.html', context={'value':outData})
 
 
 # routing is done in react - see App.js
@@ -691,7 +714,6 @@ def nonHome(request, slug):
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('', home), 
-	path('<slug:slug>/', nonHome), 
 	
 	path('fetch/test123/', fetch_test),
 	path('fetch/submitErrorSql/', fetch_submitErrorSql),
@@ -712,4 +734,8 @@ urlpatterns = [
 	path('fetch/addLatex/', fetch_addLatex),
 	path('fetch/deleteLatex/', fetch_deleteLatex),	
 	path('fetch/initialEdit/', fetch_initialEdit),
+
+	path('<slug:slug1>/', nonHome1),
+	path('<slug:slug1>/<slug:slug2>/', nonHome2),
+	path('<slug:slug1>/<slug:slug2>/<slug:slug3>/', nonHome3),
 ]

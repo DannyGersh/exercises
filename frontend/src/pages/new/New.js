@@ -261,7 +261,6 @@ function New(props){
 		const local_exercise = getLocalExercise();
 		if(!local_exercise) return
 		
-		console.log(local_exercise['tags'])
 		if(!local_exercise['tags'].includes('private')) {
 			if(!window.confirm(str_wdnConf_nonPrivate)) return;
 		}

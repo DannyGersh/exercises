@@ -8,8 +8,9 @@ at which the app changes from
 narrow display mode to wide.
 */
 const windowBp = 50;
-window.isDebug = Boolean(window.jsonData);
-const MIN_PAGINATION = 2; // minimal number of displayed exercises
+window.isDebug = false;
+window.url_base = window.isDebug ? 'http://localhost/' : 'https://www.ididthisforu.com/';
+const MIN_PAGINATION = 8; // minimal number of displayed exercises
 const REG_NEW_LINE = /(\r\n|\n|\r|\t)/gm;
 export {MIN_PAGINATION, REG_NEW_LINE}
 
@@ -129,12 +130,7 @@ async function raw_sendData(url, methode='GET', data={} ) {
 		url += '/'
 	}
 
-	if(window.isdebug) {
-		url = 'http://localhost/' + url
-	} else {
-		//url = 'https://www.ididthisforu.com/' + url
-		url = 'http://localhost/' + url
-	}
+	url = window.url_base + url;
 
 	if(methode==='POST') {
 		//throw(getCookie("csrftoken"))
@@ -250,14 +246,15 @@ function mainText2html(exercise, target, isEdit=false) {
 
 			if(!isEdit) {
 				const path = [
-					'http://localhost/static/users', 
+					window.url_base,
+					'static/users', 
 					exercise['author'],
 					exercise['latex_dir'],
 					target,
 					index
 				].join('/')
 				textList[i] = `<img 
-					style="max-width: 100%;" 
+					style="max-width: 100%; vertical-align: middle;" 
 					src="${path}.svg?t=${timeStamp}"
 				>`
 			} else {

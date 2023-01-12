@@ -1,5 +1,6 @@
 import {useState, useEffect, useRef} from 'react'
-import {Link, useParams} from "react-router-dom";
+import {useNavigate, Link, useParams} from "react-router-dom";
+import Loading from '../../shared/loading/Loading'
 
 import {
 	MIN_PAGINATION, 
@@ -205,6 +206,10 @@ function ClientWindow(props) {
 	return(
 	<center className='display'>
 	
+	{ ctx.s_uname[0] === null && 
+		<Loading/>
+	}
+	
 	{ isRender.authored && ex_authored.map((item, index)=>
 		<ExerciseCard
 			userId={window.userId[0]}
@@ -284,7 +289,8 @@ function MainWindow(props) {
 function Profile() {
 	
 	const { userId } = useParams();
-	
+	const navigate = useNavigate();
+
 	const ctx = {		
 		s_uname: useState(null),
 		r_authored: useRef(null),
@@ -293,6 +299,15 @@ function Profile() {
 	}
 	
 	useEffect(()=>{
+		
+		if(!parseInt(window.userId)) {
+			window.alert("you need to sign in to view this page");
+			navigate(-1);
+		}
+		if(parseInt(userId) !== parseInt(window.userId)) {
+			window.alert("you can't view this page");
+			navigate(-1);
+		}
 		
 		sendData('fetch/profile', 'POST', {
 			'userId': parseInt(userId),
