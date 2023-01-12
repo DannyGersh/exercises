@@ -1,14 +1,12 @@
 ```console
-git clone https://github.com/DannyGersh/exercises.git
-```
-```console
-cd exercises
+git clone https://github.com/DannyGersh/exercises.git && cd exercises
 ```
 build docker image and create container:
 ```console
 docker built -t server/img_ididthisforu
 ```
-the following command creates a container of the image that shares the root dir and ports 80, 8000, 3000. make sure you are at the root directorie and type:
+the following command creates a container of the image that shares the root dir and ports 80, 8000, 3000. the entire project is contained within "/volume" dir (inside docker).
+make sure you are at the root directorie and type:
 ```console
 docker run -v $PWD:/volume -p 80:80 -p 8000:8000 -p 3000:3000 --name ididthisforu -it img_ididthisforu /bin/bash
 ```
