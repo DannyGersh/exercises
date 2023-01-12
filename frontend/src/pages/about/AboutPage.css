@@ -1,0 +1,16 @@
+
+table {
+  width: 100%;
+  border: 1px solid #000;
+}
+
+th {
+  background-color: var(--green);
+  text-align: left;
+}
+
+td {
+  background-color: var(--pink);
+  text-align: left;
+  padding: 1rem;
+}

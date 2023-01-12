@@ -1,0 +1,27 @@
+.card {
+	display: inline-block;
+	position: relative;
+	border-radius: .5rem;
+	background-color: #fbceb1;
+	margin: 1rem;
+	padding: 1rem;
+	width: calc(100% - 4rem);
+	border: none;
+	text-align: left;
+	height: var(--cardHeight);
+	overflow: hidden;
+	box-shadow: var(--shadow);
+}
+.redirect:hover {
+	cursor: pointer;
+}
+
+.narrowWindow{
+	width: calc(100% - 5rem);
+	height: unset;
+	min-height: 10rem;
+	max-height: var(--cardHeight);
+}
+.wideWindow{
+	width: calc(50% - 5rem);
+}

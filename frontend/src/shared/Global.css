@@ -1,0 +1,159 @@
+
+:root {
+  --backGround: #faebd7;	
+  --champagne: #fad6a5;
+  --champagne_hover: #eac695;
+  --champagne_active: #dab685;
+  
+  --pink: #fbceb1;
+  --red: #ff7676;
+  --green: #8fbc8f;
+  --blue: #5b92e5;
+  --blue2: #2275ab;
+  --brown: #ffaf7b;
+  --red_hover: #ff8686;
+  --green_hover: #9fcc9f;
+  --blue_hover: #6ba2f5;
+  --brown_hover: #ef9f6b;
+  
+  --font: "Georgia";
+  
+  --cardHeight: 15rem;
+  --shadow: 3px 3px 3px #662900;
+  --shadowBtn: 1px 1px 1px 0 #555;
+}
+
+
+.color_static_default{
+	background-color: var(--champagne) !important;
+}
+.color_static_green{
+	background-color: var(--green) !important;
+}
+.color_static_red{
+	background-color: var(--red) !important;
+}
+.color_static_blue{
+	color: white;
+	background-color: var(--blue) !important;
+}
+.color_static_brown{
+	background-color: var(--brown) !important;
+}
+
+.color_btn_default{
+	background-color: var(--champagne) !important;
+}
+.color_btn_default:hover{
+	background-color: var(--champagne_hover) !important;
+}
+.color_btn_default:active{
+	background-color: var(--champagne) !important;
+}
+
+.color_btn_green{
+	background-color: var(--green) !important;
+}
+.color_btn_green:hover{
+	background-color: var(--green_hover) !important;
+}
+.color_btn_green:active{
+	background-color: var(--green) !important;
+}
+
+.color_btn_red{
+	background-color: var(--red) !important;
+}
+.color_btn_red:hover{
+	background-color: var(--red_hover) !important;
+}
+.color_btn_red:active{
+	background-color: var(--red) !important;
+}
+
+.color_btn_blue{
+	color: white;
+	background-color: var(--blue) !important;
+}
+.color_btn_blue:hover{
+	background-color: var(--blue_hover) !important;
+}
+.color_btn_blue:active{
+	background-color: var(--blue) !important;
+}
+
+.color_btn_brown{
+	background-color: var(--brown) !important;
+}
+.color_btn_brown:hover{
+	background-color: var(--brown_hover) !important;
+}
+.color_btn_brown:active{
+	background-color: var(--brown) !important;
+}
+
+
+
+
+body{
+	background-color: #faebd7;
+}
+.hscroll{
+	overflow: auto;
+	white-space: nowrap;
+}
+.vscroll{
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.gridContainer{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.vertical-center {
+  width: 100%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
+
+.latex{
+	margin-bottom: -.3rem;
+	border-radius: 0.3rem; 
+	padding: 0.3rem; 
+	white-space: break-spaces;
+}
+
+.btnTab{
+	font-family: var(--font);
+	color: black;
+	vertical-align: middle;
+	padding: 0.3rem;
+	margin: 0.1rem;
+	border-radius: 0.3rem;
+	border-color: black;
+	border-width: 0.1rem;
+	border-style: solid;
+	white-space: nowrap;
+    box-shadow: var(--shadowBtn);
+}
+
+.btnRound{
+	white-space: pre-wrap;
+	vertical-align: middle;
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	background-color: var(--blue);
+	color: white;
+	border: none;
+	height: 3rem;
+	width: 3rem;
+	border-radius: 50%;
+}
+
+

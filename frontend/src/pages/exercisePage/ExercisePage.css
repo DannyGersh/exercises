@@ -1,0 +1,102 @@
+
+
+.textWithLatex {
+	white-space: break-spaces;
+}
+.clientBody {
+	/* 
+	client is the portion of the window	
+	that contains the title, exercise,	
+	answer, hints and explanation.
+	in other words, everything below the 
+	navbar	and above the menus bellow	
+	*/
+	position: absolute;
+	top: 2rem;
+	height: calc(100% - 6rem);
+	width: calc(100% - 1rem);
+	overflow: auto;
+}
+
+
+.ExercisePage_bottomMenue {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: nowrap;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	background-color: var(--pink);
+}
+.bottomLeft {
+	position: relative;
+	flex-shrink: 0;
+	border-radius: 100px;
+	border-color: #e7feff;
+	border-width: 0.1rem;
+	border-style: solid;
+	width: 2rem;
+	height: 1.8rem;
+	margin: 0.5rem;
+}
+.tags{
+	height: 2.8rem;
+	position: relative;
+	bottom: -0.4rem;
+}
+.bottomRight {
+	flex-shrink: 0;
+}
+
+
+.additionalMenue {
+    position: absolute;
+    left: 0.3rem;
+    bottom: 4rem;
+    background-color: #5b92e5;
+    padding: 0.3rem;
+    overflow-wrap: break-word;
+    border-radius: 0.3rem;
+	color: white;
+}
+.additionalArrow {
+    position: fixed;
+    left: 0.9rem;
+    bottom: 3.5rem;
+    background-color: #5b92e5;
+    width: 1rem;
+    height: 1rem;
+    transform: rotate(45deg);
+}
+.report {
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+}
+.report:hover {
+	color: red;
+}
+.sendMessage{
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+	margin-right: .3rem;
+}
+.sendMessage:hover {
+	color: green;
+}
+.info {
+	width: 1.3rem !important;
+	height: 1.3rem  !important;
+	border-color: black  !important;
+	border-width: 0.1rem !important;
+	border-style: solid !important;
+	margin-left: 1rem !important;
+}
+
+
+
+

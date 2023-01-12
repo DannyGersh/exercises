@@ -1,0 +1,28 @@
+.exerciseCard_btm {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: nowrap;
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background-color: var(--pink);
+}
+.exerciseCard_btm_tags{
+	height: 2.8rem;
+	position: relative;
+	bottom: -0.4rem;
+}
+.exerciseCard_btm_like {
+	flex-shrink: 0;
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+
+
+.topRightExerciseCard{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 0.6rem;
+}

@@ -1,0 +1,39 @@
+.Exercise{
+	padding: 1rem;
+}
+.ExerciseTextArea{
+	width: 100%;
+	height: 50vh;
+	resize: none;
+}
+.ExerciseInput{
+	display: inline;
+	width: calc(100% - 5rem);
+	float: right;
+	margin-left: auto;
+}
+
+
+.hoverGreen{
+	background-color: var(--champagne) !important;
+}
+.hoverGreen:hover{
+	background-color: var(--DKgreen_hover) !important;
+}
+.hoverGreen:active{
+	background-color: var(--DKgreen) !important;
+}
+
+.hoverRed{
+	background-color: var(--champagne) !important;
+}
+.hoverRed:hover{
+	background-color: var(--red_hover) !important;
+}
+.hoverRed:active{
+	background-color: var(--red) !important;
+}
+
+.tips{
+	margin: 0rem 1rem 0rem 0rem;
+}

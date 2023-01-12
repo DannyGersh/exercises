@@ -1,0 +1,36 @@
+
+.tab-container {
+	margin-left: 1rem;
+	margin-right: 1rem;
+	border-radius: .3rem .3rem 0 0;
+	background-color: var(--pink);
+}
+	
+.display {
+	margin: 0 1rem 1rem 1rem;
+	padding: .3rem;
+	border-radius: 0 0 .3rem .3rem;
+	background-color: var(--brown);
+}
+
+.message {
+	display: flex;
+	justify-content: space-between; 
+	width: calc(100% - 4rem);
+	word-wrap: break-word;
+	height: unset;
+	min-height: 1rem;
+}
+.messageBody {
+	display: inline-block;
+	word-break: break-word;
+}
+.messagesDot {
+	background-color: #ff6666; 
+	width: 0.5rem; 
+	height: 0.5rem;
+	border-radius: 50%;
+	position: relative;
+	top: -2rem;
+	left: 11.6rem;
+}

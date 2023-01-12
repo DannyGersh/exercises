@@ -1,0 +1,12 @@
+.tag{
+	box-shadow: var(--shadowBtn);
+	background-color: var(--champagne);
+	vertical-align: middle;
+	padding: 0.3rem;
+	margin: 0.1rem;
+	border-radius: 100px;
+	border-color: #e7feff;
+	border-width: 0.1rem;
+	border-style: solid;
+	height: 1.8rem;
+}
