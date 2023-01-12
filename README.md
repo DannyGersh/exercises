@@ -1,29 +1,29 @@
 ```console
-git clone https://github.com/DannyGersh/django-react-nginx-docker
+git clone https://github.com/DannyGersh/exercises.git
 ```
 ```console
-cd django-react-nginx-docker
+cd exercises
+```
+build docker image and create container:
+```console
+docker built -t server/img_ididthisforu
+```
+make sure you are at the root directorie and type:
+```console
+docker run -v $PWD:/volume -p 80:80 -p 8000:8000 -p 3000:3000 --name ididthisforu -it img_ididthisforu /bin/bash
+```
+from inside docker:
+```console
+cd /volume/server && ./bootstrap
+```
+
+I prefer to install npm on the docker container so that everithing is developed within one framework, you can use an existing npm installation outside docker.
+
+start development:
+```console
+cd /volume/frontend && npm start &
 ```
 ```console
-cd frontend && npm install && npm run build && cd ../
+cd /volume/backend && python3 manage.py runserver &
 ```
-```console
-cd server && docker build -t drnd . && cd ../
-```
-```console
-docker run -v $PWD:/volume -p 80:80 --name drnd -it drnd /bin/bash
-```
-```console
-cd /volume/server && ./bootstrap && cd ../
-```
-press ctrl+D
-```console
-docker exec -it drnd /bin/bash
-```
-```console
-lsof -i :8000
-```
-from docker - restart pid
-```console
-kill -HUP <pid>
-```
+
