@@ -41,6 +41,34 @@ as the user edits an exercise, the parser detekts latex and sends this latex in 
 
 note that latex is a scripting language, that can access the computer file systems, execute bash commands, get root access and perform all sorts of operations that can be abused, hence som latex commands are banned and there is a time limit on each latex thread.
 
+## frontend
+
+the frontend is handled by react with the standard react-router for url routing and navigation. every page is its own element in its own directory inside the pages dir. there is a shared directory for elements, functions and constants that are global and shared by all the pages.
+
+there is a custom hook in the shared dir called "useController" that returns an array containing 4 elements:
+
+0) a getter function .
+1) a setter function.
+2) a function that adds a callback function to an array that belongs to the hook.
+3) the array of callbacks.
+
+this hook is like useRef but in addition, any time the ref changes, an array of functions are executed, for example a function to rerender some element and a function to calculate some value.
+
+a simple example (that is not worth the effort in a real world app) would be as follows:
+
+a react element (call it the root element) contains a set of 100 elements. all elements have props from the root. when props change all elements are re rendered, even though only one needs to. we can define a useController hook in the root element that controls what elements render, when they render and in what condition.
+
+example usage:
+```javascript
+const ctr = useController('default');
+ctr[2]( 'func_name', ()=>{console.log('custom function executed')} );
+
+console.log( ctr[0]() ); // 'default'
+ctr[1]( 'not default' ); // 'custom function executed'
+console.log( ctr[0]() ); // 'not default'
+```
+
+
 ## clone and run the project for development
 
 ```console
