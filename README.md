@@ -4,7 +4,7 @@ This is a website that contains exercises for students of all fields of study. t
 
 An exercise could be any thing from solving a linear set of equations to solving complex differential equations to chemical formulas and compounds memorization exercises. every exercise must contain a title and an answer, but can also contain hints, an exercise body (might be the title) and an explanation. 
 
-the site fully supports latex, hence any field of study of any level can be expressed in any way. 
+the site fully supports latex (with small exceptions for security reasons), hence any field of study of any level can be expressed in any way. 
 
 * frontend - React
 * backend - Django
@@ -37,6 +37,9 @@ and when a user updates an exercise, the editor loads the raw text as it was whe
 
 this approach was chosen to keep the information ordered and concise, so to prevent for example the normal text "0" to be formatted, and in general prevent unwanted behavior that was not forseen.
 
+as the user edits an exercise, the parser detekts latex and sends this latex in the background to the server for compilation. this is because latex compilation is time consuming, so it is better that the latex is compiled before the user submits or clicks "preview". this whole process happens in the background and each latex compilation happens on a new thread so that the server is free to process requests as usual. linux has a mechanism for managing overwhelming amounts of threads, so the site can handle large traffic.
+
+note that latex is a scripting language, that can access the computer file systems, execute bash commands, get root access and perform all sorts of operations that can be abused, hence som latex commands are banned and there is a time limit on each latex thread.
 
 ## clone and run the project for development
 
