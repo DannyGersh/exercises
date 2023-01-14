@@ -67,7 +67,12 @@ console.log( ctr[0]() ); // 'default'
 ctr[1]( 'not default' ); // 'custom function executed'
 console.log( ctr[0]() ); // 'not default'
 ```
+## backend
+the backend is managed by django with postgreSQL. basically everything here is standard, except that there are no apps in the django project for now as the project is still to small and splitting it to apps has only drawbacks in my opinion.I prefer to have it all in the main urls.py, apps could easily be implemented when needed.
 
+for the server client communication, I choose to implement a custom fetch function, solely for learning the inner workings of the fetch api. 
+
+in urls. py, the only non fetch functions are the views, which are "home", "noneHome1", "noneHome2" and "noneHome3". this is the only functions that actually render a page. all the rest are fetch function with the prefix "fetch_" and the custom decorator @safe_fetch that tries to execute the request, and on failure, it posts the error to the errors database, returns an error to the client for the javascript to process and in the client side, when an error is returned, a fetch request is sent to the server to upload the persise location of the error to the database for debbuging, so 2 errors are inserted on failure, one for frontend and one for backend. this approach is sooooo gooooooddddd omg, it is the best debugging experience I ever had, you got to try it. that being said, this debugging method is active on debug and release, so I get to see all the errors that my visitors experience.
 
 ## clone and run the project for development
 
