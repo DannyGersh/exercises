@@ -11,6 +11,18 @@ the site fully supports latex (with small exceptions for security reasons), henc
 * server - Nginx
 * database - PostgreSQL
 
+## features
+* create\edit\delete exercises
+* profiles
+* login\signup
+* email confirmation on signup
+* full latex support
+* errors database, uploads errors of users when they occur
+* advanced flexible search engine
+
+## todo
+* password restore
+
 ## latex 
 
 the real challenge was the implementation of latex. basically when the user types for example "$$latex$$", then "latex" is compiled by the standard latex-live compiler to pdf, then the pdf is cropped and converted to an svg image. this approach ensures the most professional and standardized result as the latex compiler is the de-facto standard for technical and scientific literature.
