@@ -8,7 +8,7 @@ at which the app changes from
 narrow display mode to wide.
 */
 const windowBp = 50;
-window.isDebug = false;
+window.isDebug = true;
 window.url_base = window.isDebug ? 'http://localhost/' : 'https://www.ididthisforu.com/';
 const MIN_PAGINATION = 8; // minimal number of displayed exercises
 const REG_NEW_LINE = /(\r\n|\n|\r|\t)/gm;
@@ -38,7 +38,6 @@ export function compArr(arr1, arr2) {
 	return JSON.stringify(arr1) === JSON.stringify(arr2);
 }
 
-
 function px2rem(px) {
 	return 0.0625 * px;
 }
@@ -52,6 +51,14 @@ function remToPx(rem) {
 }
 export {remToPx};
 
+function isEmail(email) {
+  return Boolean(String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    ));
+};
+export {isEmail};
 
 function useWindowResize(s_render){
 
@@ -69,7 +76,6 @@ function useWindowResize(s_render){
 	return isNarrow;
 }
 export default useWindowResize;
-
 
 // getCookie
 function replacer(match, p1, p2, p3, offset, string) {

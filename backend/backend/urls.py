@@ -22,6 +22,7 @@ from django.contrib.sessions.backends.db import SessionStore
 from . settings import DEBUG
 from . constants import *
 from . compileLatex import gen_svg
+from . api_email import *
 
 import ipdb
 
@@ -239,40 +240,65 @@ def fetch_home(request):
 
 @safe_fetch
 def fetch_register_submit(request):
-
-	# breakpoint() 
 	
 	protocall = protocall_fetch_register_submit
 	inData = fetch_in(request, protocall)
 	if inData == ERROR: return JsonError
-	
-	isLogin = inData['isLogin']
+
+	target = inData['target']
 	uname = inData['uname']
+	email = inData['email']
 	password = inData['password']
 	
-	if isLogin:
-		
+	if target == 'login':
 		user = authenticate(username=uname, password=password)
 		if user is not None:
 			login(request, user)
-			return fetch_out(request, protocall, {'userId': user.id})
+			return fetch_out(request, protocall, {'userId': user.id, 'confirm': ''})
 		else:
-			return genJsonError('could not log in ...')
+			return genJsonMessage('could not log in ...')
 			
-	else:
+	elif target == 'signup':
+		if not uname or not email or not password:
+			return genJsonMessage('could not create user ...')
+		
 		# check if username is unique
 		if getSQL(sql_get_userId, {'userName': uname}):
 			return genJsonMessage('username taken, try another one.')
-			
+		# check if email is unique
+		if email in [i['email'] for i in getSQL(sql_get_emails)]:
+			return genJsonMessage('there already exists a user with this email')
+		
+		confirm_email = email_genPass()
+		subject = "Ididthisforu signup"
+		body = 'Your confirmation password is: %s'%confirm_email
+		sender = "ididthisforu.contact@gmail.com"
+		recipients = [email]
+		password = "rltuxblicjqozile"
+		email_send(subject, body, sender, recipients, password)
+		
+		return fetch_out(request, protocall, {
+			'confirm': confirm_email,
+			'userId': 0,
+		})
+	
+	elif target == 'confirm':
 		user = User.objects.create_user(
-			uname, '', password
+			uname, email, password
 		)
 		if not user:
 			return genJsonMessage('could not create user ...')
 		else:
 			login(request, user)
-			return fetch_out(request, protocall, {'userId': user.id})
-	 
+			return fetch_out(request, protocall, {
+				'userId': int(user.id), 
+				'confirm': '',
+			})
+			
+	else:
+		genJsonError('target is %s and not any of "login", "signup" or "confirm"'%target)
+		return JsonError
+		 
 @safe_fetch
 def fetch_logout(request):
 		logout(request)
@@ -684,6 +710,22 @@ def fetch_like(request):
 	
 	return JsonResponse({'success': True})
 
+@safe_fetch
+def fetch_newConfirmationPassword(request):
+	protocall = protocall_send_new_confirmation_email
+	inData = fetch_in(request, protocall)
+	if inData == ERROR: return JsonError
+	
+	confirm_email = email_genPass()
+	subject = "Ididthisforu signup"
+	body = 'Your confirmation password is: %s'%confirm_email
+	sender = "ididthisforu.contact@gmail.com"
+	recipients = [inData['email']]
+	password = "rltuxblicjqozile"
+	email_send(subject, body, sender, recipients, password)	
+	
+	return fetch_out(request, protocall, {'password': confirm_email})
+	
 	
 	
 @ensure_csrf_cookie
@@ -734,7 +776,8 @@ urlpatterns = [
 	path('fetch/addLatex/', fetch_addLatex),
 	path('fetch/deleteLatex/', fetch_deleteLatex),	
 	path('fetch/initialEdit/', fetch_initialEdit),
-
+	path('fetch/newConfirmationPassword/', fetch_newConfirmationPassword),
+	
 	path('<slug:slug1>/', nonHome1),
 	path('<slug:slug1>/<slug:slug2>/', nonHome2),
 	path('<slug:slug1>/<slug:slug2>/<slug:slug3>/', nonHome3),

@@ -5,7 +5,7 @@ function cut_newlines(in_str) {
 export default cut_newlines;
 
 const message_confirm_password = cut_newlines(`
-for this alpha release, 
+for this beta release, 
 there is no password restore, 
 if you lose your password, 
 you lose it for good. 

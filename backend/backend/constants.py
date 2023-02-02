@@ -475,6 +475,20 @@ sql_get_search_by_exercise = (
     )
 )
 
+sql_get_emails = (
+	'''
+    select
+    
+	email
+
+    from auth_user 
+    '''
+    ,
+
+    (
+	'email',
+    )
+)
 
 
 
@@ -755,12 +769,23 @@ protocall_fetch_deleteMsg = {
 
 protocall_fetch_register_submit = {
 	'in': {
-		'isLogin'	: bool,
+		'target'	: str,
 		'uname'		: str,
+		'email'		: str,
 		'password'	: str,
 	},
 	'out': {
-		'userId'	: int,
+		'confirm': str,
+		'userId': int,
+	},
+}
+
+protocall_send_new_confirmation_email = {
+	'in': {
+		'email': str,
+	},
+	'out': {
+		'password': str,
 	},
 }
 

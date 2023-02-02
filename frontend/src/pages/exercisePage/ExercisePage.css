@@ -52,6 +52,7 @@
 
 .additionalMenue {
     position: absolute;
+    max-width: 50vw; 
     left: 0.3rem;
     bottom: 4rem;
     background-color: #5b92e5;

@@ -68,6 +68,8 @@ function Exercise(props){
 			type="text" 
 		/>
 		
+		<br/><br/>
+		
 		<div style={style_label}>
 		<label>latex packages</label>
 		<ToolTip 
@@ -87,7 +89,7 @@ function Exercise(props){
 			type="text" 
 		/>
 		
-		<br/><br/>
+		<br/><br/><br/>
 		
 		<label>title *</label>
 		<input
@@ -127,6 +129,7 @@ function Exercise(props){
 
 		<label>Tips:</label>
 		<ul>
+			<li>make sure you never use a new line, unless you are starting a new paragraph or for example; you want a math equation to be separated by new lines.</li>
 			<li>make the title short and to the point</li>
 			<li>make the exercise focused on the topic you choose</li>
 			<li>be as clear as possible</li>

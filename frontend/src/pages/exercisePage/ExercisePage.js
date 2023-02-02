@@ -197,6 +197,29 @@ function SendMessage(props) {
 	)
 }
 
+function TagsList(props) {
+
+		const ctx = props.ctx;
+		
+		return(<div className='hscroll tags'>
+		{ctx.exercise_preview && ctx.exercise_preview.tags.map(i=>
+			<Tag 
+				isDisabled={true} 
+				url={`/search/${i}`} 
+				key={i}
+				children={i}
+			/>
+		)}
+		{!ctx.exercise_preview && ctx.r_exercise.current.tags.map(i=>
+			<Tag 
+				url={`/search/${i}`} 
+				key={i} 
+				children={i}
+			/>
+		)}
+		</div>)
+}
+
 function PopupMenue(props) {
 
 	const ctx = props.ctx;
@@ -222,7 +245,7 @@ function PopupMenue(props) {
 	}
 	
 	const jsx_reportText = <Link to={'/about'}>about page</Link>
-	
+
 	const jsx = <>	
 		
 		{/* what makes the popup look like a talking buble */}
@@ -243,6 +266,11 @@ function PopupMenue(props) {
 				<SendMessage ctx={ctx} states={states}/>
 			}	
 			<hr/>
+			
+			{Boolean(ctx.s_finLoad[0] && window.nrw && ctx.r_exercise.current.tags.length) && <>
+				<TagsList ctx={ctx}/>
+				<hr/>
+			</>}
 			
 			<p 
 				onClick={h_report} 
@@ -319,23 +347,9 @@ function BottomMenue(props) {
 		
 		<PopupMenue ctx={ctx}/>	
 
-		<div className='hscroll tags'>
-		{ctx.exercise_preview && ctx.exercise_preview.tags.map(i=>
-			<Tag 
-				isDisabled={true} 
-				url={`/search/${i}`} 
-				key={i}
-				children={i}
-			/>
-		)}
-		{!ctx.exercise_preview && ctx.r_exercise.current.tags.map(i=>
-			<Tag 
-				url={`/search/${i}`} 
-				key={i} 
-				children={i}
-			/>
-		)}
-		</div>
+		{!window.nrw &&
+			<TagsList ctx={ctx}/>
+		}
 		
 		{/* RIGHT */}
 		<div className='bottomRight'>

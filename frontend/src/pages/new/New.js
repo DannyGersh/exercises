@@ -1,6 +1,6 @@
-import {useState, useEffect, useRef, useCallback} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {useNavigate, useLocation} from "react-router-dom";
-import {REG_NEW_LINE, TARGETS, mainText2html, sendData} from '../../shared/Functions'
+import {REG_NEW_LINE, TARGETS, sendData} from '../../shared/Functions'
 import regex_escape from '../../shared/regex_escape'
 import Btn, {BtnTab} from '../../shared/buttons/Buttons'
 import Exercise from './pages/Exercise'
@@ -68,7 +68,7 @@ function compileLatex(
 		} 
 	})
 	// add latex
-	new Set(new_latex).forEach((item, index)=>{
+	new Set(new_latex).forEach(item=>{
 		if(!Object.values(old_latex).includes(item)) {
 			let new_id = 0;
 			if(Object.keys(old_latex).length) {

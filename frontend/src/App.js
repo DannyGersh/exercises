@@ -35,8 +35,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/new" element={<New/>}/>
-        <Route path="/login" element={<Register isLogin={true}/>}/>
-        <Route path="/signup" element={<Register isLogin={false}/>}/>
+        <Route path="/login" element={<Register target='login'/>}/>
+        <Route path="/signup" element={<Register target='signup'/>}/>
+        <Route path="/confirm_signup" element={<Register target='confirm_signup'/>}/>
         <Route path="/profile/:userId" element={<Profile/>}/>
         <Route path="/exercise/:exerciseId" element={<ExercisePage/>}/>
         <Route path="/search/:searchTerm" element={<SearchPage/>}/>

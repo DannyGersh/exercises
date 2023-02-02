@@ -1,3 +1,4 @@
+import React from 'react'
 import './AboutPage.css'
 
 const str_about = `

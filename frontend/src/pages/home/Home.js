@@ -1,11 +1,11 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {sendData, MIN_PAGINATION} from '../../shared/Functions'
 import {BtnTab, BtnShowMore} from '../../shared/buttons/Buttons'
 import Loading from '../../shared/loading/Loading'
 import ExerciseCard from '../../shared/exerciseCard/ExerciseCard'
 
 
-function Home(props) {
+function Home() {
 	
 	let latest = useState([]);
 	let hotest = useState([]);
@@ -40,33 +40,35 @@ function Home(props) {
 	<>		
 		<center>
 
-		<h1>
-			www.ididthisforu.com 
-			 &nbsp;<font color='green'>Alpha</font>
+		<h1 style={{face: "Georgia", fontSize: `${window.nrw && '7vw'}`}}>
+			www.ididthisforu.com&nbsp;
+			<img
+				className="betaSymbol"
+				src={window.url_base+'/static/images/beta.svg'}
+			/>
 		</h1>
 		
-		<p style = {{margin:'1rem'}}>
-			The website for uploading 
-			and solving exercises in any field
-		</p>
+		<h4 style = {{margin:'1rem'}}>
+			The website for creating and solving 
+			exercises in any field of study
+		</h4>
 		
 		<BtnTab 
 			className = {`${s_ms[0] && 'color_btn_green'}`} 
 			style={style_btn_tab}
 			onClick={()=>h_ms(true)}
-			children='hottest'
-		/>
+		>hottest</BtnTab>
+		
 		<BtnTab 
 			className={`${ !s_ms[0] && 'color_btn_green'}`} 
 			style={style_btn_tab}
 			onClick={()=>h_ms(false)}
-			children='latest'
-		/>
+		>latest</BtnTab>
 		
 		</center>
 		
 		<div className='gridContainer'>
-		{ !Boolean(s_finLoad[0]) &&
+		{ !s_finLoad[0] &&
 			<Loading/>
 		}
 
