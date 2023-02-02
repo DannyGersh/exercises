@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {useNavigate, Link} from "react-router-dom";
 import {sendData} from '../Functions'
 import {BtnTab} from '../buttons/Buttons'
@@ -7,8 +7,8 @@ import "./Nav.css";
 function SearchBox(props) {
 	
 	const navigate = useNavigate();
-	let node_searchBox = document.getElementById("id_searchBox");
-	let node_searchContainer = document.getElementById("id_searchContainer");
+	const node_searchBox = useRef(document.getElementById("id_searchBox"));
+	const node_searchContainer = useRef(document.getElementById("id_searchContainer"));
 
 	const evt_search = new CustomEvent('evt_search', {
 		bubbles: true,
@@ -22,35 +22,35 @@ function SearchBox(props) {
 	}
 	
 	useEffect(()=>{
-		node_searchBox = document.getElementById("id_searchBox");
-		node_searchContainer = document.getElementById("id_searchContainer");
-		if(node_searchContainer) { 
+		node_searchBox.current = document.getElementById("id_searchBox");
+		node_searchContainer.current = document.getElementById("id_searchContainer");
+		if(node_searchContainer.current) { 
 			
-			window.nrw && node_searchBox.focus();
+			window.nrw && node_searchBox.current.focus();
 			
-			node_searchBox.addEventListener("keyup", function(event) {
+			node_searchBox.current.addEventListener("keyup", function(event) {
 				if (event.key === "Enter") {
 					dispatchEventSearch();
 					props.s_isDspSearchBox[1](false);
 					let text = event.target.value;
 					if(!text) return;
-					node_searchBox.value = '';
+					node_searchBox.current.value = '';
 					navigate(`/search/${text}`);
 				}
 			});
-			node_searchContainer.addEventListener('focusout', (event) => {
+			node_searchContainer.current.addEventListener('focusout', (event) => {
 				setTimeout(()=>{
 					props.s_isDspSearchBox[1](false);
 				}, 100)
 			});
 		}
 		
-	},[])
+	})
 
 	function h_searchBtnClick() {
 		dispatchEventSearch();
-		const text = node_searchBox.value;
-		node_searchBox.value = '';
+		const text = node_searchBox.current.value;
+		node_searchBox.current.value = '';
 		if(!text) return;
 		navigate(`/search/${text}`);
 		props.s_isDspSearchBox[1](false);
@@ -107,10 +107,10 @@ function Nav(props) {
 			window.userId[1](null);
 		})
 	}
-	function h_profile(){
-		let temp = '/profile/' + String(userid);
-		userid ? window.location = temp : window.location = '/login/';
-	}
+	//function h_profile(){
+	//	let temp = '/profile/' + String(userid);
+	//	userid ? window.location = temp : window.location = '/login/';
+	//}
 
 	
 	return (<>

@@ -43,6 +43,7 @@ function Home() {
 		<h1 style={{face: "Georgia", fontSize: `${window.nrw && '7vw'}`}}>
 			www.ididthisforu.com&nbsp;
 			<img
+				alt=''
 				className="betaSymbol"
 				src={window.url_base+'/static/images/beta.svg'}
 			/>

@@ -1,5 +1,5 @@
-import {useEffect, useRef} from 'react'
-import {TARGETS, mainText2html} from '../../../shared/Functions'
+import React, {useEffect} from 'react'
+import {TARGETS} from '../../../shared/Functions'
 import {CON, MAIN_STATES} from '../New'
 import ToolTip from '../../../shared/tooltip/ToolTip'
 import './Shared.css'
@@ -30,7 +30,7 @@ function Exercise(props){
 			node_tags.value = def_tags;
 			node_latex_pkg.value = def_latex_pkg;
 		}
-	}, [ctx.s_bmt])
+	}, [ctx.s_bmt, ctx.exercise_edit, ctx.mainState])
 
 	const str_tooltip_tags = `
 	comma separated list of tags.

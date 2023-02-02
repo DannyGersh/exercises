@@ -45,7 +45,7 @@ function Profile() {
 			ctx.s_uname[1](data['uname']);
 		})
 		
-	},[])
+	})
 	
 	return(<>
 		<WelcomeUname ctx={ctx}/>

@@ -170,9 +170,7 @@ function BtnShowMore(props) {
 	})
 	// END_PERROR
 	
-	let max = 0;
 	let step = 1;
-	if(props.max) { max = props.max }
 	if(props.step) { step = props.step }
 	const s_count = props.s_count;
 		

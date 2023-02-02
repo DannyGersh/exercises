@@ -216,7 +216,7 @@ function ClientWindow(props) {
 
 	useEffect(()=>{
 		s_dspExNum[1](MIN_PAGINATION);
-	}, [s_tab])
+	}, [s_tab, s_dspExNum])
 	
 	
 	return(

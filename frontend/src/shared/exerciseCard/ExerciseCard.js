@@ -19,8 +19,6 @@ function Exercise_card(props){
 	const exerciseId = props.exercise['id'].toString();	
 	const id_title = `title_${exerciseId}`;
 	const id_exercise = `exercise_${exerciseId}`;
-	let n_title = null;
-	let n_exercise = null;
 	
 	const style_text = {
 		whiteSpace: 'break-spaces', 
@@ -30,16 +28,13 @@ function Exercise_card(props){
 		marginRight:'0.5rem',
 		width:'4rem', 
 	}
-	const style_btnLike = {
-		backgroundColor: isLike ? 'var(--green)' : 'var(--blue)'
-	}
 	
 	useEffect(()=>{
-		n_title = document.getElementById(id_title);
+		const n_title = document.getElementById(id_title);
+		const n_exercise = document.getElementById(id_exercise);
 		n_title.innerHTML = htmlTitle;
-		n_exercise = document.getElementById(id_exercise);
 		n_exercise.innerHTML = htmlExercise;
-	},[props.renderOnChange])
+	},[props.renderOnChange, htmlExercise, htmlTitle, id_exercise, id_title])
 	
 	const dspOptions = useState(false);
 	function onOptions(evt) {

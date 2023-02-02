@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {useNavigate, useLocation} from "react-router-dom";
 import {REG_NEW_LINE, TARGETS, sendData} from '../../shared/Functions'
 import regex_escape from '../../shared/regex_escape'
@@ -88,8 +88,8 @@ function compileLatex(
 		} 
 	})
 	Object.entries(refs.current[target][3]).forEach(i=>{
-		const reg = regex_escape(`\$\$${i[1]}\$\$`);
-		text = text.replace(reg, `\$\$\$${i[0]}\$\$\$`);
+		const reg = regex_escape(`$$${i[1]}$$`);
+		text = text.replace(reg, `$$$${i[0]}$$$`);
 	})
 	refs.current[target][1] = text;
 	
@@ -112,14 +112,14 @@ function updateRefs(target, refs, text, compile=true) {
 }
 
 function tagsStrToArray(tagsStr) {
-	let temp = [ ... new Set(tagsStr.split(','))];
+	let temp = [ ...new Set(tagsStr.split(','))];
 	temp = temp.filter(i=>i!=='');
 	return temp;
 }
 export {tagsStrToArray}
 
 
-function New(props){
+function New(){
 	
 	const ctx = {
 		exercise_edit: useLocation().state,
@@ -194,8 +194,8 @@ function New(props){
 		if(!latex_pkg) latex_pkg = '';
 		tags = tagsStrToArray(tags);
 		
-		for(const [target, value] of Object.entries(TARGETS)) {
-			if(refs.current[target][0].match(/<.*\/.*>/gms)) {
+		for(const key of Object.keys(TARGETS)) {
+			if(refs.current[TARGETS[key]][0].match(/<.*\/.*>/gms)) {
 				window.alert("invalid input")
 				return
 			}
@@ -270,11 +270,11 @@ function New(props){
 			.then(result=>{
 				if(!result['error']) {
 					window.alert('successfully uploaded exercises.')
-					for (const [key, value] of Object.entries(CON)) {
-						localStorage.removeItem(value);
+					for (const key of Object.keys(CON)) {
+						localStorage.removeItem(CON[key]);
 					}
-					for (const [key, value] of Object.entries(TARGETS)) {
-						localStorage.removeItem(value);
+					for (const key of Object.keys(TARGETS)) {
+						localStorage.removeItem(TARGETS[key]);
 					}
 					navigate(`/profile/${window.userId[0]}`)
 				}
@@ -288,11 +288,11 @@ function New(props){
 			.then(result=>{
 				if(!result['error']) {
 					window.alert('successfully updated exercises.')
-					for (const [key, value] of Object.entries(CON)) {
-						localStorage.removeItem(value);
+					for (const key of Object.keys(CON)) {
+						localStorage.removeItem(CON[key]);
 					}
-					for (const [key, value] of Object.entries(TARGETS)) {
-						localStorage.removeItem(value);
+					for (const key of Object.keys(TARGETS)) {
+						localStorage.removeItem(TARGETS[key]);
 					}
 					navigate(`/profile/${window.userId[0]}`)
 				}
@@ -303,6 +303,7 @@ function New(props){
 	function h_preview() {
 		// timeout until all input timeout finishe
 		// input timout is set to 500, so 150 would do
+		console.log("AAAAAAAA")
 		setTimeout(()=>{
 			const local_exercise = getLocalExercise();
 			if(local_exercise) {
@@ -340,8 +341,8 @@ function New(props){
 	
 				for(const [index, latex] of Object.entries(item[1])) {
 					item[0] = item[0].replace(
-						`\$\$${index}\$\$`, 
-						`\$\$\$${latex}\$\$\$`
+						`$$${index}$$`, 
+						`$$$${latex}$$$`
 					);
 				}
 				refs.current[key][0] = item[0];
@@ -350,7 +351,7 @@ function New(props){
 				if(node) node.value = item[0];
 			}
 		} else {
-			for (const [key, value] of Object.entries(TARGETS)) {
+			for (const key of Object.entries(TARGETS)) {
 				
 				let string = ctx.exercise_edit[key];
 				const replacment = ctx.exercise_edit[`latex_${key}`];
@@ -363,8 +364,8 @@ function New(props){
 				refs.current[key][1] = string;
 				for(const [index, latex] of Object.entries(replacment)) {
 					string = string.replaceAll(
-						`\$\$${index}\$\$`, 
-						`\$\$\$${latex}\$\$\$`
+						`$$${index}$$`, 
+						`$$$${latex}$$$`
 					);
 				}
 				refs.current[key][0] = string;
@@ -378,7 +379,7 @@ function New(props){
 				'author': ctx.exercise_edit['author'],
 			})
 		}
-	},[s_bmt])
+	},[s_bmt, ctx.exercise_edit, ctx.mainState])
 	
 	
 	return(
@@ -395,33 +396,28 @@ function New(props){
 		
 		{/* btm tabs */}
 		<div className='NewBottomMenue'>
-			<Btn 
-				children={BMT_TARGETS.exercise}
+			<Btn
 				onClick={h_btm} 
 				className={genClassName(BMT_TARGETS.exercise)}
-			/>
-			<Btn 
-				children={BMT_TARGETS.hints}
+			>{BMT_TARGETS.exercise}</Btn>
+			<Btn
 				onClick={h_btm}
 				className={genClassName(BMT_TARGETS.hints)}
-			/>
+			>{BMT_TARGETS.hints}</Btn>
 			<Btn 
-				children={BMT_TARGETS.explain}
 				onClick={h_btm}
 				className={genClassName(BMT_TARGETS.explain)}
-			/>
+			>{BMT_TARGETS.explain}</Btn>
 			
 			{/* previe and submit btn */}
 			<BtnTab 
 				onClick={h_preview} 
 				className='color_btn_blue'
-				children='Preview'
-			/>
+			>Preview</BtnTab>
 			<BtnTab 
 				onClick={h_submit} 
 				className='color_btn_blue'
-				children={!isEdit ? 'Submit' : 'Update'}
-			/>
+			>{!isEdit ? 'Submit' : 'Update'}</BtnTab>
 		</div>
 	</>
 	) 

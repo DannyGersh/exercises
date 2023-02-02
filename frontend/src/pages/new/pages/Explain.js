@@ -1,10 +1,9 @@
-import {useEffect} from 'react'
-import {TARGETS, mainText2html} from '../../../shared/Functions'
-import {MAIN_STATES} from '../New'
+import React from 'react'
+import {TARGETS} from '../../../shared/Functions'
+
 
 function Explain(props){
 		
-	const ctx = props.ctx;
 	const updateRefs = props.refs.current.update;
 	
 	return(

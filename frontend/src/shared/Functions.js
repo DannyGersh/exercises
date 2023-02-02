@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useEffect} from 'react'
 import StackTrace from 'stacktrace-js'
 
 /*
@@ -71,7 +71,7 @@ function useWindowResize(s_render){
 		window.addEventListener('resize', ()=>{
 			s_render[1](!s_render[0])
 		});
-	},[])
+	})
 	
 	return isNarrow;
 }

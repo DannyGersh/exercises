@@ -1,4 +1,4 @@
-import {useCallback, useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {useParams, useLocation, Link} from "react-router-dom";
 import {sendData, mainText2html} from '../../shared/Functions'
 import useController from '../../shared/Hooks'
@@ -166,7 +166,7 @@ function SendMessage(props) {
 	
 	return (
 	<>
-	  <hr/>
+		<hr/>
 		<div style={{display: 'flex', alignItems:'center'}}>	
 
 		<p 
@@ -180,16 +180,15 @@ function SendMessage(props) {
 			id1 = 'ToolTip1'
 			id2 = 'ToolTip2'
 			text = {info_message}
-			children='ⓘ'
-		/>
+		>ⓘ</ToolTip>
 
 		</div>	
 
-	  { Boolean(states.s_dspSendMsg[0]) &&
+		{ Boolean(states.s_dspSendMsg[0]) &&
 		<>
-		  <textarea id={id_sendMsg} rows='4' type='textarea'/>
-		  <br/>
-		  <button onClick={h_sendMsg}>Send</button>
+			<textarea id={id_sendMsg} rows='4' type='textarea'/>
+			<br/>
+			<button onClick={h_sendMsg}>Send</button>
 		</>
 		}	
 
@@ -207,15 +206,13 @@ function TagsList(props) {
 				isDisabled={true} 
 				url={`/search/${i}`} 
 				key={i}
-				children={i}
-			/>
+			>{i}</Tag>
 		)}
 		{!ctx.exercise_preview && ctx.r_exercise.current.tags.map(i=>
 			<Tag 
 				url={`/search/${i}`} 
-				key={i} 
-				children={i}
-			/>
+				key={i}
+			>{i}</Tag>
 		)}
 		</div>)
 }
@@ -280,7 +277,7 @@ function PopupMenue(props) {
 			</p>	
 			
 			{s_dspReport[0] && <p>
-					read the "contact" section of the {jsx_reportText}. 
+					read the &quot;contact&quot; section of the {jsx_reportText}. 
 					thank you for the cooperation
 			</p>}
 			
@@ -342,8 +339,7 @@ function BottomMenue(props) {
 					'color_btn_blue' 
 				}
 			`}
-			children='...'
-		/>
+		>...</Btn>
 		
 		<PopupMenue ctx={ctx}/>	
 
@@ -401,7 +397,7 @@ function BottomMenue(props) {
 }
 
 
-function ExercisePage(props){
+function ExercisePage(){
 
 	const params = useParams();
 	const exerciseId = parseInt(params['exerciseId']);
@@ -516,7 +512,7 @@ function ExercisePage(props){
 
 		}
 		
-	},[])
+	}, [])
 	
 	return(<>
 		<ExerciseBody ctx={ctx}/>

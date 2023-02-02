@@ -11,22 +11,21 @@ function ToolTip(props) {
 	const id2 = props.id2; // tooltip
 
 	// future elements (getElementById)
-	let elm1 = null; // visible element
-	let elm2 = null; // tooltip
+	const elm1 = useRef(false); // visible element
 	
 	// init hover event
 	// dst == true - on mouseenter
 	// dst == false - on mouseleave
 	useEffect(()=>{
-		elm1 = document.getElementById(id1);
+		elm1.current = document.getElementById(id1);
 
-		elm1.addEventListener('mouseenter', (event) => {
+		elm1.current.addEventListener('mouseenter', (event) => {
 			dsp[1](true);
 		});
-		elm1.addEventListener('mouseleave', (event) => {
+		elm1.current.addEventListener('mouseleave', (event) => {
 			dsp[1](false);
 		});		
-	},[])
+	})
 	
 	// display toottip conditionally
 	useEffect(()=>{
@@ -55,7 +54,7 @@ function ToolTip(props) {
 			}
 		}
 
-	},[dsp[0]])
+	},[dsp, id2])
 	
 	return(
 		<>
