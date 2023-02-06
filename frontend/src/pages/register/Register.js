@@ -220,8 +220,10 @@ function Login(props) {
     { props.target === 'signup' &&
 		<>
 
-		<div style={{display:'block', textAlign: 'left'}}>
+		<div>
+		
 		<label htmlFor='uname'>Display name:</label>
+		<br/>
 		<input 
 			ref={ref_uname} 
 			name='uname' 
@@ -230,7 +232,9 @@ function Login(props) {
 			data-testid="id_input_uname"
 		/>
 		<br/>
+		
 		<label htmlFor='email'>Email:</label>
+		<br/>
 		<input 
 			ref={ref_email} 
 			name='email' 
@@ -239,7 +243,9 @@ function Login(props) {
 			data-testid="id_input_email"
 		/>
 		<br/>
+		
 		<label htmlFor='password'>Password:</label>
+		<br/>
 		<input 
 			onChange={validate} 
 			ref={ref_password} 
@@ -249,7 +255,9 @@ function Login(props) {
 			data-testid="id_input_password"
 		/>
 		<br/>
+		
 		<label htmlFor='Verify password'>Verify password:</label>
+		<br/>
 		<input 
 			name='Verify password' 
 			id='Verify password' 
@@ -257,6 +265,7 @@ function Login(props) {
 			type='password'
 			data-testid="id_input_ver_password"
 		/>
+		
 		</div>
 		<div>
 		<p style={{color: `${Lcase[0] ? 'green': 'red'}`}}>
