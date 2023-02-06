@@ -1,14 +1,12 @@
 import React, {useState, useRef} from 'react'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {BtnTab} from '../../shared/buttons/Buttons'
-import {sendData, isEmail} from '../../shared/Functions'
-import {msg} from '../../shared/Messages'
-import {message_confirm_password} from '../../shared/Messages';
+import * as CON from '../../shared/Functions'
+import {msg} from '../../shared/Messages';
 import ReCAPTCHA from "react-google-recaptcha";
 import '../../shared/Global.css'
 import './Register.css'
-
-
+	
 function Confirm(props) {
 	
 	//props:
@@ -27,7 +25,7 @@ function Confirm(props) {
 	const ref_confirm = useRef('');
 	
 	function h_sendAgain() {
-		sendData('fetch/newConfirmationPassword', 'POST', {
+		CON.sendData('fetch/newConfirmationPassword', 'POST', {
 				'email': email,
 			})
 			.then(data=>{
@@ -38,7 +36,7 @@ function Confirm(props) {
 	function h_submit() {
 		const val = ref_confirm.current.value;
 		if(val===confirm[0]) {
-			sendData('fetch/register_submit', 'POST', {
+			CON.sendData('fetch/register_submit', 'POST', {
 				'target': 'confirm',
 				'uname': uname,
 				'email': email,
@@ -99,7 +97,7 @@ function Login(props) {
 		Lcase[1](text.match(/[a-z]/));
 		Ucase[1](text.match(/[A-Z]/));
 		Ncase[1](text.match(/[0-9]/));
-		Scase[1](text.length > 7);
+		Scase[1](text.length >= CON.MIN_PASS_LEN);
 	}
 
 	async function submitMain() {
@@ -115,33 +113,48 @@ function Login(props) {
 			const uname = ref_uname.current.value;
 			
 			// validate user name
-			if(uname.length < 3 || uname.length > 20) {
-				window.alert(msg.uname_not_valid);
+			if(uname.length < CON.MIN_UNAME_LEN) {
+				window.alert(msg.uname_short);
+				return;
+			}
+			// validate user name
+			else if(uname.length > CON.MAX_UNAME_LEN) {
+				window.alert(msg.uname_long);
 				return;
 			}
 			// validate email
-			else if(!isEmail(ref_email.current.value)) {
-				window.alert("make sure email is valid.");
+			else if(!CON.isEmail(ref_email.current.value)) {
+				window.alert(msg.valid_email);
 				return;
 			}
 			// passwords dont match
 			else if(ref_password.current.value !== ref_confirm_password.current.value) {
-				window.alert('password does not match verify password');
+				window.alert(msg.pass_mismatch);
+				return;
+			}
+			// validate password
+			else if(ref_password.current.value.length < CON.MIN_PASS_LEN) {
+				window.alert(msg.pass_short);
+				return;
+			}
+			// validate password
+			else if(ref_password.current.value.length >= CON.MAX_PASS_LEN) {
+				window.alert(msg.pass_long);
 				return;
 			}
 			// validate password
 			else if(!Lcase[0] || !Ucase[0] || !Ncase[0] || !Scase[0]) {
-				window.alert("make sure password is valid.");
+				window.alert(msg.valid_password);
 				return;
 			}
 			// captcha not human
 			else if(!ref_cap.current) {
-				window.alert("make sure that you are human.");
+				window.alert(msg.ver_human);
 				return;
 			}
 			// terms not checked
 			else if(!ref_terms.current) {
-				window.alert("please read the terms and conditions.");
+				window.alert(msg.read_terms);
 				return;
 			}
 			
@@ -150,12 +163,12 @@ function Login(props) {
 		}
 
 		if(props.target==='signup') {
-			if(!window.confirm(message_confirm_password)) {
+			if(!window.confirm(msg.no_pass_redoo)) {
 				return;
 			}
 		}
 
-		sendData('fetch/register_submit', 'POST', {
+		CON.sendData('fetch/register_submit', 'POST', {
 			'target': props.target,
 			'uname': ref_uname.current.value,
 			'email': ref_email.current ? ref_email.current.value : '',
@@ -214,6 +227,7 @@ function Login(props) {
 			name='uname' 
 			id='uname' 
 			type='text'
+			data-testid="id_input_uname"
 		/>
 		<br/>
 		<label htmlFor='email'>Email:</label>
@@ -222,6 +236,7 @@ function Login(props) {
 			name='email' 
 			id='email' 
 			type='text'
+			data-testid="id_input_email"
 		/>
 		<br/>
 		<label htmlFor='password'>Password:</label>
@@ -231,6 +246,7 @@ function Login(props) {
 			name='password' 
 			id='password' 
 			type='password'
+			data-testid="id_input_password"
 		/>
 		<br/>
 		<label htmlFor='Verify password'>Verify password:</label>
@@ -239,6 +255,7 @@ function Login(props) {
 			id='Verify password' 
 			ref={ref_confirm_password} 
 			type='password'
+			data-testid="id_input_ver_password"
 		/>
 		</div>
 		<div>
@@ -271,12 +288,15 @@ function Login(props) {
 		
 		<div style={{display:'flex', justifyContent: 'center'}}>
 			<input 
+				id='terms'
+				data-testid='id_input_radio_conditions'
 				onClick={(e)=>ref_terms.current=e.target.checked} 
-				type="checkbox" name="terms"/>
-			<p>
+				type="checkbox" 
+				name="terms"/>
+			<label htmlFor='terms'>
 				I have read and agreed to the &nbsp;
 				<a href='/static/terms.txt' target="_blank">terms and conditions</a>
-			</p>
+			</label>
 		</div>  
 		
 		<br/>

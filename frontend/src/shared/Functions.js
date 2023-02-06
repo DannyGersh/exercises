@@ -1,18 +1,47 @@
 import {useEffect} from 'react'
 import StackTrace from 'stacktrace-js'
 
-/*
-windowBp - window break point
-defines the window width in rem,
-at which the app changes from
-narrow display mode to wide.
-*/
-const windowBp = 50;
 window.isDebug = true;
 window.url_base = window.isDebug ? 'http://localhost/' : 'https://www.ididthisforu.com/';
+
+/*
+WINBP: 
+	window break point
+	defines the window width in rem,
+	at which the app changes from
+	narrow display mode to wide.
+
+MIN_PAGINATION:
+	minimal number of elements 
+	displayed at one tyme.
+
+REG_NEW_LINE:
+	regex for detekting new lines.
+
+MIN_PASS_LEN:
+	minimal possible number of 
+	charakters for password
+
+MAX_PASS_LEN:
+	maximal possible number of 
+	charakters for password
+*/
+const WINBP = 50;
 const MIN_PAGINATION = 8; // minimal number of displayed exercises
 const REG_NEW_LINE = /(\r\n|\n|\r|\t)/gm;
-export {MIN_PAGINATION, REG_NEW_LINE}
+const MIN_PASS_LEN = 8;
+const MAX_PASS_LEN = 25;
+const MIN_UNAME_LEN = 3;
+const MAX_UNAME_LEN = 20;
+export {
+	WINBP,
+	MIN_PASS_LEN, 
+	MAX_PASS_LEN,
+	MIN_UNAME_LEN,
+	MAX_UNAME_LEN,
+	MIN_PAGINATION, 
+	REG_NEW_LINE
+}
 
 const TARGETS = {
 	title: 'title',
@@ -57,7 +86,7 @@ function isEmail(email) {
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     ));
-};
+}
 export {isEmail};
 
 function useWindowResize(s_render){
@@ -65,7 +94,7 @@ function useWindowResize(s_render){
 	// on resize event, the entire app rerenders,
 	// so isNarrow gets recalculated
 	
-	const isNarrow = px2rem(window.innerWidth) < windowBp;
+	const isNarrow = px2rem(window.innerWidth) < WINBP;
 
 	useEffect(()=>{
 		window.addEventListener('resize', ()=>{
@@ -78,7 +107,7 @@ function useWindowResize(s_render){
 export default useWindowResize;
 
 // getCookie
-function replacer(match, p1, p2, p3, offset, string) {
+function replacer(match, p1, p2) {
 	return p2;
 }
 function trim(str) {
@@ -181,12 +210,12 @@ async function sendData(url, methode='GET', data={}){
 			return test123
 			.then(fin=>{
 				if(res['status']===200) {
-					return new Promise(function(resolve, reject) {
+					return new Promise(function(resolve) {
 						resolve(test123)
 					})
 				} else if(res['status']===202){
 					window.alert(Object.values(fin)[0])
-					return new Promise(function(resolve, reject) {
+					return new Promise(function(resolve) {
 						resolve({})
 					})
 				} else {

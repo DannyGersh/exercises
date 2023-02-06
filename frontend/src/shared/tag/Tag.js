@@ -1,5 +1,5 @@
+import React, {useNavigate} from 'react-router-dom';
 import "./Tag.css";
-import {useNavigate} from 'react-router-dom';
 
 /* 	
 	define props.url to be a url for redirection.

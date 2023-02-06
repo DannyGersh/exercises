@@ -1,4 +1,4 @@
-import {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {useNavigate, Link} from "react-router-dom";
 import {sendData} from '../Functions'
 import {BtnTab} from '../buttons/Buttons'
@@ -17,8 +17,8 @@ function SearchBox(props) {
 	})
 	function dispatchEventSearch() {
 		setTimeout(() => 
-    		window.dispatchEvent(evt_search)
-    	);
+			window.dispatchEvent(evt_search)
+		);
 	}
 	
 	useEffect(()=>{
@@ -38,7 +38,7 @@ function SearchBox(props) {
 					navigate(`/search/${text}`);
 				}
 			});
-			node_searchContainer.current.addEventListener('focusout', (event) => {
+			node_searchContainer.current.addEventListener('focusout', ()=>{
 				setTimeout(()=>{
 					props.s_isDspSearchBox[1](false);
 				}, 100)
@@ -70,11 +70,7 @@ function SearchBox(props) {
 	</div>)		
 }
 
-function Nav(props) {
-
-	// props:
-	// narrowWindow - true if window is narrow
-	// userid = user id
+function Nav() {
 
 	const userid = window.userId[0];
 
@@ -92,10 +88,10 @@ function Nav(props) {
 	// dispatch event on searchBar button click
 	function h_dropDown() {
 		s_isDspSearchBox[1](!s_isDspSearchBox[0]);
-    	// set timeout prevents asincroneus dispatching of the event
-    	setTimeout(() => 
-    		window.dispatchEvent(navDropDown)
-    	);
+		// set timeout prevents asincroneus dispatching of the event
+		setTimeout(() => 
+			window.dispatchEvent(navDropDown)
+		);
 	}
 	function h_btnClick() {
 		s_isDspSearchBox[1](false);
@@ -103,7 +99,7 @@ function Nav(props) {
 
 	function h_logOut(){
 		sendData('/fetch/logout')
-		.then(data=>{
+		.then(()=>{
 			window.userId[1](null);
 		})
 	}
@@ -137,8 +133,7 @@ function Nav(props) {
 		<Link to={userid ? '/' : '/login'} onClick={h_btnClick}>
 			<BtnTab 
 				onClick={h_logOut}
-				children={userid ? 'Log out' : 'Log in'}
-			/>	
+			>{userid ? 'Log out' : 'Log in'}</BtnTab>	
 		</Link>
 
 		<Link to='/about' onClick={h_btnClick}>
@@ -150,8 +145,7 @@ function Nav(props) {
 			<div className='searchContainer'>
 				<BtnTab 
 					onClick={h_dropDown}
-					children='Search'
-				/>
+				>Search</BtnTab>
 			</div>
 		}
 

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {uploadError, isInt} from '../Functions'
 
 
@@ -179,8 +179,7 @@ function BtnShowMore(props) {
 		<Btn
 			className='btnTab color_btn_default'
 			onClick={()=>s_count[1](s_count[0]+step)}
-			children='show more'
-		/>
+		>show more</Btn>
 	}		
 	</>)
 }

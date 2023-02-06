@@ -1,6 +1,5 @@
+import React, {useState, useEffect, useRef} from 'react'
 import './ToolTip.css'
-import {useState, useEffect, useRef} from 'react'
-
 
 function ToolTip(props) {
 	
@@ -19,10 +18,10 @@ function ToolTip(props) {
 	useEffect(()=>{
 		elm1.current = document.getElementById(id1);
 
-		elm1.current.addEventListener('mouseenter', (event) => {
+		elm1.current.addEventListener('mouseenter', ()=>{
 			dsp[1](true);
 		});
-		elm1.current.addEventListener('mouseleave', (event) => {
+		elm1.current.addEventListener('mouseleave', ()=>{
 			dsp[1](false);
 		});		
 	})

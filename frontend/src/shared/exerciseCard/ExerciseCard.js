@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useNavigate} from "react-router-dom";
 import {mainText2html, sendData} from '../../shared/Functions'
 import {BtnTab, BtnOnOf} from '../../shared/buttons/Buttons'
@@ -93,14 +93,13 @@ function Exercise_card(props){
 		<BtnTab 
 			onClick={(evt)=>h_edit(evt)} 
 			style={style_btnEditDelete}
-			children='Edit'
-		/>
+		>Edit</BtnTab>
 			
 		<BtnTab 
 			onClick={(evt)=>onDelete(evt)} 
 			style={style_btnEditDelete}
-			children='Delete'
-		/>
+
+		>Delete</BtnTab>
 				
 		</div>
 	}
@@ -114,8 +113,7 @@ function Exercise_card(props){
 		<div className='topRightExerciseCard'>
 			<BtnTab 
 				onClick={(evt)=>onOptions(evt)}
-				children='...'
-			/>
+			>...</BtnTab>
 		</div>
 	}
 
