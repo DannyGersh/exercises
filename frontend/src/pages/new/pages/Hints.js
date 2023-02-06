@@ -7,10 +7,11 @@ function Hints(props){
 	const updateRefs = props.refs.current.update;
 	
 	return(
-		<div className='Exercise'>
-		<label htmlFor="HintsTextArea">Hints bodie</label>
+		<form className='Exercise'>
+		<label htmlFor="hints">hints bodie</label>
 		
 		<textarea 
+			name='hints'
 			id='hints'
 			className='ExerciseTextArea' 
 			onChange={(e)=>
@@ -25,7 +26,7 @@ function Hints(props){
 		</ul>
 		<br/><br/><br/>
 		
-		</div>
+		</form>
 	)
 }
 export default Hints;

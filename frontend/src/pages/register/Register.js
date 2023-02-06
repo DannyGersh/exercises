@@ -2,6 +2,7 @@ import React, {useState, useRef} from 'react'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {BtnTab} from '../../shared/buttons/Buttons'
 import {sendData, isEmail} from '../../shared/Functions'
+import {msg} from '../../shared/Messages'
 import {message_confirm_password} from '../../shared/Messages';
 import ReCAPTCHA from "react-google-recaptcha";
 import '../../shared/Global.css'
@@ -105,7 +106,7 @@ function Login(props) {
 		
 		// ceck if empty		
 		if(!ref_uname.current.value || !ref_password.current.value) {
-			window.alert('make sure all fields are valid');
+			window.alert(msg.input_not_valid);
 			return;
 		}
 		
@@ -115,7 +116,7 @@ function Login(props) {
 			
 			// validate user name
 			if(uname.length < 3 || uname.length > 20) {
-				window.alert("make sure display name is valid");
+				window.alert(msg.uname_not_valid);
 				return;
 			}
 			// validate email
@@ -182,16 +183,16 @@ function Login(props) {
 	}
 
 	return(
+	<form>
 	<center style={{margin:'1rem'}}>
 
     { props.target === 'login' && 
 		<>
-
-		<p>Display name:</p>
-		<input ref={ref_uname} name='uname' type='text'/>
-		<p>Password:</p>
-		<input ref={ref_password} name='password' type='password'/>
-
+		<label htmlFor='uname'>Display name:</label>
+		<input id='uname' name='uname' ref={ref_uname} type='text'/>
+		<label htmlFor='password'>Password:</label>
+		<input id='password' name='password' ref={ref_password} type='password'/>		
+		
 		<br/><br/>
 
 		<BtnTab 
@@ -200,41 +201,46 @@ function Login(props) {
 		>Log in</BtnTab>
 
 		<br/><br/>
-		<Link to='/signup/'>Sign Up here</Link>
+		<Link to='/signup/'>Sign up here</Link>
 		</>
 	}
     { props.target === 'signup' &&
 		<>
-		
-		<p>Display name:</p>
+
+		<div style={{display:'block', textAlign: 'left'}}>
+		<label htmlFor='uname'>Display name:</label>
 		<input 
 			ref={ref_uname} 
 			name='uname' 
+			id='uname' 
 			type='text'
 		/>
-		
-		<p>Email:</p>
+		<br/>
+		<label htmlFor='email'>Email:</label>
 		<input 
 			ref={ref_email} 
 			name='email' 
+			id='email' 
 			type='text'
 		/>
-		
-		<p>Password:</p>
+		<br/>
+		<label htmlFor='password'>Password:</label>
 		<input 
 			onChange={validate} 
 			ref={ref_password} 
 			name='password' 
+			id='password' 
 			type='password'
 		/>
-		
-		<p>Verify password:</p>
+		<br/>
+		<label htmlFor='Verify password'>Verify password:</label>
 		<input 
 			name='Verify password' 
+			id='Verify password' 
 			ref={ref_confirm_password} 
 			type='password'
 		/>
-		
+		</div>
 		<div>
 		<p style={{color: `${Lcase[0] ? 'green': 'red'}`}}>
 			{Lcase[0] ? '✓': 'x'} Lower case
@@ -291,7 +297,7 @@ function Login(props) {
 		/> 
 	}
 	</center>
-
+	</form>
 	)
 }
 export default Login;

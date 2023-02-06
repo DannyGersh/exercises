@@ -7,10 +7,11 @@ function Explain(props){
 	const updateRefs = props.refs.current.update;
 	
 	return(
-		<div className='Exercise'>
-			<label htmlFor="AnswereTextArea">Explanation bodie</label>
+		<form className='Exercise'>
+			<label htmlFor="explain">explanation bodie</label>
 			
 			<textarea
+				name='explain'
 				id={TARGETS.explain}
 				onChange={
 					(e)=>updateRefs(
@@ -29,7 +30,7 @@ function Explain(props){
 			</ul>
 			<br/><br/><br/>
 		
-		</div>
+		</form>
 	)
 }
 export default Explain;

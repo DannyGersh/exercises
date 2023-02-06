@@ -46,19 +46,19 @@ function Exercise(props){
 	const style_label = {display:'flex', alignItems:'center'};
 	
 	return(
-	<div className='Exercise'>
+	<form className='Exercise'>
 		
 		<div style={style_label}>
-		<label>tags</label>
+		<label htmlFor='tags'>tags</label>
 		<ToolTip 
 			id1 = 'tooltip_tags1'
 			id2 = 'tooltip_tags2'
 			text = {str_tooltip_tags}
-			children='ⓘ'
-		/>	
+		>ⓘ</ToolTip>	
 		</div>
 		
-		<input
+		<input 
+			name='tags'
 			id={CON.tags}
 			onChange={(e)=>
 				localStorage.setItem(CON.tags, e.target.value)
@@ -71,16 +71,16 @@ function Exercise(props){
 		<br/><br/>
 		
 		<div style={style_label}>
-		<label>latex packages</label>
+		<label htmlFor={CON.latex_pkg}>latex packages</label>
 		<ToolTip 
 			id1 = 'tooltip_latex_pkg1'
 			id2 = 'tooltip_latex_pkg2'
 			text = {str_tooltip_latex_pkg}
-			children='ⓘ'
-		/>	
+		>ⓘ</ToolTip>
 		</div>
 		
 		<input
+			name={CON.latex_pkg}
 			id={CON.latex_pkg}
 			onChange={(e)=>
 				localStorage.setItem(CON.latex_pkg, e.target.value)
@@ -91,8 +91,9 @@ function Exercise(props){
 		
 		<br/><br/><br/>
 		
-		<label>title *</label>
+		<label  htmlFor='title'>title *</label>
 		<input
+			name='title'
 			id={TARGETS.title}
 			onChange={(e)=>
 				updateRefs(TARGETS.title, props.refs, e.target.value)
@@ -103,8 +104,9 @@ function Exercise(props){
 
 		<br/><br/>
 		
-		<label>Exercise bodie</label>
+		<label htmlFor={TARGETS.exercise}>exercise_bodie</label>
 		<textarea 
+			name={TARGETS.exercise}
 			id={TARGETS.exercise}
 			className='ExerciseTextArea' 
 			onChange={(e)=>
@@ -115,8 +117,9 @@ function Exercise(props){
 		
 		<br/><br/>
 		
-		<label>answer *</label>
+		<label htmlFor='answer'>answer *</label>
 		<textarea
+			name='answer'
 			id={TARGETS.answer}
 			className='ExerciseTextArea' 
 			onChange={(e)=>
@@ -144,7 +147,7 @@ function Exercise(props){
 			<li>insert your latex in the following way:</li><br/>
 			<ul><li>
 				... some example normal text 
-				 &nbsp;<font color="green">$$ latex goes here $$
+				&nbsp;<font color="green">$$ latex goes here $$
 				</font> some other example normal text ... 
 			</li></ul><br/>
 		
@@ -156,10 +159,10 @@ function Exercise(props){
 				or any other tool that can yield latex.
 			</li><br/>
 			<li>
-				the latex installation is "texlive-latex-extra"
+				the latex installation is &quot;texlive-latex-extra&quot;
 			</li><br/>
 			<li>
-				"latex packages" is a 
+				&quot;latex packages&quot; is a 
 				<u>double comma</u> separated list 
 				of latex package directives. example:
 			</li><br/>
@@ -188,7 +191,7 @@ function Exercise(props){
 
 		<br/><br/>
 
-	</div>
+	</form>
 	)
 }
 export default Exercise;
