@@ -33,7 +33,7 @@ function MainBody(props) {
 		temp.push(i['id'])
 		return cond;
 	})
-	
+
 	return(<>
 		
 		<h3 style={style_text}>Search results for: {ctx.searchTerm}</h3>
@@ -89,7 +89,7 @@ function SearchPage() {
 			ctx.s_exercises[1](data);
 			ctx.s_finLoad[1](true);
 		})
-	},[params, ctx.s_exercises, ctx.s_finLoad, ctx.searchTerm])
+	},[])
 	
 	return <MainBody ctx={ctx}/>
 }

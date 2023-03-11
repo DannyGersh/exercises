@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     'localhost', 
     'localhost:3000',
     'ididthisforu.com',
+    'www.ididthisforu.com',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost', 
@@ -45,6 +46,7 @@ CORS_ALLOWED_ORIGINS = [
 	'http://127.0.0.1:3000',
     "http://localhost",
     "http://localhost:3000",
+    'https://ididthisforu.com',
     'https://www.ididthisforu.com',
 ]
 CORS_ALLOW_METHODS = [
@@ -54,6 +56,7 @@ CORS_ORIGIN_WHITELIST = (
 	'http://127.0.0.1',
 	'http://127.0.0.1:3000',
     'http://localhost:3000',
+    'https://ididthisforu.com',
     'https://www.ididthisforu.com',
 )
 # CORS_ALLOW_ALL_ORIGINS = True

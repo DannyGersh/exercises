@@ -194,18 +194,18 @@ function New(){
 		if(!latex_pkg) latex_pkg = '';
 		tags = tagsStrToArray(tags);
 		
-		for(const key of Object.keys(TARGETS)) {
+		Object.keys(TARGETS).forEach(key => {
 			if(refs.current[TARGETS[key]][0].match(/<.*\/.*>/gms)) {
 				window.alert("invalid input")
 				return
 			}
-		}
-		for(const tag of tags) {
+		})
+		tags.forEach(tag => {
 			if(/[^a-zA-Z0-9\s]/gms.test(tag)) {
 				window.alert(`invalid tag: ${tag}`);
 				return;
 			}
-		}
+		})
 
 		// END_PERROR
 
@@ -270,12 +270,12 @@ function New(){
 			.then(result=>{
 				if(!result['error']) {
 					window.alert('successfully uploaded exercises.')
-					for (const key of Object.keys(CON)) {
+					Object.keys(CON).forEach(key => {
 						localStorage.removeItem(CON[key]);
-					}
-					for (const key of Object.keys(TARGETS)) {
+					})
+					Object.keys(TARGETS).forEach(key => {
 						localStorage.removeItem(TARGETS[key]);
-					}
+					})
 					navigate(`/profile/${window.userId[0]}`)
 				}
 			})
@@ -288,12 +288,12 @@ function New(){
 			.then(result=>{
 				if(!result['error']) {
 					window.alert('successfully updated exercises.')
-					for (const key of Object.keys(CON)) {
+					Object.keys(CON).foeEach(key => ()=>{
 						localStorage.removeItem(CON[key]);
-					}
-					for (const key of Object.keys(TARGETS)) {
+					})
+					Object.keys(TARGETS).foeEach(key => ()=> {
 						localStorage.removeItem(TARGETS[key]);
-					}
+					})
 					navigate(`/profile/${window.userId[0]}`)
 				}
 			})
@@ -303,7 +303,7 @@ function New(){
 	function h_preview() {
 		// timeout until all input timeout finishe
 		// input timout is set to 500, so 150 would do
-		console.log("AAAAAAAA")
+
 		setTimeout(()=>{
 			const local_exercise = getLocalExercise();
 			if(local_exercise) {
@@ -325,7 +325,7 @@ function New(){
 	useEffect(()=>{
 
 		if(ctx.mainState!==MAIN_STATES.editInitial){
-			for (const [key, value] of Object.entries(TARGETS)) {
+			for (let [key, value] of Object.entries(TARGETS)) {
 				
 				let item = localStorage.getItem(value);
 				
@@ -339,20 +339,18 @@ function New(){
 				refs.current[key][1] = item[0];
 				refs.current[key][3] = item[1];
 	
-				for(const [index, latex] of Object.entries(item[1])) {
+				for(let [index, latex] of Object.entries(item[1])) {
 					item[0] = item[0].replace(
 						`$$${index}$$`, 
 						`$$$${latex}$$$`
 					);
 				}
 				refs.current[key][0] = item[0];
-			
 				const node = document.getElementById(key);
 				if(node) node.value = item[0];
 			}
 		} else {
-			for (const key of Object.entries(TARGETS)) {
-				
+			Object.keys(TARGETS).forEach(key => {
 				let string = ctx.exercise_edit[key];
 				const replacment = ctx.exercise_edit[`latex_${key}`];
 				
@@ -362,7 +360,7 @@ function New(){
 				);
 				
 				refs.current[key][1] = string;
-				for(const [index, latex] of Object.entries(replacment)) {
+				for(let [index, latex] of Object.entries(replacment)) {
 					string = string.replaceAll(
 						`$$${index}$$`, 
 						`$$$${latex}$$$`
@@ -373,14 +371,13 @@ function New(){
 				
 				const node = document.getElementById(key);
 				if(node) node.value = string;
-			}
+			})
 			sendData('fetch/initialEdit', 'POST', {
 				'latex_dir': ctx.exercise_edit['latex_dir'],
 				'author': ctx.exercise_edit['author'],
 			})
 		}
 	},[s_bmt, ctx.exercise_edit, ctx.mainState])
-	
 	
 	return(
 	<>

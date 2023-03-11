@@ -502,7 +502,6 @@ function ExercisePage(){
 				ctx.r_exercise.current = e;
 				fillTargetsInnerHtml();
 				ctx.s_finLoad[1](true);
-
 			})
 			
 		} else {

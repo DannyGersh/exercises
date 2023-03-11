@@ -24,7 +24,7 @@ function ToolTip(props) {
 		elm1.current.addEventListener('mouseleave', ()=>{
 			dsp[1](false);
 		});		
-	})
+	}, [])
 	
 	// display toottip conditionally
 	useEffect(()=>{

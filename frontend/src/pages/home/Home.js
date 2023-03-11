@@ -36,6 +36,7 @@ function Home() {
 		width: '6rem',
 	}
 	
+	
 	return(
 	<>		
 		<center>

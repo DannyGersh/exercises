@@ -201,12 +201,14 @@ function Login(props) {
 
     { props.target === 'login' && 
 		<>
+		<center style={{display:'flex', flexDirection: 'column', alignItems: 'center'}}>
 		<label htmlFor='uname'>Display name:</label>
-		<input id='uname' name='uname' ref={ref_uname} type='text'/>
+		<input id='uname' name='uname' ref={ref_uname} type='text' style={{maxWidth: '500px'}}/>
 		<label htmlFor='password'>Password:</label>
-		<input id='password' name='password' ref={ref_password} type='password'/>		
+		<input id='password' name='password' ref={ref_password} type='password' style={{maxWidth: '500px'}}/>		
+		</center>
 		
-		<br/><br/>
+		<br/>
 
 		<BtnTab 
 			className='green' 

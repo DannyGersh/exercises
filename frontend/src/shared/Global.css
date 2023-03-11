@@ -161,3 +161,8 @@ body{
 	width: 1.5rem;
 	vertical-align: middle;
 }
+
+.textWithLatex {
+	white-space: break-spaces;
+	line-height: 1.3;
+}

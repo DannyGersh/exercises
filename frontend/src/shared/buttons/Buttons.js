@@ -167,7 +167,7 @@ function BtnShowMore(props) {
 				);
 			}
 		}
-	})
+	}, [])
 	// END_PERROR
 	
 	let step = 1;
@@ -177,6 +177,7 @@ function BtnShowMore(props) {
 	return(<>
 	{s_count[0] < props.max &&
 		<Btn
+			style={{marginBottom: '1rem'}}
 			className='btnTab color_btn_default'
 			onClick={()=>s_count[1](s_count[0]+step)}
 		>show more</Btn>

@@ -1,7 +1,7 @@
 import {useEffect} from 'react'
 import StackTrace from 'stacktrace-js'
 
-window.isDebug = true;
+window.isDebug = false;
 window.url_base = window.isDebug ? 'http://localhost/' : 'https://www.ididthisforu.com/';
 
 /*
@@ -289,7 +289,7 @@ function mainText2html(exercise, target, isEdit=false) {
 					index
 				].join('/')
 				textList[i] = `<img 
-					style="max-width: 100%; vertical-align: middle;" 
+					style="max-width: 100%; vertical-align: middle; margin-left: 0.3rem; margin-right: 0.3rem;" 
 					src="${path}.svg?t=${timeStamp}"
 				>`
 			} else {
