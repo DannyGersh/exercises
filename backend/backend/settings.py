@@ -21,7 +21,7 @@ PATH_MAIN = BASE_DIR.parent.absolute()
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r5h0)-lfid5aw-(s3bs=m9l^%fxq36%=m(#p66(&v$*p3an!fj'
+SECRET_KEY = 'qq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
