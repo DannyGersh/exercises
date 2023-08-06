@@ -1,0 +1,54 @@
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# https://www.nginx.com/resources/wiki/start/
+# https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
+# https://wiki.debian.org/Nginx/DirectoryStructure
+
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	server_name _;
+
+	if ($host = www.ididthisforu.com) {
+		return 301 https://$host$request_uri;
+	} # managed by Certbot
+
+	if ($host = ididthisforu.com) {
+		return 301 https://www.$host$request_uri;
+	} # managed by Certbot
+
+	location / {
+                proxy_pass https://ididthisforu.com:8000;
+        }
+        location /static/ {
+                proxy_pass https://ididthisforu.com:80/volume/static;
+        }
+}
+server {
+
+	server_name www.ididthisforu.com; # managed by Certbot
+
+	if ($host = ididthisforu.com) {
+                return 301 https://www.$host$request_uri;
+        } # managed by Certbot
+
+	location / {
+		proxy_pass http://localhost:8000;
+	}
+	location /static/ {
+                alias /volume/static/;
+        }
+	location /radio/ {
+                alias /volume/radio/;
+        }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/ididthisforu.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/ididthisforu.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
